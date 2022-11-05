@@ -59,3 +59,7 @@ sysinfo.txt
 crashlytics-build.properties
 
 .idea/
+
+# Generated ARCore folder
+Assets/XR
+Assets/XR/*
