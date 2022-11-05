@@ -1,76 +1,109 @@
-# Getting Started
+# XR Remote Preview
 
-Welcome! :wave: 
+## Who is this project for?
 
-If you're reading this, you should be thinking about creating a plugin for the Unity Package Manager. This template repository is designed to get you started building a package for UPM. Its documentation is always a work-in-progress, but there are some pre-requisites that you should familiarize yourself with: 
-- **Code duplication** To reduce code duplication, please take a look at other packages online, or in your repositories, for a similar package you're looking to create: 
-    - :link: [@youar/unity](https://github.com/orgs/youar/teams/unity/discussions/1)
-- **Creating Custom Packages** This repository is boilerplate, and before you develop any further, please take a look at Unity Documentation on Creating Custom Packages: 
-    - :link: https://docs.unity3d.com/Manual/CustomPackages.html
-    - :link: [Package Layout](https://docs.unity3d.com/Manual/cus-layout.html)
-- **Publishing** Before you publish, make sure you've included Tests, Samples, Documentation, _and most importantly, LICENSE.md, as well as individual script license headers_. 
+This project is for augmented reality developers who are looking for a convenient way to debug their AR applications, without the length build time required for Unity projects like AR Foundation. Unfortunately, AR Foundation from Unity did not ship with a "remote system", i.e. a way to pass AR session information from a device, to the editor. This was a huge loss for those of us who used [Google's AR Instant Preivew](https://developers.google.com/vr/develop/unity/instant-preview) system.
 
-## Using upm-Template
+If you would like to learn more about Unity's plan for some similar system, take a look at some of these links: 
+* https://on.unity.com/Unite2019RoadmapTalk
+* https://forum.unity.com/threads/instant-preview-with-ar-foundation.598246/
+* https://forum.unity.com/threads/ar-remoting-simulation.720575/#post-4868660 
 
-- Follow the pre-requisites listed, above.
-- Make sure all instances of `upm-Template` are replaced with your package identifiers.
-- Make sure to iterate on your project version appropriately, using MAJOR.MINOR.PATCH symantic versioning
-- Make sure you've included a high-level changelog
-    - This means a changelog that any person can read in plain English, without much knowledge of code needed;
-        - Avoid code usage in a changelog, if possible
-    - This means consistent changelog formating: https://github.com/youar/changelog
+## What are the limitations of this project? 
 
-## System Requirements and Usage
+Currently, this application is only for piping **video** and **tracked pose driver** information from a remote device (a server), to the editor (a client). There are more features in the [ARKit Streamer](https://github.com/asus4/ARKitStreamer) package. However, this project is difficult to set-up, and doesn't utilize the [EditorConnection](https://docs.unity3d.com/ScriptReference/Networking.PlayerConnection.EditorConnection.html), and [PlayerConnection](https://docs.unity3d.com/ScriptReference/Networking.PlayerConnection.PlayerConnection.html) classes from Unity. To be clear, this project does not support: 
 
-Below is a list of requirements for getting started wiht the UPM repo system. It covers how packages should be used, and what version(s) of software you might need, in order to insure that they work properly. 
+* Hand Tracking
+* Image Tracking
+* Face Tracking
+* Human Pose Tracking
 
-#### Windows
-* Unity 2019.4+
-* Git Client v2.14.0+
-* Git LFS
-* PuTTY SSH Client with a valid key for this repository
-* Git, Git LFS, and PuTTY exposed in Environmental Variables
+We hope the community can use some of the boiler plate in this project to make these other types possible. Click on each feature to look at its feature request on GitHub. 
 
-#### MacOS
-* TBD
+## How do I get started? 
 
-Additional Information: [Unity Docs - Git Dependencies](https://docs.unity3d.com/2019.4/Documentation/Manual/upm-git.html#Git-SSH)
+The steps differ slightly between Android and iOS. If you are on Android, the project has a pre-built .apk in it for you to try. If you are on iOS, you will need to build the Xcode project, and install it on your device. Also, once in Play mode, you will need to connect your device. The following graphic shows where to connect your device to:
 
-##### Importing
-1. Open Unity 2019.4+
-2. Open the Package Manager (Window > Package Manager)
-3. Add a package by selecting "Add package from git URL..."
+<p align="center">
+        <img src="docs/images/unity_editor_console_window.png">
+</p>
+<p align="center">
+        <em>Select the dropdown in "B" labeled "Editor" and select your device</em>
+</p>
 
-![2021-10-12 17_16_55-](https://user-images.githubusercontent.com/8175698/137046043-d86f1b65-314c-461e-a942-86f2a966548c.png)
+You can find a more detailed explanation [here](https://docs.unity3d.com/Manual/Console.html).
 
-4. Enter `ssh://git@github.com/youar/<repoName>?path=/Assets/` into the field 
-     * To install a specific version, include the version tag at the end of the path preceeded by a `#`
-     * Ex. `ssh://git@github.com/youar/<repoName>?path=/Assets/`
+##### - Android -
 
-##### Change Versions
-1. Open Unity 2019.4+
-2. Open the Package Manager (Window > Package Manager)
-3. Add a package by selecting "Add package from git URL..."
+Before using a device **Please, make sure that you have Developer Mode enabled, and USB Debugging enabled**!
 
-![2021-10-12 17_16_55-](https://user-images.githubusercontent.com/8175698/137046043-d86f1b65-314c-461e-a942-86f2a966548c.png)
+Here is the quick start method: 
 
-4. Enter `ssh://git@github.com/youar/<repoName>?path=/Assets/` into the field
+* Drop the `XR Remote` folder into your project at `Assets/XR Remote`
+* Make sure you are on build platform Android
+* Plug in an Android device
+* Make sure you have a `Main Camera` in your scene, with a `Tracked Pose Driver`, and `AR Camera Manager`
+* Drag the `XR Remote Connection` prefab into your scene, (`Assets/XR Remote/XR Remote Connection.prefab`)
+* Hit Play
+* Connect the device to the Editor by going to the Console window, and selecting the Android device from the dropdown. 
 
-#### Removing
-1. Open Unity 2019.4+
-2. Open the Package Manager (Window > Package Manager)
-3. Select `Cadence UI` under the `Other` category
-4. Press `Remove`
+If you are just in the XR Remote project, itself, you can bypass this and just plug in an Android device, on the Android platform, and open the AR Remote Client scene (`Assets/XR Remote/Scenes/AR Remote Client`), and hit Play. In a moment, the application should install and launch on your phone.
 
-## Meeting Legal Requirements
+##### - iOS -
 
-Please, make sure that the YOUAR license agreement is at the top of every file, you create:
+iOS will require you to build out the Xcode projects for the scene `Assets/XR Remote/Scenes/AR Remote Server`, with _Developer Mode_ enabled, and "Run In Xcode" as Debug set via Player Settings. Go to the section on [building XR Remote](#building_xrremote) for more information.
 
-```
-// Copyright © <currentYear> YOUAR Inc. All rights reserved.
-// Any use of this software is subject to a separate written agreement between YOUAR, Inc. and you or the entity for which you work.
-// If no such agreement exists, you may not use this software.
-```
+After the application is installed on your iOS device, follow these steps: 
 
-## Contributing
-[Development Practices](https://github.com/youar/upm-Template/blob/main/.github/DEVELOPMENT_PRACTICES.md)
+* Drop the `XR Remote` folder into your project at `Assets/XR Remote`
+* Make sure you are on build platform iOS
+* Make sure you have a `Main Camera` in your scene, with a `Tracked Pose Driver`, and `AR Camera Manager`
+* Drag the `XR Remote Connection` prefab into your scene, (`Assets/XR Remote/XR Remote Connection.prefab`)
+* Start the XRRemote application built from the above.
+* Hit Play
+* Connect the device to the Editor by going to the Console window, and selecting the iOS device from the dropdown. 
+
+<a name="building_xrremote"></a>
+## Building XR Remote
+
+Building XR Remote should be fairly easy, but there are a couple things to keep in mind, at a high-level:
+
+#### Logging
+
+There is an over all logging system that operates on the premise of "VERBOSE", "MINIMAL", and "QUITE" amounts of logging. This is due to the fact that an attached device will cause 2 streams of data to come into the Unity editor window, and this can sometimes be unruly to deal with. 
+
+#### Features
+
+A feature which uses the AR Foundation SDK will need to be built into the XR Remote application that lives on the device (server). That means that any feature change will need to be built into the application which is providing the information to the Editor (client). The process for doing that sounds lengthy, but doing it on editor first, can save a lot of time. 
+
+In order to add a feature, please expand the `Assets/XR Remote/Scripts/XRRemotePacket.cs` class with additional data types that can be appropriately deserialized. 
+
+### How to Build
+
+**WITHOUT DEVELOPMENT MODE ENABLED THIS WILL NOT CONNECT TO UNITY**
+
+* Select your desired platform
+* Build the base scene `Assets/XR Remote/Scenes/AR Remote Server`
+* Select the following options in Build Settings: 
+	* Development Build
+	* Run in Xcode as "Debug" (if applicable)
+* Hit Build
+* Sign the application with your personal key/team (if applicable)
+
+## FAQ:
+
+* This project uses git lfs for every major type of binary file.
+
+## Bugs: 
+
+* GitHub issues #6 
+
+## Change Log:
+4/19/2020
+* Fixed Texture destroy issue causing a memory leak.
+
+1/22/2020
+* Upgrade to AR Foundation 3.0.1
+* Upgrade to ARKit XR Plugin 3.0.1
+* Upgrade to ARCore XR Plugin 3.0.1
+* Upgrade to Unity 2019.2.18f1
