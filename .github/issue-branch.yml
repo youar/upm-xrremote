@@ -1,0 +1,28 @@
+# You can change the mode to "chatops",
+# meaning a new issue branch is created after
+# commenting on an issue with /create-issue-branch or /cib
+mode: chatops
+
+
+# Branch names are generated from the issue, there are 3 built-in flavours or it can be customized.
+# The 3 built-in flavours are:
+#   1. tiny => an i followed by the issue number, for example: i15
+#   2. short => the word issue followed by the issue number, for example: issue-15
+#   3. full => the word issue followed by the issue number followed by the issue title, for example: issue-15-Fix_nasty_bug
+branchName: issue-${issue.number}-${issue.title}
+
+
+branches:
+  - label: feature
+    prefix: feature_
+    name: staging
+  - label: enhancement
+    prefix: feature_
+    name: staging
+  - label: bug
+    prefix: bugfix_
+    name: staging
+  - label: triage
+    skip: true
+
+autoCloseIssue: true

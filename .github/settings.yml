@@ -1,0 +1,128 @@
+labels:
+  - name: triage
+    color: '#FEF2C0'
+    description: |
+        unassignable until next release schedule, wait for pm meeting
+
+  - name: must_have 
+    color: '#B60205'
+    description: |
+        requires immediate consideration, aka next release
+        
+  - name: should_have 
+    color: '#D93F0B'
+    description: |
+        release after next
+        
+  - name: could_have
+    color: '#0E8A16'
+    description: |
+        should be discussion or removed
+    
+    # _from a bot (for a bot)_
+  - name: bot
+    color: '#c5def5'
+    description: |
+        an issue with the system
+        
+  - name: discussion
+    color: '#FBCA04'
+    description: |
+        further concensus required
+        
+    # _Quality Assurance is need to make the bug/confirmed_
+  - name: bug
+    color: '#CC0000'
+    description: |
+        an issue with the system
+        
+  - name: bug/nr/interbug_dependencies 
+    color: '#E57F7F'
+    description: |
+        a non-reproducable bug; side-effect bi-product, possible duplicate
+        
+  - name: bug/nr/environmental_differences 
+    color: '#E57F7F'
+    description: |
+        a non-reproducable bug; cached data, SDKs, IDEs, VMs, hardware, network
+  
+  - name: bug/nr/insufficient 
+    color: '#E57F7F'
+    description: |
+        a non-reproducable bug; no test-cases, no steps, different conditions re-route to same issue
+        
+  - name: bug/nr/expectations 
+    color: '#E57F7F'
+    description: |
+        a non-reproducable bug; requirements, UX, and/or API not understood
+  
+  - name: bug/nr/non_deterministics 
+    color: '#E57F7F'
+    description: |
+        a non-reproducable bug; intermitent or otherwise not consistent 
+    
+  - name: bug/confirmed
+    color: '#CC0000'
+    description: |
+        the bug was found reproducable
+    
+  - name: feature
+    color: '#336699'
+    alias: enhancement
+    description: |
+        new functionality
+    
+  - name: quick_start
+    color: '#008672'
+    description: |
+        this issue is self-contained
+
+  - name: help_wanted
+    color: '#00FF00'
+    description: |
+        outside contribution possible
+  
+  - name: blocked
+    color: '#FF00FF'
+    description: |
+        the issue is blocked by some(one,thing)
+        
+    # _Only one of question/* should be attached at any time_
+    
+  - name: question/general
+    color: '#d876e3'
+    description: |
+        a general question for repository and its function
+        
+  - name: question/ui
+    color: '#d876e3'
+    description: |
+        a general question user interface
+        
+  - name: question/ux
+    color: '#d876e3'
+    description: |
+        a general question user experience
+        
+  - name: question/dev
+    color: '#d876e3'
+    description: |
+        developer or programer specific question about code
+        
+    # _Only one team/* should be attached at any time_
+    
+  - name: team/quality_assurance
+    color: '#f4b59f'
+    alias: qa
+    
+  - name: team/dev
+    color: '#f4b59f'
+    alias: programer
+    
+  - name: team/ui
+    color: '#f4b59f'
+    alias: user interface
+    
+  - name: team/ux
+    color: '#f4b59f'
+    alias: user experience

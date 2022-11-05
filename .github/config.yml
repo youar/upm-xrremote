@@ -1,0 +1,5 @@
+todo:
+  keyword: ['@todo','TODO', 'TODO-f', 'TODO-b']
+  bodyKeyword: ['@body','BODY']
+  autoAssign: false
+  label: ['bot', 'triage']
