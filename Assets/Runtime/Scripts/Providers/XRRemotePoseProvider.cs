@@ -32,7 +32,7 @@ public class XRRemotePoseProvider : BasePoseProvider
 {
     public override PoseDataFlags GetPoseFromProvider(out Pose output)
     {
-        XRRemote.XRRemoteConnection connection = XRRemote.XRRemoteConnection.Instance;
+        XRRemote.XREditorClient connection = XRRemote.XREditorClient.Instance;
         if (connection == null)
         {
             output = Pose.identity;

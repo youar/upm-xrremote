@@ -45,7 +45,7 @@
 
 //        public override bool TryGetFrame(XRCameraParams cameraParams, out XRCameraFrame cameraFrame)
 //        {
-//            ARRemote.XRRemoteConnection connection = ARRemote.XRRemoteConnection.Instance;
+//            ARRemote.XREditorClient connection = ARRemote.XREditorClient.Instance;
 //            if (connection == null)
 //            {
 //                cameraFrame = default(XRCameraFrame);

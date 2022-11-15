@@ -22,15 +22,11 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Networking.PlayerConnection;
 
 namespace XRRemote
 {
-//    using UnityEngine.Networking.PlayerConnection;
-
-    public enum LogLevel
+	public enum LogLevel
     {
         QUIET,
         MINIMAL,
@@ -46,17 +42,17 @@ namespace XRRemote
     public interface IConnection
 	{
         bool Initialize();
+		//void RegisterMethod(System.Guid socketChannel, UnityEngine.Events.UnityAction<byte[]> callback);
 
-    //    void RegisterMethod(System.Guid socketChannel, UnityEngine.Events.UnityAction<MessageEventArgs> callback);
-
-		void OnConnection(int playerID);
-		void OnDisconnection(int playerID);
+		void OnConnection();
+		void OnDisconnection();
 
         void Disconnect();
 		void DisconnectAll();
 
 		bool Send(object serializeableObject);
 		bool Send(byte[] data);
+		void MessageReceived(object obj);
 
         void ToggleLogLevel(LogLevel logLevel); 
         string FormatConnectionMessage(string baseMessage);

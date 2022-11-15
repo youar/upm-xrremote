@@ -33,6 +33,16 @@ namespace XRRemote
     using UnityEngine.XR.ARSubsystems;
 
     [Serializable]
+    public class XRFrameReadyPacket {
+        public bool value;
+    }
+    
+    [Serializable]
+    public class EditorARKitSessionInitialized {
+        public bool value;
+    }
+
+    [Serializable]
     public class XRRemotePacket
     {
         public CameraFrameEvent cameraFrame = new CameraFrameEvent();

@@ -24,6 +24,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.XR.ARFoundation;
 
 
 namespace XRRemote
@@ -64,33 +65,19 @@ namespace XRRemote
             };
         }
 
-        public static implicit operator Pose(TrackedPoseDriver trackedPoseDriver)
+        public static implicit operator Pose(ARPoseDriver trackedPoseDriver)
         {
             Pose pose = new Pose();
-            if (trackedPoseDriver.UseRelativeTransform)
-            {
-                pose.position = new XRRemote.float3(
-                    trackedPoseDriver.transform.localPosition.x,
-                    trackedPoseDriver.transform.localPosition.y,
-                    trackedPoseDriver.transform.localPosition.z);
-                pose.rotation = new XRRemote.float4(
-                    trackedPoseDriver.transform.localRotation.x,
-                    trackedPoseDriver.transform.localRotation.y,
-                    trackedPoseDriver.transform.localRotation.z,
-                    trackedPoseDriver.transform.localRotation.w);
-            }
-            else
-            {
-                pose.position = new XRRemote.float3(
-                    trackedPoseDriver.transform.position.x,
-                    trackedPoseDriver.transform.position.y,
-                    trackedPoseDriver.transform.position.z);
-                pose.rotation = new XRRemote.float4(
-                    trackedPoseDriver.transform.rotation.x,
-                    trackedPoseDriver.transform.rotation.y,
-                    trackedPoseDriver.transform.rotation.z,
-                    trackedPoseDriver.transform.rotation.w);
-            }
+            pose.position = new XRRemote.float3(
+                trackedPoseDriver.transform.position.x,
+                trackedPoseDriver.transform.position.y,
+                trackedPoseDriver.transform.position.z);
+            pose.rotation = new XRRemote.float4(
+                trackedPoseDriver.transform.rotation.x,
+                trackedPoseDriver.transform.rotation.y,
+                trackedPoseDriver.transform.rotation.z,
+                trackedPoseDriver.transform.rotation.w);
+            
             return pose;
         }
 

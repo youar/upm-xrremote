@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="ConnectToEditor.cs" createdby="gblikas">
+// <copyright file="XRRemoteServer.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -28,15 +28,13 @@
 // </modified> 
 //-------------------------------------------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking.PlayerConnection;
+using UnityEngine.Serialization;
 
 namespace XRRemote
 {
     using System;
-    using System.Text;
-  //  using UnityEngine.Networking.PlayerConnection;
     using UnityEngine.SpatialTracking;
     using UnityEngine.UI;
     using UnityEngine.XR.ARFoundation;
@@ -49,13 +47,12 @@ namespace XRRemote
     }
 
 
-    public class ConnectToEditor : DeviceConnection
+    public class XRRemoteServer : Server
     {
-
         /// <summary>
         /// device reference to the DEVICE camera
         /// this will send out the frame to
-        /// the XRRemoteConnection script to
+        /// the XREditorClient script to
         /// recieve. 
         /// </summary>
         public ARCameraManager cameraManager;
@@ -63,7 +60,7 @@ namespace XRRemote
         /// <summary>
         /// Reference to the thing we care about. 
         /// </summary>
-        public TrackedPoseDriver trackedPoseDriver;
+        public ARPoseDriver arPoseDriver;
 
         public Text connectionText;
 
@@ -127,7 +124,7 @@ namespace XRRemote
 
         private string ConnectionMessage(string baseMessage)
         {
-            return $"ConnectToEditor.cs {baseMessage}";
+            return $"XRRemoteServer.cs {baseMessage}";
         }
 
         private void DisplayLogConnectionMessage(string message)
@@ -181,12 +178,10 @@ namespace XRRemote
                 DisplayLogErrorConnectionMessage("OnEnable Event: no testConnectionButton");
                 return;
             }
+            base.onConnection = FireOnConnection;
+            base.onDisconnection = () => { connectionText.text = ConnectionMessage("disconnected"); };
 
             base.Initialize();
-
-            base.onConnection = FireOnConnection;
-            base.onDisconnection = (id) => { connectionText.text = ConnectionMessage("disconnected"); };
-
 
             testConnectionButton.onClick.RemoveAllListeners();
             testConnectionButton.onClick.AddListener(EditorSendTest);
@@ -216,7 +211,7 @@ namespace XRRemote
 
             if (!SetUpTextureSystem(renderTextureWidth, renderTextureHeight, defaultMaterial)) return;
             if (!SetUpCameraManager(this.cameraManager)) return;
-            if (!SetUpTrackedPoseDriver(this.trackedPoseDriver)) return;
+            if (!SetUpTrackedPoseDriver(this.arPoseDriver)) return;
 
 #if UNITY_ANDROID
             //
@@ -230,7 +225,7 @@ namespace XRRemote
                 arSystemBarText.text = SessionInfoMessage(XRSessionInfoStates.stopped);
             }
 
-            RegisterPlayerMethods();
+            //RegisterPlayerMethods();
         }
         #endregion
 
@@ -239,14 +234,15 @@ namespace XRRemote
         /// Register all player messages to make sure that they system actualy
         /// is hooked up properly. 
         /// </summary>
-        private void RegisterPlayerMethods()
-        {
-            DisplayLogConnectionMessage("RegisterPlayerConnectionMethods");
+        
+        //private void RegisterPlayerMethods()
+        //{
+        //    DisplayLogConnectionMessage("RegisterPlayerConnectionMethods");
 
-            base.RegisterMethod(ConnectionMessageIds.fromEditorARKitSessionMsgId, OnARKitSessionInitializationMessage);
-            base.RegisterMethod(ConnectionMessageIds.readyForFrameEventMsgId, OnReadyForFrameEvent);
-            base.RegisterMethod(ConnectionMessageIds.TestingIds.kMsgSendEditorToPlayer, OnTextMessageRecieved);
-        }
+        //    base.RegisterMethod(ConnectionMessageIds.fromEditorARKitSessionMsgId, OnARKitSessionInitializationMessage);
+        //    base.RegisterMethod(ConnectionMessageIds.readyForFrameEventMsgId, OnReadyForFrameEvent);
+        //    base.RegisterMethod(ConnectionMessageIds.TestingIds.kMsgSendEditorToPlayer, OnTextMessageRecieved);
+        //}
 
         #region SCENE_SETUP
         private bool SetUpTextureSystem(int width, int height, string pathToMaterial)
@@ -282,12 +278,12 @@ namespace XRRemote
             return true;
         }
 
-        private bool SetUpTrackedPoseDriver(TrackedPoseDriver driver)
+        private bool SetUpTrackedPoseDriver(ARPoseDriver driver)
         {
             if (driver != null) return true;
 
-            trackedPoseDriver = FindObjectOfType<TrackedPoseDriver>();
-            if (trackedPoseDriver == null)
+            arPoseDriver = FindObjectOfType<ARPoseDriver>();
+            if (arPoseDriver == null)
             {
                 if (log)
                 {
@@ -367,7 +363,7 @@ namespace XRRemote
             
             if (xrRemotePacket == null) xrRemotePacket = new XRRemotePacket();
 
-            XRRemote.Pose pose = trackedPoseDriver;
+            XRRemote.Pose pose = arPoseDriver;
 
             xrRemotePacket.cameraFrame.timestampNs = obj.timestampNs.Value;
             xrRemotePacket.cameraFrame.projectionMatrix = pose;
@@ -417,33 +413,26 @@ namespace XRRemote
             readyForFrame = false;
 
             //
-            // send down the relavent pose information for the
+            // send down the relevant pose information for the
             // system. 
-            SendToEditor(ConnectionMessageIds.updateCameraFrameMsgId, xrRemotePacket);
+            SendToEditor(xrRemotePacket);
         }
 
         /// <summary>
-        /// todo initialize with the incoming session data embeded into the messageEventArgs
+        /// todo initialize with the incoming session data embedded into the messageEventArgs
         /// </summary>
-        /// <param name="messageEventArgs"></param>
-        private void OnARKitSessionInitializationMessage(MessageEventArgs messageEventArgs)
+        /// <param name="env"></param>
+        private void OnARKitSessionInitializationMessage(EditorARKitSessionInitialized env)
         {
-            string successMesage = "ConnectToEditor Event: initialized";
+            string successMesage = "XRRemoteServer Event: initialized";
             arSystemBarText.text = SessionInfoMessage(XRSessionInfoStates.initialized);
             arSessionInitialized = true;
-            OnInitializationSuccess(successMesage);
         }
 
-        private void OnInitializationSuccess(string message)
+        private void OnReadyForFrameEvent(XRFrameReadyPacket packet)
         {
-            SendToEditor(ConnectionMessageIds.editorInitARKit, message);
+            readyForFrame = packet.value;
         }
-
-        private void OnReadyForFrameEvent(MessageEventArgs messageEventArgs)
-        {
-            readyForFrame = true;
-        }
-
 
 #region EDITOR_CONNECTION_TESTING
         public void EditorSendTest()
@@ -453,7 +442,7 @@ namespace XRRemote
         }
         public void EditorSendTestMessage(string message)
         {
-            SendToEditor( ConnectionMessageIds.TestingIds.kMsgSendPlayerToEditor, message);
+            //SendToEditor( ConnectionMessageIds.TestingIds.kMsgSendPlayerToEditor, message);
         }
         private void OnTextMessageRecieved(MessageEventArgs messageEventArgs)
         {
@@ -477,10 +466,14 @@ namespace XRRemote
         /// </summary>
         /// <param name="socketChannel"></param>
         /// <param name="serializableObject"></param>
-        private void SendToEditor(System.Guid socketChannel, object serializableObject)
+        private void SendToEditor(object serializableObject)
         {
-            base.Send(socketChannel, serializableObject);
+            base.Send(serializableObject);
         }
 
+        public override void MessageReceived(object obj) {
+            if (obj is XRFrameReadyPacket) OnReadyForFrameEvent(obj as XRFrameReadyPacket);
+            if (obj is EditorARKitSessionInitialized) OnARKitSessionInitializationMessage(obj as EditorARKitSessionInitialized);
+        }
     }
 }

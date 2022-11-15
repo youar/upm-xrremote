@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="XRRemoteConnection.cs" createdby="gblikas">
+// <copyright file="XREditorClient.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -22,17 +22,11 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Networking.PlayerConnection;
 
 namespace XRRemote
 {
-    using System;
-
-    using UnityEngine.XR.ARFoundation;
-    using UnityEngine.Networking.PlayerConnection;
     using UnityEngine.XR.ARSubsystems;
 
     //
@@ -40,26 +34,23 @@ namespace XRRemote
     // editor environment as this is the script that will actually
     // communicate with the connected device and is not built onto it. 
 #if UNITY_EDITOR
-
-    using UnityEditor.Networking.PlayerConnection;
-    using System.Text;
     using UnityEngine.SpatialTracking;
 
-    public class XRRemoteConnection : RemoteConnection
+    public class XREditorClient : Client
     {
 
-        private static XRRemoteConnection instance = null;
-        public static XRRemoteConnection Instance
+        private static XREditorClient instance = null;
+        public static XREditorClient Instance
         {
             get
             {
                 if (instance == null)
-                    instance = FindObjectOfType<XRRemoteConnection>();
+                    instance = FindObjectOfType<XREditorClient>();
                 if (instance == null)
                 {
                     if (DebugFlags.displayXRRemoteConnectionStats)
                     {
-                        Debug.LogErrorFormat("XRRemoteConnection failure");
+                        Debug.LogErrorFormat("XREditorClient failure");
                     }
                 }
                 return instance;
@@ -81,7 +72,7 @@ namespace XRRemote
         Rect connectionMessageRect = new Rect((Screen.width / 2) - 200, (Screen.height / 2) + 100, 400, 50);
         private string XRRemoteConnectionMessage(string baseMessage)
         {
-            return string.Format("XRRemoteConnection ({0}) {1}", name, baseMessage);
+            return string.Format("XREditorClient ({0}) {1}", name, baseMessage);
         }
 
         /////////////////////////////////////////////////////////////////////////
@@ -129,9 +120,6 @@ namespace XRRemote
         // Use this for initialization
         void Start()
         {
-
-            base.onConnection = RegisterMethods;
-
             //
             // initialize the pose deliever system from
             // the player. 
@@ -142,7 +130,6 @@ namespace XRRemote
             // is properly set up to recieve and then
             // push the image feed from device, to editor. 
             TrySetUpXRRemoteVideo();
-
         }
 
         void OnGUI()
@@ -172,7 +159,7 @@ namespace XRRemote
         {
             if (readyForNewFrame)
             {
-                OnReadyForFrame();
+                ReadyForFrame();
                 readyForNewFrame = false;
             }
         }
@@ -183,41 +170,28 @@ namespace XRRemote
         }
         private void InitializeXRSession()
         {
-            SendToPlayer(ConnectionMessageIds.fromEditorARKitSessionMsgId, "From Editor: InitializeXRSession");
-
+            SendToPlayer(new EditorARKitSessionInitialized());
             readyForNewFrame = true;
         }
 
-        private void RegisterMethods(ConnectionState connectionState)
-        {
-            base.RegisterMethod(ConnectionMessageIds.updateCameraFrameMsgId, OnXRRemotePacketReceived);
-            base.RegisterMethod(ConnectionMessageIds.TestingIds.kMsgSendPlayerToEditor, OnTextMessageRecieved);
-            base.RegisterMethod(ConnectionMessageIds.editorInitARKit, OnARSessionHandShakeAck);
-        }
-
         /// <summary>
-        /// We have caught an incomming frame from
-        /// the connected player. 
+        /// We have caught an incoming frame from the connected player. 
         /// </summary>
-        /// <param name="messageEventArgs"></param>
-        private void OnXRRemotePacketReceived(MessageEventArgs messageEventArgs)
+        /// <param name="data"></param>
+        private void OnXRRemotePacketReceived(XRRemotePacket data)
         {
             readyForNewFrame = false; 
 
             if (DebugFlags.displayXRRemoteConnectionStats)
             {
-                Debug.LogFormat(
-                    XRRemoteConnectionMessage(
-                        string.Format("OnXRRemotePacketReceived")));
+                Debug.LogFormat(XRRemoteConnectionMessage("OnXRRemotePacketReceived"));
             }
 
-            int incomingPlayerID = messageEventArgs.playerId;
-
-            xrRemotePacketReceived = messageEventArgs.data.Deserialize<XRRemotePacket>();
+            xrRemotePacketReceived = data;
             if (xrRemotePacketReceived == null)
             {
                 if (DebugFlags.displayXRRemoteConnectionStats)
-                    Debug.LogWarningFormat("XRRemoteConnection Event ({0}): empty XRRemotePacket", incomingPlayerID);
+                    Debug.LogWarningFormat("XREditorClient Event ({0}): empty XRRemotePacket");
                 return;
             }
 
@@ -236,9 +210,8 @@ namespace XRRemote
             remoteVideo.SetRGBTexture(texture2D);
         }
 
-        private void OnReadyForFrame()
-        {
-            SendToPlayer(ConnectionMessageIds.readyForFrameEventMsgId, "true");
+        private void ReadyForFrame() {
+            SendToPlayer(new XRFrameReadyPacket{value = true});
         }
         
 
@@ -252,7 +225,7 @@ namespace XRRemote
                 {
                     Debug.LogErrorFormat(
                         XRRemoteConnectionMessage(
-                            string.Format("TrySetupTrackedPoseDriver Event: null trackedPoseDriver")));
+                            string.Format("TrySetupTrackedPoseDriver Event: null aRPoseDriver")));
                     return;
                 }
             }
@@ -330,11 +303,15 @@ namespace XRRemote
         /// </summary>
         /// <param name="socketChannel"></param>
         /// <param name="serializableObject"></param>
-        public void SendToPlayer(System.Guid socketChannel, object serializableObject)
+        public void SendToPlayer(object serializableObject)
         {
-            base.Send(socketChannel, serializableObject);
+            base.Send(serializableObject);
         }
 
+        public override void MessageReceived(object obj)
+        {
+            if (obj is XRRemotePacket) OnXRRemotePacketReceived(obj as XRRemotePacket);
+        }
     }
 #endif
 }

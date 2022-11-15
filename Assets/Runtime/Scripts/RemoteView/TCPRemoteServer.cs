@@ -20,11 +20,10 @@ public class TCPRemoteServer : MonoBehaviour {
 		tcpListenerThread.Start(); 	
 	}  	
 	
-	void Update () { 	
-		
-		if (Input.GetMouseButtonDown(0)) {  
+	void Update () {
+		if (Input.GetMouseButtonDown(0)) {
 			Debug.Log("tap!");
-			SendMessage();         
+			SendMessage();
 		} 	
 	}
 	
