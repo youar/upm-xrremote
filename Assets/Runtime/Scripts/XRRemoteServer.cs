@@ -219,13 +219,11 @@ namespace XRRemote
             // texture that we need for passing video frames. 
             if (!SetUpXRTextureExtractor(this.textureExtractor)) return;
 #endif
-            if (!base.connected)
+            if (connectionState == ConnectionState.DISCONNECTED)
             {
                 connectionText.text = ConnectionMessage("disconnected");
                 arSystemBarText.text = SessionInfoMessage(XRSessionInfoStates.stopped);
             }
-
-            //RegisterPlayerMethods();
         }
         #endregion
 
@@ -344,7 +342,7 @@ namespace XRRemote
 
         private void OnARCameraFrameRecieved(ARCameraFrameEventArgs obj)
         {
-            if (!base.connected) return;
+            if (connectionState == ConnectionState.DISCONNECTED) return;
 
             if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameRecieved"));
 
@@ -437,7 +435,7 @@ namespace XRRemote
 #region EDITOR_CONNECTION_TESTING
         public void EditorSendTest()
         {
-            if (!connected) return;
+            if (connectionState == ConnectionState.DISCONNECTED) return;
             EditorSendTestMessage(string.Format("EditorSendTest ({0}): hello, world!", name)); 
         }
         public void EditorSendTestMessage(string message)

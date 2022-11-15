@@ -66,6 +66,6 @@ namespace XRRemote
 				var obj = (T)binForm.Deserialize(memStream);
 				return obj;
 			}
-		}   
+		}
 	}
 }

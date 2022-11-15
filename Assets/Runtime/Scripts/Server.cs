@@ -23,6 +23,7 @@
 //-------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -43,25 +44,25 @@ namespace XRRemote
 
         string playerName = string.Empty;
 
-        public ConnectionState connectionState { get; private set; }
+        private Queue<byte[]> messageQueue = new Queue<byte[]>();
 
-        public bool lastConnected = false;
-        public bool connected
-        {
+        public ConnectionState _connectionState = ConnectionState.DISCONNECTED;
+
+        protected ConnectionState connectionState {
             get {
-                bool _connected = connectionState == ConnectionState.CONNECTED && tcpServer != null;
-                if (!_connected && lastConnected)
-                {
-                    if (log)
-                    {
-                        Debug.Log($"NOT_CONNECTED");
-                    }
-                    Disconnect();
+                lock(tcpServer) {
+                    return _connectionState;
                 }
-                lastConnected = _connected;
-                return _connected;
+            }
+            private set {
+                lock (tcpServer) {
+                    LastConnectionState = _connectionState;
+                    _connectionState = value;
+                }
             }
         }
+
+        private ConnectionState LastConnectionState = ConnectionState.DISCONNECTED;
 
         public Action<ConnectionState> onConnection;
 
@@ -99,37 +100,51 @@ namespace XRRemote
         public void OnConnection()
         {
             if (log) Debug.Log(FormatConnectionMessage($"connection event: incoming"));
-            connectionState = ConnectionState.CONNECTED;
-            if (!connected)
-            {
-                if (log) Debug.LogError($"CONNECTION_EVENT value: failure to connect");
-                return;
-            }
             onConnection?.Invoke(connectionState);
+        }
+
+        private void Update() {
+            lock(tcpServer) {
+                if (connectionState == ConnectionState.CONNECTED && LastConnectionState == ConnectionState.DISCONNECTED) {
+                    OnConnection();
+                }
+
+                if (connectionState == ConnectionState.DISCONNECTED && LastConnectionState == ConnectionState.CONNECTED) {
+                    OnDisconnection();
+                }
+            }
+            
+            lock (messageQueue) {
+                while (messageQueue.Count > 0) {
+                    byte[] message = messageQueue.Dequeue();
+                    MessageReceived(message.Deserialize<object>());
+                }
+            }
         }
 
         public void OnDisconnection()
         {
-            if (!connected) return;
-            //DisconnectAll();
-            connectionState = ConnectionState.DISCONNECTED;
+            tcpServer?.Stop();
+            tcpServer = null;
             onDisconnection?.Invoke();
+        }
+        
+        public void Disconnect()
+        {
+            DisconnectAll();
         }
 
         public void DisconnectAll()
         {
             if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: starting disconnect"));
-            if (!connected) return;
-            
-            tcpServer?.Stop();
-            tcpServer = null;
+            connectionState = ConnectionState.DISCONNECTED;
         }
 
         public bool Send(object serializeableObject)
         {
             try
             {
-                if (!connected) return false;
+                if (connectionState == ConnectionState.DISCONNECTED) return false;
                 byte[] data = serializeableObject.SerializeToByteArray();
                 return Send(data);
             }
@@ -144,7 +159,7 @@ namespace XRRemote
         {
             try
             {
-                if (!connected) return false;
+                if (connectionState == ConnectionState.DISCONNECTED) return false;
 
                 NetworkStream stream = connectedTcpClient.GetStream();
                 if (stream.CanWrite)
@@ -170,14 +185,9 @@ namespace XRRemote
             this.logLevel = logLevel;
         }
 
-        public void Disconnect()
-        {
-            DisconnectAll();
-        }
-
         public string FormatConnectionMessage(string baseMessage)
         {
-            if (!connected) return string.Empty;
+            if (connectionState == ConnectionState.DISCONNECTED) return string.Empty;
             return $"Server {(connectedTcpClient?.Client.RemoteEndPoint as IPEndPoint)?.Address}: {baseMessage}";
         }
         
@@ -188,7 +198,7 @@ namespace XRRemote
                 tcpServer.Start();
 		    
                 Debug.Log("Server is listening");
-                OnConnection();
+                connectionState = ConnectionState.CONNECTED;
 
                 Byte[] bytes = new Byte[1024];
                 
@@ -206,7 +216,9 @@ namespace XRRemote
                                 byte[] incomingData = new byte[length];
                                 Array.Copy(bytes, 0, incomingData, 0, length);
                                 
-                                MessageReceived(incomingData.Deserialize<object>());
+                                lock (messageQueue) {
+                                    messageQueue.Enqueue(incomingData);
+                                }
 
                                 string clientMessage = Encoding.ASCII.GetString(incomingData);
                                 Debug.Log("client message received as: " + clientMessage);

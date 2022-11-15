@@ -23,6 +23,7 @@
 //-------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -42,6 +43,8 @@ namespace XRRemote
         public string IP = "10.0.0.98";
 
         private readonly int byteLimit = 1024;
+
+        private Queue<byte[]> messageQueue = new Queue<byte[]>();
 
         public bool log
         {
@@ -87,6 +90,17 @@ namespace XRRemote
             {
                 OnConnection();
             }
+            if (connectionState == ConnectionState.DISCONNECTED && LastConnectionState == ConnectionState.CONNECTED)
+            {
+                OnDisconnection();
+            }
+            
+            lock (messageQueue) {
+                while (messageQueue.Count > 0) {
+                    byte[] message = messageQueue.Dequeue();
+                    MessageReceived(message.Deserialize<object>());
+                }
+            }
         }
 
         public bool Initialize()
@@ -96,8 +110,8 @@ namespace XRRemote
                 connectionState = ConnectionState.DISCONNECTED;
 			
                 clientReceiveThread = new Thread (ListenForData); 			
-                clientReceiveThread.IsBackground = true; 			
-                clientReceiveThread.Start();  		
+                clientReceiveThread.IsBackground = true;
+                clientReceiveThread.Start();
                 return true;
             }
             catch (Exception e)
@@ -123,7 +137,9 @@ namespace XRRemote
                             var incomingData = new byte[length];
                             Array.Copy(bytes, 0, incomingData, 0, length);
 
-                            MessageReceived(incomingData.Deserialize<object>());
+                            lock (messageQueue) {
+                                messageQueue.Enqueue(incomingData);
+                            }
                             
                             string serverMessage = Encoding.ASCII.GetString(incomingData);
                             Debug.Log("server message received as: " + serverMessage);
@@ -133,11 +149,9 @@ namespace XRRemote
             }
             catch (SocketException socketException) {
                 Debug.LogException(socketException);
-                Disconnect();
             }
             catch (Exception e) {
                 Debug.LogException(e);
-                Disconnect();
             }
         }
         
@@ -153,8 +167,6 @@ namespace XRRemote
         public void OnDisconnection()
         {
             if (!connected) return;
-            //DisconnectAll();
-            connectionState = ConnectionState.DISCONNECTED;
             onDisconnection?.Invoke(); 
         }
 
@@ -165,12 +177,14 @@ namespace XRRemote
 
         public void DisconnectAll()
         {
-            if (!connected) return;
-            if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: Closing Connection"));
+            lock(tcpClient) {
+                if (!connected) return;
+                if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: Closing Connection"));
+                connectionState = ConnectionState.DISCONNECTED;
 #if UNITY_2017_1_OR_NEWER
-            tcpClient?.Close();
-            OnDisconnection();
+                tcpClient?.Close();
 #endif
+            }
         }
 
         public bool Send(object serializeableObject)
