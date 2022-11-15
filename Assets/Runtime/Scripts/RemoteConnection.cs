@@ -160,7 +160,7 @@ namespace XRRemote
 
         public string FormatConnectionMessage(string baseMessage)
         {
-            if (!connected) return string.Empty;
+            if (!connected) return baseMessage;//string.Empty;
             return $"RemoteConnection {editorConnection.name}: {baseMessage}";
         }
     }

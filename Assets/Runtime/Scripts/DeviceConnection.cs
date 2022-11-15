@@ -25,16 +25,26 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Networking.PlayerConnection;
+
+//using UnityEngine.Networking.PlayerConnection;
 
 namespace XRRemote
 {
     using UnityEngine.Events;
-    using UnityEngine.Networking.PlayerConnection;
+ //   using UnityEngine.Networking.PlayerConnection;
 
     public class DeviceConnection : MonoBehaviour, IConnection
     {
-
+        private TcpListener tcpListener;
+        private Thread tcpListenerThread;  	
+        private TcpClient connectedTcpClient;
+        
         public LogLevel logLevel = LogLevel.MINIMAL;
 
         public bool log
@@ -47,9 +57,9 @@ namespace XRRemote
 
         string playerName = string.Empty;
 
-        PlayerConnection playerConnection { get; set; }
+    //    PlayerConnection playerConnection { get; set; }
 
-        public string name { get { return playerConnection == null || string.IsNullOrEmpty(playerConnection.name) ? string.Empty : playerConnection.name; } }
+    //    public string name { get { return playerConnection == null || string.IsNullOrEmpty(playerConnection.name) ? string.Empty : playerConnection.name; } }
 
         public ConnectionState connectionState { get; private set; }
 
@@ -57,7 +67,7 @@ namespace XRRemote
         {
             get
             {
-                bool _connected = connectionState == ConnectionState.CONNECTED && playerConnection != null;
+                bool _connected = connectionState == ConnectionState.CONNECTED;
                 if (!_connected)
                 {
                     if (log)
@@ -84,12 +94,14 @@ namespace XRRemote
             {
                 connectionState = ConnectionState.DISCONNECTED;
 
-                playerConnection = PlayerConnection.instance;
-                playerConnection.name = playerName;
-
-                playerConnection.RegisterConnection(OnConnection);
-                playerConnection.RegisterDisconnection(OnDisconnection);
-
+                /*
+                tcpListenerThread = new Thread (new ThreadStart( ListenForIncommingRequests)); 		
+                tcpListenerThread.IsBackground = true; 		
+                tcpListenerThread.Start();
+                */
+                
+                StartCoroutine(ListenForIncommingRequests());
+                
                 onConnection += (status) => { if (log) Debug.Log(FormatConnectionMessage($"CONNECTION_STATUS value: {status}")); };
                 onDisconnection += (id) => { if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: editor disconnected, playerId {id}")); };
 
@@ -99,17 +111,9 @@ namespace XRRemote
             catch (Exception e)
             {
                 if (log)
-                    Debug.LogErrorFormat($"DeviceConnection {playerConnection.name}: failed {e.Message}");
+                    Debug.LogException(e);
                 return false;
             }
-
-        }
-
-        public void RegisterMethod(Guid socketChannel, UnityAction<MessageEventArgs> callback)
-        {
-            if (!connected) throw new ArgumentException("NOT_CONNECTED reason: unknown");
-            playerConnection.Register(socketChannel, callback);
-            if (log) Debug.Log(FormatConnectionMessage($"registered to channel {socketChannel.ToString()}"));
         }
 
         public void OnConnection(int playerID)
@@ -136,19 +140,19 @@ namespace XRRemote
         {
             if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: starting disconnect"));
             if (!connected) return;
-            if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: {playerConnection.name} left the lobby"));
+        //    if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: {playerConnection.name} left the lobby"));
 #if UNITY_2017_1_OR_NEWER
-            playerConnection?.DisconnectAll();
+        //    playerConnection?.DisconnectAll();
 #endif
         }
 
-        public bool Send(Guid socketChannel, object serializeableObject)
+        public bool Send(object serializeableObject)
         {
             try
             {
                 if (!connected) return false;
                 byte[] data = serializeableObject.SerializeToByteArray();
-                return Send(socketChannel, data);
+                return Send(data);
             }
             catch (Exception e)
             {
@@ -156,20 +160,28 @@ namespace XRRemote
                 return false;
             }
         }
-
-        public bool Send(Guid socketChannel, byte[] data)
+        
+        public bool Send(byte[] data)
         {
             try
             {
                 if (!connected) return false;
-                if (log) Debug.Log(FormatConnectionMessage($"send event from {playerConnection.name} on channel {socketChannel}"));
-                return playerConnection.TrySend(socketChannel, data);
+
+                NetworkStream stream = connectedTcpClient.GetStream();
+                if (stream.CanWrite)
+                {
+
+                    stream.Write(data, 0, data.Length);
+                    Debug.Log("Server sent his message - should be received by client");
+
+                    return true;
+                }
             }
             catch (Exception e)
             {
                 Debug.LogError($"EXCEPTION reason: {e.Message}");
-                return false;
             }
+            return false;
         }
 
         public void ToggleLogLevel(LogLevel logLevel)
@@ -185,7 +197,64 @@ namespace XRRemote
         public string FormatConnectionMessage(string baseMessage)
         {
             if (!connected) return string.Empty;
-            return $"DeviceConnection {playerConnection.name}: {baseMessage}";
+            return $"DeviceConnection {(connectedTcpClient?.Client.RemoteEndPoint as IPEndPoint)?.Address}: {baseMessage}";
+        }
+        
+        //TCP connections
+        private IEnumerator ListenForIncommingRequests () {
+            try
+            {
+                //	tcpListener = TcpListener.Create(8052); // new TcpListener(IPAddress.Parse(IP), 8052);//5555);//
+		
+                tcpListener = TcpListener.Create(8053);//new TcpListener(IPAddress.Parse("127.0.0.1"), 8053);
+                if(!tcpListener.Server.IsBound)
+                    tcpListener.Start();
+			
+                Debug.Log("Server is listening");
+                Byte[] bytes = new Byte[1024];
+                
+                while (true)
+                {
+                    if (tcpListener.Pending())
+                    {
+                        using (connectedTcpClient = tcpListener.AcceptTcpClient())
+                        {
+                            using (NetworkStream stream = connectedTcpClient.GetStream())
+                            {
+                                int length;
+
+                                while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
+                                {
+                                    var incommingData = new byte[length];
+                                    Array.Copy(bytes, 0, incommingData, 0, length);
+
+                                    string clientMessage = Encoding.ASCII.GetString(incommingData);
+                                    Debug.Log("client message received as: " + clientMessage);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SocketException socketException)
+            {
+                Debug.LogException(socketException);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+            finally
+            {
+                tcpListener.Stop();
+            }
+
+            yield return null;
+        }
+
+        private bool AcceptTcpClient()
+        {
+            return tcpListener.Pending();
         }
     }
 

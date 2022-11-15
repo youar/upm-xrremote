@@ -49,8 +49,10 @@
 using System.IO;
 using System.Text;
 using UnityEngine;
+using Application = UnityEngine.Application;
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine.WSA;
 #endif
 
 public static class ShellHelper
@@ -104,7 +106,7 @@ public static class ShellHelper
         string sdkRoot = null;
 #if UNITY_EDITOR
         // Gets adb path and starts instant preview server.
-        sdkRoot = EditorPrefs.GetString("AndroidSdkRoot");
+        sdkRoot = UnityEditor.Android.AndroidExternalToolsSettings.sdkRootPath;//EditorPrefs.GetString("AndroidSdkRoot");
 #endif // UNITY_EDITOR
 
         if (string.IsNullOrEmpty(sdkRoot))
@@ -147,8 +149,11 @@ public static class ShellHelper
     {
         string sdkRoot = null;
 #if UNITY_EDITOR
+        
         // Gets adb path and starts instant preview server.
-        sdkRoot = EditorPrefs.GetString("AndroidSdkRoot");
+        sdkRoot = UnityEditor.Android.AndroidExternalToolsSettings.sdkRootPath;//EditorPrefs.GetString("AndroidSdkRoot");
+        buildToolsVersion = new DirectoryInfo( Directory.GetDirectories(sdkRoot+ "\\build-tools")[0] ).Name;
+        Debug.Log("delete me : actual build tool version is == "+buildToolsVersion);
 #endif // UNITY_EDITOR
 
         if (string.IsNullOrEmpty(sdkRoot))

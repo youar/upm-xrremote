@@ -28,7 +28,7 @@ using UnityEngine;
 
 namespace XRRemote
 {
-    using UnityEngine.Networking.PlayerConnection;
+//    using UnityEngine.Networking.PlayerConnection;
 
     public enum LogLevel
     {
@@ -47,7 +47,7 @@ namespace XRRemote
 	{
         bool Initialize();
 
-        void RegisterMethod(System.Guid socketChannel, UnityEngine.Events.UnityAction<MessageEventArgs> callback);
+    //    void RegisterMethod(System.Guid socketChannel, UnityEngine.Events.UnityAction<MessageEventArgs> callback);
 
 		void OnConnection(int playerID);
 		void OnDisconnection(int playerID);
@@ -55,8 +55,8 @@ namespace XRRemote
         void Disconnect();
 		void DisconnectAll();
 
-		bool Send(System.Guid socketChannel, object serializeableObject);
-		bool Send(System.Guid socketChannel, byte[] data);
+		bool Send(object serializeableObject);
+		bool Send(byte[] data);
 
         void ToggleLogLevel(LogLevel logLevel); 
         string FormatConnectionMessage(string baseMessage);

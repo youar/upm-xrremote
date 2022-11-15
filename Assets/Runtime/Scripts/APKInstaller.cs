@@ -203,6 +203,8 @@ static class APKInstaller
     {
         string output, errors; 
 
+        Debug.Log("delete me : "+adbPath);
+        Debug.Log("delete me : "+bundleIdentifier);
         ShellHelper.RunCommand(adbPath, $"shell dumpsys package \"{bundleIdentifier}\"", out output, out errors);
 
         ConnectedDevices(errors);
@@ -265,6 +267,9 @@ static class APKInstaller
     {
         string output, errors;
 
+        Debug.Log("delete me : adbPath == "+adbPath); 
+        
+        /*
         ShellHelper.RunCommand(adbPath, $"kill-server", out output, out errors);
 
         if (!string.IsNullOrEmpty(errors))
@@ -297,7 +302,7 @@ static class APKInstaller
         {
             Debug.Log(output);
         }
-
+*/
         ShellHelper.RunCommand(adbPath, $"forward tcp:34999 localabstract:Unity-{bundleIdentifier}", out output, out errors);
 
         if (!string.IsNullOrEmpty(errors))

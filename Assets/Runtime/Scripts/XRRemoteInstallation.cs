@@ -27,7 +27,7 @@ using UnityEngine;
 
 public class XRRemoteInstallation : MonoBehaviour
 {
-    private static string xrRemoteApkGUID = "8c0eeb23a51e4422b932b9b6d5fd6e95"; 
+    private static string xrRemoteApkGUID = "38f5c8734a8cb1f4c9ce395337fed2d2";//"8c0eeb23a51e4422b932b9b6d5fd6e95"; //
 
     /// <summary>
     /// create an APK install type for the given apk in the
