@@ -38,7 +38,8 @@ namespace XRRemote
         private Thread tcpListenerThread;
         private TcpClient connectedTcpClient;
 
-        private object connectionLock;
+        private readonly object connectionLock = new object();
+        private readonly object tcpLock = new object();
         
         public LogLevel logLevel = LogLevel.MINIMAL;
 
@@ -116,7 +117,7 @@ namespace XRRemote
         }
 
         private void Update() {
-            lock(tcpServer) {
+            lock(tcpLock) {
                 if (connectionState == ConnectionState.CONNECTED && LastConnectionState == ConnectionState.DISCONNECTED) {
                     OnConnection();
                 }
@@ -136,8 +137,6 @@ namespace XRRemote
 
         public void OnDisconnection()
         {
-            tcpServer?.Stop();
-            tcpServer = null;
             onDisconnection?.Invoke();
         }
         
@@ -205,9 +204,11 @@ namespace XRRemote
         
         private void ListenForIncommingRequests () {
             try {
-                tcpServer = TcpListener.Create(8053);
-                tcpServer.Server.ReceiveTimeout = 4000;
-                tcpServer.Start();
+                lock (tcpLock) {
+                    tcpServer = TcpListener.Create(8053);
+                    tcpServer.Server.ReceiveTimeout = 4000;
+                    tcpServer.Start();
+                }
 		    
                 Debug.Log("Server is listening");
                 connectionState = ConnectionState.CONNECTED;
@@ -216,24 +217,23 @@ namespace XRRemote
                 
                 while (true)
                 {
-                    if (!tcpServer.Pending()) continue;
-                    using (connectedTcpClient = tcpServer.AcceptTcpClient())
-                    {
-                        using (NetworkStream stream = connectedTcpClient.GetStream())
-                        {
-                            if (!stream.DataAvailable) continue;
-                            int length;
-                            while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
-                            {
-                                byte[] incomingData = new byte[length];
-                                Array.Copy(bytes, 0, incomingData, 0, length);
-                                
-                                lock (messageQueue) {
-                                    messageQueue.Enqueue(incomingData);
-                                }
+                    lock (tcpLock) {
+                        if (!tcpServer.Pending()) continue;
+                        using (connectedTcpClient = tcpServer.AcceptTcpClient()) {
+                            using (NetworkStream stream = connectedTcpClient.GetStream()) {
+                                if (!stream.DataAvailable) continue;
+                                int length;
+                                while ((length = stream.Read(bytes, 0, bytes.Length)) != 0) {
+                                    byte[] incomingData = new byte[length];
+                                    Array.Copy(bytes, 0, incomingData, 0, length);
 
-                                string clientMessage = Encoding.ASCII.GetString(incomingData);
-                                Debug.Log("client message received as: " + clientMessage);
+                                    lock (messageQueue) {
+                                        messageQueue.Enqueue(incomingData);
+                                    }
+
+                                    string clientMessage = Encoding.ASCII.GetString(incomingData);
+                                    Debug.Log("client message received as: " + clientMessage);
+                                }
                             }
                         }
                     }

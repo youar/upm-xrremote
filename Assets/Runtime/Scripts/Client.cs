@@ -37,7 +37,8 @@ namespace XRRemote
     {
         private TcpClient tcpClient; 
         private Thread clientReceiveThread;
-        private object connectionLock;
+        private readonly object connectionLock = new object();
+        private readonly object tcpLock = new object();
         
         public LogLevel logLevel = LogLevel.MINIMAL;
         
@@ -129,14 +130,14 @@ namespace XRRemote
 
         private void ListenForData() {
             try {
-                lock (tcpClient) {
+                lock (tcpLock) {
                     tcpClient = new TcpClient(IP, 8053);
                 }
                 connectionState = ConnectionState.CONNECTED;
 
                 Byte[] bytes = new Byte[byteLimit];
                 while (true) {
-                    lock (tcpClient) {
+                    lock (tcpLock) {
                         if(!tcpClient.Connected) continue;
                         using (NetworkStream stream = tcpClient.GetStream()) {
                             int length;
@@ -188,7 +189,7 @@ namespace XRRemote
 
         public void DisconnectAll()
         {
-            lock(tcpClient) {
+            lock(tcpLock) {
                 if (connectionState == ConnectionState.DISCONNECTED) return;
                 if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: Closing Connection"));
                 connectionState = ConnectionState.DISCONNECTED;
