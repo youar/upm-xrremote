@@ -103,6 +103,12 @@ namespace XRRemote
             }
         }
 
+        protected void OnDisable()
+        {
+            DisconnectAll();//clientReceiveThread?.Abort();
+        }
+
+
         public bool Initialize()
         {
             try
@@ -149,9 +155,11 @@ namespace XRRemote
             }
             catch (SocketException socketException) {
                 Debug.LogException(socketException);
+                Disconnect();
             }
             catch (Exception e) {
                 Debug.LogException(e);
+                Disconnect();
             }
         }
         

@@ -164,6 +164,11 @@ namespace XRRemote
             }
         }
 
+        public new void OnDisable()
+        {
+            base.OnDisable();
+        }
+        
         private void InitializeXRPlayer()
         {
             InitializeXRSession();
