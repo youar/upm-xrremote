@@ -193,8 +193,9 @@ namespace XRRemote
             base.Disconnect();
         }
 
-        private void OnDisable()
+        private new void OnDisable()
         {
+            base.OnDisable();
             if (cameraManager != null)
             {
                 cameraManager.frameReceived -= OnARCameraFrameRecieved;
@@ -464,7 +465,7 @@ namespace XRRemote
         /// </summary>
         /// <param name="socketChannel"></param>
         /// <param name="serializableObject"></param>
-        private void SendToEditor(object serializableObject)
+        public void SendToEditor(object serializableObject)
         {
             base.Send(serializableObject);
         }

@@ -10,7 +10,7 @@ public class UIRemoteServer : MonoBehaviour
 
     private void Start()
     {
-        tmpTextIP.text = GetLocalIPv4();
+        tmpTextIP.text = "IP : "+GetLocalIPv4();
     }
 
     public string GetLocalIPv4()

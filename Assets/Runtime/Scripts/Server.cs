@@ -75,8 +75,18 @@ namespace XRRemote
             playerName = $"player_{SystemInfo.deviceUniqueIdentifier}_{DateTime.Now.ToString("hhmmss")}";
         }
 
+        protected void OnDisable()
+        {
+            DisconnectAll();//tcpListenerThread?.Abort();
+        }
+
         public bool Initialize()
         {
+            if (tcpListenerThread != null && tcpListenerThread.IsAlive)
+            {
+                Debug.Log("thread is already initialized");
+                return true;
+            }
             try
             {
                 connectionState = ConnectionState.DISCONNECTED;
