@@ -37,6 +37,8 @@ namespace XRRemote
         private TcpListener tcpServer;
         private Thread tcpListenerThread;
         private TcpClient connectedTcpClient;
+
+        private object connectionLock;
         
         public LogLevel logLevel = LogLevel.MINIMAL;
 
@@ -50,12 +52,12 @@ namespace XRRemote
 
         protected ConnectionState connectionState {
             get {
-                lock(tcpServer) {
+                lock(connectionLock) {
                     return _connectionState;
                 }
             }
             private set {
-                lock (tcpServer) {
+                lock (connectionLock) {
                     LastConnectionState = _connectionState;
                     _connectionState = value;
                 }

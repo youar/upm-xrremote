@@ -136,7 +136,7 @@ namespace XRRemote
         {
             if (!isXRPlayerInitialized)
             {
-                if (connected)
+                if (connectionState == ConnectionState.CONNECTED)
                 {
                     connectionMessage = string.Format("XRRemote: ({0}) connected", name);
                 }
