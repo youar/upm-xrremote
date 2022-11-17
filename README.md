@@ -26,7 +26,7 @@ We hope the community can use some of the boiler plate in this project to make t
 The steps differ slightly between Android and iOS. If you are on Android, the project has a pre-built .apk in it for you to try. If you are on iOS, you will need to build the Xcode project, and install it on your device. Also, once in Play mode, you will need to connect your device. The following graphic shows where to connect your device to:
 
 <p align="center">
-        <img src="docs/images/unity_editor_console_window.png">
+        <img src="https://user-images.githubusercontent.com/8175726/202572291-ccbc2df5-c336-4374-a7ae-6b437aa7cfa7.png">
 </p>
 <p align="center">
         <em>Select the dropdown in "B" labeled "Editor" and select your device</em>
