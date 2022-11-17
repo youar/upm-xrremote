@@ -2,21 +2,22 @@
 
 ## Who is this project for?
 
-This project is for augmented reality developers who are looking for a convenient way to debug their AR applications, without the length build time required for Unity projects like AR Foundation. Unfortunately, AR Foundation from Unity did not ship with a "remote system", i.e. a way to pass AR session information from a device, to the editor. This was a huge loss for those of us who used [Google's AR Instant Preivew](https://developers.google.com/vr/develop/unity/instant-preview) system.
+This project is for augmented reality developers who are looking for a convenient way to debug their AR applications, without the length build time required for Unity projects like AR Foundation. Unfortunately, AR Foundation from Unity did not ship with a "remote system", i.e. a way to pass AR session information from a device, to the editor.
 
-If you would like to learn more about Unity's plan for some similar system, take a look at some of these links: 
-* https://on.unity.com/Unite2019RoadmapTalk
-* https://forum.unity.com/threads/instant-preview-with-ar-foundation.598246/
-* https://forum.unity.com/threads/ar-remoting-simulation.720575/#post-4868660 
+If you would like to learn more about Unity's option for a similar system, take a look at some of these links: 
+* https://assetstore.unity.com/packages/tools/utilities/ar-foundation-remote-168773
+* https://assetstore.unity.com/packages/tools/utilities/ar-foundation-remote-2-0-201106
 
 ## What are the limitations of this project? 
 
-Currently, this application is only for piping **video** and **tracked pose driver** information from a remote device (a server), to the editor (a client). There are more features in the [ARKit Streamer](https://github.com/asus4/ARKitStreamer) package. However, this project is difficult to set-up, and doesn't utilize the [EditorConnection](https://docs.unity3d.com/ScriptReference/Networking.PlayerConnection.EditorConnection.html), and [PlayerConnection](https://docs.unity3d.com/ScriptReference/Networking.PlayerConnection.PlayerConnection.html) classes from Unity. To be clear, this project does not support: 
+Currently, this application is only for piping **video** and **AR Pose Driver** information from a remote device (a server), to the editor (a client). There are more features in the [ARKit Streamer](https://github.com/asus4/ARKitStreamer) package. However, this project is difficult to set-up, and doesn't utilize the [EditorConnection](https://docs.unity3d.com/ScriptReference/Networking.PlayerConnection.EditorConnection.html), and [PlayerConnection](https://docs.unity3d.com/ScriptReference/Networking.PlayerConnection.PlayerConnection.html) classes from Unity. To be clear, this project currently does not support: 
 
 * Hand Tracking
 * Image Tracking
 * Face Tracking
 * Human Pose Tracking
+
+Though it is not impossible to have these features implemented in the near future
 
 We hope the community can use some of the boiler plate in this project to make these other types possible. Click on each feature to look at its feature request on GitHub. 
 
