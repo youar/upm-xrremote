@@ -164,9 +164,7 @@ namespace XRRemote
                         int length;
                         while ((length = stream.Read(bytes, 0, 4)) != 0) {
                             try { 
-                                var destinationArray = new byte[4];
-                                Array.Copy(bytes, 0, destinationArray, 0, length);
-                                int packetLength = BitConverter.ToInt32(destinationArray, 0);
+                                int packetLength = BitConverter.ToInt32(bytes, 0);
                                 
                                 var incomingData = new byte[packetLength];
                                 int remainder = packetLength;

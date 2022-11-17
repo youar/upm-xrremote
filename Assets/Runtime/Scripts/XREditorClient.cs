@@ -24,6 +24,7 @@
 
 using UnityEngine;
 using UnityEngine.Networking.PlayerConnection;
+using UnityEngine.XR.ARFoundation;
 
 namespace XRRemote
 {
@@ -176,7 +177,7 @@ namespace XRRemote
         }
         private void InitializeXRSession()
         {
-            SendToPlayer(new EditorARKitSessionInitialized());
+            SendToPlayer(new EditorARKitSessionInitialized{value = true});
             readyForNewFrame = true;
         }
 
@@ -259,7 +260,7 @@ namespace XRRemote
                     {
                         Debug.LogErrorFormat(
                             XRRemoteConnectionMessage(
-                                string.Format("TrySetUpXRRemoteVideo Error: defaultMaterial == null")));
+                                "TrySetUpXRRemoteVideo Error: defaultMaterial == null"));
                     }
                     return;
                 }
@@ -274,9 +275,8 @@ namespace XRRemote
                 {
                     Debug.LogErrorFormat(
                         XRRemoteConnectionMessage(
-                            string.Format("TrySetUpXRRemoteVideo Error: remoteVideo == null")));
+                            "TrySetUpXRRemoteVideo Error: remoteVideo == null"));
                 }
-                return;
             }
         }
     #endregion
@@ -285,21 +285,9 @@ namespace XRRemote
         /// When the client responds that the session has been properly initialized. 
         /// </summary>
         /// <param name="messageEventArgs"></param>
-        private void OnARSessionHandShakeAck(MessageEventArgs messageEventArgs)
+        private void OnARSessionHandShakeAck(ARSessionHandShakePacket messageEventArgs)
         {
             isXRPlayerInitialized = true;
-            OnTextMessageRecieved(messageEventArgs);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="messageEventArgs"></param>
-        private void OnTextMessageRecieved(MessageEventArgs messageEventArgs)
-        {
-            string editorTestString = messageEventArgs.data.Deserialize<string>();
-            Debug.LogFormat(
-                XRRemoteConnectionMessage(string.Format("OnTextMessageRecieved Event: {0}", editorTestString))); 
         }
 
 
@@ -317,7 +305,7 @@ namespace XRRemote
         public override void MessageReceived(object obj)
         {
             if (obj is XRRemotePacket) OnXRRemotePacketReceived(obj as XRRemotePacket);
-            if (obj is ServerPingPacket) Debug.Log((obj as ServerPingPacket).value);
+            if (obj is ARSessionHandShakePacket) OnARSessionHandShakeAck(obj as ARSessionHandShakePacket);
         }
     }
 #endif

@@ -53,7 +53,7 @@ namespace XRRemote
 
         public override string ToString()
         {
-            return string.Format("Pose:(p:{0}, r:{1})", position, rotation);
+            return $"Pose:(p:{position}, r:{rotation})";
         }
 
         public static implicit operator Pose(UnityEngine.Pose p)
@@ -65,18 +65,21 @@ namespace XRRemote
             };
         }
 
-        public static implicit operator Pose(ARPoseDriver trackedPoseDriver)
+        public static implicit operator Pose(ARPoseDriver arPoseDriver)
         {
             Pose pose = new Pose();
+            var transform = arPoseDriver.transform;
+            var position1 = transform.position;
             pose.position = new XRRemote.float3(
-                trackedPoseDriver.transform.position.x,
-                trackedPoseDriver.transform.position.y,
-                trackedPoseDriver.transform.position.z);
+                position1.x,
+                position1.y,
+                position1.z);
+            var rotation1 = transform.rotation;
             pose.rotation = new XRRemote.float4(
-                trackedPoseDriver.transform.rotation.x,
-                trackedPoseDriver.transform.rotation.y,
-                trackedPoseDriver.transform.rotation.z,
-                trackedPoseDriver.transform.rotation.w);
+                rotation1.x,
+                rotation1.y,
+                rotation1.z,
+                rotation1.w);
             
             return pose;
         }

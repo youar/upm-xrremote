@@ -53,7 +53,7 @@ namespace XRRemote
         /// device reference to the DEVICE camera
         /// this will send out the frame to
         /// the XREditorClient script to
-        /// recieve. 
+        /// receive. 
         /// </summary>
         public ARCameraManager cameraManager;
 
@@ -85,7 +85,7 @@ namespace XRRemote
         Texture2D texture2D;
 
         /// <summary>
-        /// material with the shader needed to conver the
+        /// material with the shader needed to convert the
         /// YUV420 system over. 
         /// </summary>
         public Material senderMaterial;
@@ -107,7 +107,7 @@ namespace XRRemote
 
         /// <summary>
         /// A "handshake" for when the editor is 
-        /// ready to recieve another frame, false otherwise
+        /// ready to receive another frame, false otherwise
         /// </summary>
         private bool readyForFrame; 
 
@@ -198,9 +198,8 @@ namespace XRRemote
             base.OnDisable();
             if (cameraManager != null)
             {
-                cameraManager.frameReceived -= OnARCameraFrameRecieved;
+                cameraManager.frameReceived -= OnARCameraFrameReceived;
             }
-        //    base.Disconnect();
         }
 
         // Start is called before the first frame update
@@ -426,6 +425,7 @@ namespace XRRemote
             string successMesage = "XRRemoteServer Event: initialized";
             arSystemBarText.text = SessionInfoMessage(XRSessionInfoStates.initialized);
             arSessionInitialized = true;
+            SendToEditor(new ARSessionHandShakePacket{value = true});
         }
 
         private void OnReadyForFrameEvent(XRFrameReadyPacket packet)

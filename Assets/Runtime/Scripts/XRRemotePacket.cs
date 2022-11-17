@@ -23,9 +23,6 @@
 //-------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace XRRemote
@@ -34,6 +31,11 @@ namespace XRRemote
 
     [Serializable]
     public class XRFrameReadyPacket {
+        public bool value;
+    }
+    
+    [Serializable]
+    public class ARSessionHandShakePacket {
         public bool value;
     }
     
@@ -58,7 +60,7 @@ namespace XRRemote
     [Serializable]
     public class CameraFrameEvent : IEquatable<CameraFrameEvent>
     {
-        // public ARLightEstimationData lightEstimationl;
+        // public ARLightEstimationData lightEstimation;
         public long timestampNs;
         public XRRemote.Pose projectionMatrix;
         public XRRemote.Pose displayMatrix;
