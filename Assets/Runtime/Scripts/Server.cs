@@ -40,7 +40,6 @@ namespace XRRemote
         private TcpClient connectedTcpClient;
 
         private readonly object connectionLock = new object();
-        private readonly object tcpLock = new object();
         
         public LogLevel logLevel = LogLevel.MINIMAL;
 

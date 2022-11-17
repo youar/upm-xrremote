@@ -39,12 +39,11 @@ namespace XRRemote
         private TcpClient tcpClient; 
         private ThreadWatcher clientReceiveThread;
         private readonly object connectionLock = new object();
-        private readonly object tcpLock = new object();
         
         public LogLevel logLevel = LogLevel.MINIMAL;
         
         public string IP = "10.0.0.98";
-
+        
         private readonly int byteLimit = 1024;
 
         private Queue<byte[]> messageQueue = new Queue<byte[]>();

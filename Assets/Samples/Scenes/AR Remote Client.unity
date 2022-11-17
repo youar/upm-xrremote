@@ -133,9 +133,9 @@ GameObject:
   m_Component:
   - component: {fileID: 283682595}
   - component: {fileID: 283682591}
-  - component: {fileID: 283682594}
   - component: {fileID: 283682593}
   - component: {fileID: 283682592}
+  - component: {fileID: 283682594}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: MainCamera
@@ -226,15 +226,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 283682590}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a2a9c34df4095f47b9ca8f975175f5b, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e3c44306fb1e439a9f18b2212b8ab70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Device: 0
-  m_PoseSource: 6
-  m_PoseProviderComponent: {fileID: 0}
-  m_TrackingType: 0
-  m_UpdateType: 0
-  m_UseRelativeTransform: 1
 --- !u!4 &283682595
 Transform:
   m_ObjectHideFlags: 0
@@ -386,7 +380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logLevel: 2
-  IP: 192.168.0.136
+  IP: 192.168.0.
   _connectionState: 0
   xrRemoteTrackingState: 0
 --- !u!4 &1690588872

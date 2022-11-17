@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logLevel: 1
+  IP: 192.168.0.
+  _connectionState: 0
   xrRemoteTrackingState: 0
 --- !u!114 &1797568351400850950
 MonoBehaviour:
