@@ -42,6 +42,17 @@ Here is the quick start method:
 
 * Drop the `XR Remote` folder into your project at `Assets/XR Remote`
 * Make sure you are on build platform Android
+* Install `XR Remote` as a `UPM Package`
+	* Open Package Manager window at "Window/Package Manager"
+	* Select "Add package from git URL..." from the drop-down menu
+	* Install from `ssh://git@github.com/youar/upm-xrremote.git?path=/Assets/`
+
+<p align="left">
+        <img src="https://user-images.githubusercontent.com/8175726/202574695-af00b094-efee-44f6-84e4-d41e344fe28f.png">
+</p>
+<p align="left">
+        <img src="https://user-images.githubusercontent.com/8175726/202574718-0f370959-d60c-4904-8bd9-6f949ca7824f.png">
+</p>
 * Plug in an Android device
 * Make sure you have a `Main Camera` in your scene, with a `Tracked Pose Driver`, and `AR Camera Manager`
 * Drag the `XR Remote Connection` prefab into your scene, (`Assets/XR Remote/XR Remote Connection.prefab`)
