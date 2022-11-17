@@ -38,7 +38,7 @@ namespace XRRemote
         private TcpClient tcpClient; 
         private Thread clientReceiveThread;
         private readonly object connectionLock = new object();
-        private readonly object tcpLock = new object();
+    //    private readonly object tcpLock = new object();
         
         public LogLevel logLevel = LogLevel.MINIMAL;
         
@@ -89,10 +89,12 @@ namespace XRRemote
             if (connectionState == ConnectionState.CONNECTED && LastConnectionState == ConnectionState.DISCONNECTED)
             {
                 OnConnection();
+                LastConnectionState = ConnectionState.CONNECTED;
             }
             if (connectionState == ConnectionState.DISCONNECTED && LastConnectionState == ConnectionState.CONNECTED)
             {
                 OnDisconnection();
+                LastConnectionState = ConnectionState.DISCONNECTED;
             }
             
             lock (messageQueue) {
@@ -130,31 +132,30 @@ namespace XRRemote
 
         private void ListenForData() {
             try {
-                lock (tcpLock) {
-                    tcpClient = new TcpClient(IP, 8053);
-                }
+                tcpClient = new TcpClient(IP, 8053);
+               
                 connectionState = ConnectionState.CONNECTED;
 
                 Byte[] bytes = new Byte[byteLimit];
                 while (true) {
-                    lock (tcpLock) {
-                        if(!tcpClient.Connected) continue;
-                        using (NetworkStream stream = tcpClient.GetStream()) {
-                            int length;
-                            while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
-                            {
-                                var incomingData = new byte[length];
-                                Array.Copy(bytes, 0, incomingData, 0, length);
+              
+                    if(!tcpClient.Connected) continue;
+                    using (NetworkStream stream = tcpClient.GetStream()) {
+                        int length;
+                        while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
+                        {
+                            var incomingData = new byte[length];
+                            Array.Copy(bytes, 0, incomingData, 0, length);
 
-                                lock (messageQueue) {
-                                    messageQueue.Enqueue(incomingData);
-                                }
-                                
-                                string serverMessage = Encoding.ASCII.GetString(incomingData);
-                                Debug.Log("server message received as: " + serverMessage);
+                            lock (messageQueue) {
+                                messageQueue.Enqueue(incomingData);
                             }
+                            
+                            string serverMessage = Encoding.ASCII.GetString(incomingData);
+                            Debug.Log("server message received as: " + serverMessage);
                         }
                     }
+                  
                 }
             }
             catch (SocketException socketException) {
@@ -189,14 +190,14 @@ namespace XRRemote
 
         public void DisconnectAll()
         {
-            lock(tcpLock) {
-                if (connectionState == ConnectionState.DISCONNECTED) return;
-                if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: Closing Connection"));
-                connectionState = ConnectionState.DISCONNECTED;
+        
+            if (connectionState == ConnectionState.DISCONNECTED) return;
+            if (log) Debug.Log(FormatConnectionMessage($"DISCONNECTION_EVENT reason: Closing Connection"));
+            connectionState = ConnectionState.DISCONNECTED;
 #if UNITY_2017_1_OR_NEWER
-                tcpClient?.Close();
+            tcpClient?.Close();
 #endif
-            }
+            
         }
 
         public bool Send(object serializeableObject)

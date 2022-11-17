@@ -39,7 +39,7 @@ namespace XRRemote
         private TcpClient connectedTcpClient;
 
         private readonly object connectionLock = new object();
-        private readonly object tcpLock = new object();
+      //  private readonly object tcpLock = new object();
         
         public LogLevel logLevel = LogLevel.MINIMAL;
 
@@ -117,15 +117,17 @@ namespace XRRemote
         }
 
         private void Update() {
-            lock(tcpLock) {
-                if (connectionState == ConnectionState.CONNECTED && LastConnectionState == ConnectionState.DISCONNECTED) {
-                    OnConnection();
-                }
-
-                if (connectionState == ConnectionState.DISCONNECTED && LastConnectionState == ConnectionState.CONNECTED) {
-                    OnDisconnection();
-                }
+    
+            if (connectionState == ConnectionState.CONNECTED && LastConnectionState == ConnectionState.DISCONNECTED) {
+                OnConnection();
+                LastConnectionState = ConnectionState.CONNECTED;
             }
+
+            if (connectionState == ConnectionState.DISCONNECTED && LastConnectionState == ConnectionState.CONNECTED) {
+                OnDisconnection();
+                LastConnectionState = ConnectionState.DISCONNECTED;
+            }
+           
             
             lock (messageQueue) {
                 while (messageQueue.Count > 0) {
@@ -204,11 +206,11 @@ namespace XRRemote
         
         private void ListenForIncommingRequests () {
             try {
-                lock (tcpLock) {
-                    tcpServer = TcpListener.Create(8053);
-                    tcpServer.Server.ReceiveTimeout = 4000;
-                    tcpServer.Start();
-                }
+        
+                tcpServer = TcpListener.Create(8053);
+                tcpServer.Server.ReceiveTimeout = 4000;
+                tcpServer.Start();
+            
 		    
                 Debug.Log("Server is listening");
                 connectionState = ConnectionState.CONNECTED;
@@ -217,23 +219,20 @@ namespace XRRemote
                 
                 while (true)
                 {
-                    lock (tcpLock) {
-                        if (!tcpServer.Pending()) continue;
-                        using (connectedTcpClient = tcpServer.AcceptTcpClient()) {
-                            using (NetworkStream stream = connectedTcpClient.GetStream()) {
-                                if (!stream.DataAvailable) continue;
-                                int length;
-                                while ((length = stream.Read(bytes, 0, bytes.Length)) != 0) {
-                                    byte[] incomingData = new byte[length];
-                                    Array.Copy(bytes, 0, incomingData, 0, length);
+                    if (!tcpServer.Pending()) continue;
+                    using (connectedTcpClient = tcpServer.AcceptTcpClient()) {
+                        using (NetworkStream stream = connectedTcpClient.GetStream()) {
+                            int length;
+                            while ((length = stream.Read(bytes, 0, bytes.Length)) != 0) {
+                                byte[] incomingData = new byte[length];
+                                Array.Copy(bytes, 0, incomingData, 0, length);
 
-                                    lock (messageQueue) {
-                                        messageQueue.Enqueue(incomingData);
-                                    }
-
-                                    string clientMessage = Encoding.ASCII.GetString(incomingData);
-                                    Debug.Log("client message received as: " + clientMessage);
+                                lock (messageQueue) {
+                                    messageQueue.Enqueue(incomingData);
                                 }
+
+                                string clientMessage = Encoding.ASCII.GetString(incomingData);
+                                Debug.Log("client message received as: " + clientMessage);
                             }
                         }
                     }

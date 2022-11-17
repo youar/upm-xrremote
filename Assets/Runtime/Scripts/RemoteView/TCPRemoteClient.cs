@@ -10,7 +10,13 @@ public class TCPRemoteClient : MonoBehaviour {
 	
 	private TcpClient socketConnection; 	
 	private Thread clientReceiveThread;
+	private byte[] message;
 
+	public delegate void OnMessageRecieved(byte[] bytes);
+
+	public OnMessageRecieved OnMessageRecievedEvent;
+	private bool _reieved = false;
+	
 	public string IP = "10.0.0.98";
 	void Start () {
 		ConnectToTcpServer();     
@@ -20,7 +26,13 @@ public class TCPRemoteClient : MonoBehaviour {
 		if (Input.GetMouseButtonDown(0)) {  
 			Debug.Log("tap!");
 			SendMessage();         
-		}     
+		}
+
+		if (_reieved)
+		{
+			_reieved = false;
+			
+		}
 	}  	
 
 	
@@ -36,6 +48,7 @@ public class TCPRemoteClient : MonoBehaviour {
 	}  	
 
 	
+	
 	private void ListenForData() {
 		try
 		{
@@ -44,6 +57,8 @@ public class TCPRemoteClient : MonoBehaviour {
 			while (true)
 			{
 
+				Debug.Log("delete me : connected? "+socketConnection.Connected.ToString());
+				
 				using (NetworkStream stream = socketConnection.GetStream())
 				{
 					int length;
@@ -52,9 +67,16 @@ public class TCPRemoteClient : MonoBehaviour {
 					{
 						var incommingData = new byte[length];
 						Array.Copy(bytes, 0, incommingData, 0, length);
-
+#if true
 						string serverMessage = Encoding.ASCII.GetString(incommingData);
 						Debug.Log("server message received as: " + serverMessage);
+#else
+						lock (message)
+						{
+							message = incommingData;
+							_reieved = true;
+						}
+#endif
 					}
 				}
 			}
@@ -68,7 +90,11 @@ public class TCPRemoteClient : MonoBehaviour {
 			Debug.LogException(e);
 		}
 	}  	
-	
+	/// <summary>
+	/// ///////////////// DO it
+	/// </summary>
+	///
+	///
 	
 	private void SendMessage() {         
 		if (socketConnection == null) {             

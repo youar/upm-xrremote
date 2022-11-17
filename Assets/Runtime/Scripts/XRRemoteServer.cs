@@ -200,7 +200,7 @@ namespace XRRemote
             {
                 cameraManager.frameReceived -= OnARCameraFrameRecieved;
             }
-            base.Disconnect();
+        //    base.Disconnect();
         }
 
         // Start is called before the first frame update
