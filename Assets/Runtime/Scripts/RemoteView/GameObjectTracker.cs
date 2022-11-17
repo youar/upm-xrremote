@@ -2,8 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebugScript : MonoBehaviour
+public class GameObjectTracker : MonoBehaviour
 {
+    public Pose pose;
+
+    public static GameObjectTracker Instance;
+
+    void Awake()
+    {
+        Instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -13,7 +21,7 @@ public class DebugScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("position :"+transform.position);
-        Debug.Log("rotation :"+transform.rotation);
+        pose = new Pose(transform.position, transform.rotation);
+        
     }
 }

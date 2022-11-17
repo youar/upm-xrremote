@@ -95,11 +95,22 @@ public class TCPRemoteServer : MonoBehaviour {
 
 			NetworkStream stream = connectedTcpClient.GetStream(); 			
 			if (stream.CanWrite) {                 
-				string serverMessage = "This is a message from your server."; 			
+				string serverMessage = String.Empty; 			
 
-				byte[] serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage); 				
+#if true
+				byte[] serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage);
+			//	stream.Write(serverMessageAsByteArray, 0, serverMessageAsByteArray.Length);       
+				stream.Write(new byte[0], 0, 0);//serverMessageAsByteArray.Length);               
 
-				stream.Write(serverMessageAsByteArray, 0, serverMessageAsByteArray.Length);               
+#else
+				if (GameObjectTracker.Instance != null)
+				{
+					TCPPacket packet = new TCPPacket(GameObjectTracker.Instance.pose);
+					byte[] result = packet.AsByte();
+					stream.Write(result, 0, result.Length);
+				}
+
+				#endif
 				Debug.Log("Server sent his message - should be received by client");           
 			}       
 		} 		
