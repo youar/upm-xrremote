@@ -32,7 +32,7 @@ labels:
         
     # _Quality Assurance is need to make the bug/confirmed_
   - name: bug
-    color: '#CC0000'
+    color: '#CC0000' 
     description: |
         an issue with the system
         
