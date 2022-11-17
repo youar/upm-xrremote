@@ -123,49 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &172321643
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 172321645}
-  - component: {fileID: 172321644}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &172321644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172321643}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7383a9acae2cd8949af0d1550b28b947, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &172321645
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172321643}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &348896845
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,8 +369,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f4ec1baf4ba40bfb9473ac9610bf7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logLevel: 2
-  lastConnected: 0
+  logLevel: 1
+  _connectionState: 0
   cameraManager: {fileID: 1864567044}
   arPoseDriver: {fileID: 1864567045}
   connectionText: {fileID: 1169207675}
@@ -421,8 +378,8 @@ MonoBehaviour:
   testConnectionButton: {fileID: 465525295}
   renderTexture: {fileID: 0}
   senderMaterial: {fileID: 0}
-  renderTextureWidth: 960
-  renderTextureHeight: 540
+  renderTextureWidth: 640
+  renderTextureHeight: 311
   textureExtractor: {fileID: 0}
 --- !u!4 &524972719
 Transform:

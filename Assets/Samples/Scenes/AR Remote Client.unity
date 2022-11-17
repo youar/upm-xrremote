@@ -387,7 +387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logLevel: 2
   IP: 192.168.0.136
-  lastConnected: 0
+  _connectionState: 0
   xrRemoteTrackingState: 0
 --- !u!4 &1690588872
 Transform:

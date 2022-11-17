@@ -155,8 +155,9 @@ namespace XRRemote
 
         }
 
-        private void Update()
+        private void Update() 
         {
+            base.Update();
             if (readyForNewFrame)
             {
                 ReadyForFrame();
@@ -187,10 +188,10 @@ namespace XRRemote
         {
             readyForNewFrame = false; 
 
-            if (DebugFlags.displayXRRemoteConnectionStats)
-            {
-                Debug.LogFormat(XRRemoteConnectionMessage("OnXRRemotePacketReceived"));
-            }
+            //if (DebugFlags.displayXRRemoteConnectionStats)
+            //{
+            //    Debug.LogFormat(XRRemoteConnectionMessage("OnXRRemotePacketReceived"));
+            //}
 
             xrRemotePacketReceived = data;
             if (xrRemotePacketReceived == null)
@@ -316,6 +317,7 @@ namespace XRRemote
         public override void MessageReceived(object obj)
         {
             if (obj is XRRemotePacket) OnXRRemotePacketReceived(obj as XRRemotePacket);
+            if (obj is ServerPingPacket) Debug.Log((obj as ServerPingPacket).value);
         }
     }
 #endif

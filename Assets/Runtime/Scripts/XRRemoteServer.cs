@@ -240,7 +240,7 @@ namespace XRRemote
 
         //    base.RegisterMethod(ConnectionMessageIds.fromEditorARKitSessionMsgId, OnARKitSessionInitializationMessage);
         //    base.RegisterMethod(ConnectionMessageIds.readyForFrameEventMsgId, OnReadyForFrameEvent);
-        //    base.RegisterMethod(ConnectionMessageIds.TestingIds.kMsgSendEditorToPlayer, OnTextMessageRecieved);
+        //    base.RegisterMethod(ConnectionMessageIds.TestingIds.kMsgSendEditorToPlayer, OnTextMessageReceived);
         //}
 
         #region SCENE_SETUP
@@ -334,18 +334,18 @@ namespace XRRemote
                 }
             }
 
-            manager.frameReceived += OnARCameraFrameRecieved;
+            manager.frameReceived += OnARCameraFrameReceived;
             return true;
 
         }
         #endregion
 
 
-        private void OnARCameraFrameRecieved(ARCameraFrameEventArgs obj)
+        private void OnARCameraFrameReceived(ARCameraFrameEventArgs obj)
         {
             if (connectionState == ConnectionState.DISCONNECTED) return;
 
-            if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameRecieved"));
+            //if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived"));
 
             if (!arSessionInitialized)
             {
@@ -353,7 +353,7 @@ namespace XRRemote
                 {
                     Debug.LogFormat(
                         ConnectionMessage(
-                            "OnARCameraFrameRecieved Event: ARSession not initialized"));
+                            "OnARCameraFrameReceived Event: ARSession not initialized"));
                 }
                 return;
             }
@@ -380,7 +380,7 @@ namespace XRRemote
                 {
                     Debug.LogWarningFormat(
                         ConnectionMessage(
-                            string.Format("OnARCameraFrameRecieved Event: issue composite420")));
+                            string.Format("OnARCameraFrameReceived Event: issue composite420")));
                 }
                 return;
             }
@@ -393,7 +393,7 @@ namespace XRRemote
                 {
                     Debug.LogWarningFormat(
                         ConnectionMessage(
-                            string.Format("OnARCameraFrameRecieved Event: issue TryGetCPUTextureFromTexture")));
+                            string.Format("OnARCameraFrameReceived Event: issue TryGetCPUTextureFromTexture")));
                 }
                 return;
             }
@@ -443,14 +443,14 @@ namespace XRRemote
         {
             //SendToEditor( ConnectionMessageIds.TestingIds.kMsgSendPlayerToEditor, message);
         }
-        private void OnTextMessageRecieved(MessageEventArgs messageEventArgs)
+        private void OnTextMessageReceived(MessageEventArgs messageEventArgs)
         {
             try
             {
                 string editorTestString = messageEventArgs.data.Deserialize<string>();
                 Debug.LogFormat(
                     ConnectionMessage(
-                        string.Format("OnTextMessageRecieved Event: {0}", editorTestString)));
+                        string.Format("OnTextMessageReceived Event: {0}", editorTestString)));
             }
             catch(Exception e)
             {
