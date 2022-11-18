@@ -40,7 +40,6 @@ Before using a device **Please, make sure that you have Developer Mode enabled, 
 
 Here is the quick start method: 
 
-* Drop the `XR Remote` folder into your project at `Assets/XR Remote`
 * Make sure you are on build platform Android
 * Install `XR Remote` as a `UPM Package`
 	* Open Package Manager window at "Window/Package Manager"
@@ -53,9 +52,12 @@ Here is the quick start method:
 <p align="left">
         <img src="https://user-images.githubusercontent.com/8175726/202574718-0f370959-d60c-4904-8bd9-6f949ca7824f.png">
 </p>
-* Plug in an Android device
-* Make sure you have a `Main Camera` in your scene, with a `Tracked Pose Driver`, and `AR Camera Manager`
-* Drag the `XR Remote Connection` prefab into your scene, (`Assets/XR Remote/XR Remote Connection.prefab`)
+
+* Make sure you have "ARFoundation ver 4.1.12" installed in your project
+* Make sure you have "AR Session" and "AR Session Origin" in your scene
+* Make sure "AR Pose Driver" is attached as a component on the AR Camera ("AR Session Origin > AR Camera")
+* Drag the `XR Remote Connection` prefab into your scene, (`Packages/upm-xrremote/Runtime/Prefabs`)
+
 * Hit Play
 * Connect the device to the Editor by going to the Console window, and selecting the Android device from the dropdown. 
 
