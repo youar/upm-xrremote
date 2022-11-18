@@ -43,7 +43,7 @@ Here is the quick start method:
 * Install `XR Remote` as a `UPM Package`
 	* Open Package Manager window at "Window/Package Manager"
 	* Select "Add package from git URL..." from the drop-down menu
-	* Install from `ssh://git@github.com/youar/upm-xrremote.git?path=/Assets/`
+	* Install from `ssh://git@github.com/youar/upm-xrremote.git?path=/Assets/` ([More Info](https://docs.unity3d.com/Manual/upm-git.html#syntax))
 
 <p align="left">
         <img src="https://user-images.githubusercontent.com/8175726/202574695-af00b094-efee-44f6-84e4-d41e344fe28f.png">
@@ -75,7 +75,7 @@ After the application is installed on your iOS device, follow these steps:
 * Install `XR Remote` as a `UPM Package`
 	* Open Package Manager window at "Window/Package Manager"
 	* Select "Add package from git URL..." from the drop-down menu
-	* Install from `ssh://git@github.com/youar/upm-xrremote.git?path=/Assets/`
+	* Install from `ssh://git@github.com/youar/upm-xrremote.git?path=/Assets/` ([More Info](https://docs.unity3d.com/Manual/upm-git.html#syntax))
 
 <p align="left">
         <img src="https://user-images.githubusercontent.com/8175726/202574695-af00b094-efee-44f6-84e4-d41e344fe28f.png">
