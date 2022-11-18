@@ -146,3 +146,10 @@ In order to add a feature, please expand the `Assets/XR Remote/Scripts/XRRemoteP
 * Upgrade to ARKit XR Plugin 3.0.1
 * Upgrade to ARCore XR Plugin 3.0.1
 * Upgrade to Unity 2019.2.18f1
+
+11/17/2022
+* Upgrade to AR Foundation 4.1.12
+* Upgrade to ARKit XR Plugin 4.1.12
+* Upgrade to ARCore XR Plugin 4.1.12
+* Upgrade to Unity 2020.3.38f1
+* Referencing `AR Pose Driver` instead of `Tracked Pose Driver`
