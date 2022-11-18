@@ -4,33 +4,27 @@
 
 This project is for augmented reality developers who are looking for a convenient way to debug their AR applications, without the length build time required for Unity projects like AR Foundation. Unfortunately, AR Foundation from Unity did not ship with a "remote system", i.e. a way to pass AR session information from a device, to the editor.
 
-If you would like to learn more about Unity's option for a similar system, take a look at some of these links: 
+If you would like to learn more about Unity's current option for a similar system, take a look at some of these links:
 * https://assetstore.unity.com/packages/tools/utilities/ar-foundation-remote-168773
 * https://assetstore.unity.com/packages/tools/utilities/ar-foundation-remote-2-0-201106
 
 ## What are the limitations of this project? 
 
-Currently, this application is only for piping **video** and **AR Pose Driver** information from a remote device (a server), to the editor (a client). There are more features in the [ARKit Streamer](https://github.com/asus4/ARKitStreamer) package. However, this project is difficult to set-up, and doesn't utilize the [EditorConnection](https://docs.unity3d.com/ScriptReference/Networking.PlayerConnection.EditorConnection.html), and [PlayerConnection](https://docs.unity3d.com/ScriptReference/Networking.PlayerConnection.PlayerConnection.html) classes from Unity. To be clear, this project currently does not support: 
+Currently, this application is only for piping **video** and **Tracked Pose Driver** information from a remote device (a server), to the editor (a client). There are more features in the [ARKit Streamer](https://github.com/asus4/ARKitStreamer) package. However, this project is difficult to set-up. To be clear, this project currently does not support:
 
 * Hand Tracking
 * Image Tracking
 * Face Tracking
 * Human Pose Tracking
+* Plane Detection
 
 Though it is not impossible to have these features implemented in the near future
 
-We hope the community can use some of the boiler plate in this project to make these other types possible. Click on each feature to look at its feature request on GitHub. 
+We hope the community can use some of the boiler plate in this project to make these other types possible. Click on each feature to look at its feature request on GitHub.
 
 ## How do I get started? 
 
 The steps differ slightly between Android and iOS. If you are on Android, the project has a pre-built .apk in it for you to try. If you are on iOS, you will need to build the Xcode project, and install it on your device. Also, once in Play mode, you will need to connect your device. The following graphic shows where to connect your device to:
-
-<p align="center">
-        <img src="https://user-images.githubusercontent.com/8175726/202572291-ccbc2df5-c336-4374-a7ae-6b437aa7cfa7.png">
-</p>
-<p align="center">
-        <em>Select the dropdown in "B" labeled "Editor" and select your device</em>
-</p>
 
 You can find a more detailed explanation [here](https://docs.unity3d.com/Manual/Console.html).
 
@@ -60,16 +54,16 @@ Here is the quick start method:
 
 * Make sure you have "ARFoundation ver 4.1.12" installed in your project
 * Make sure you have "AR Session" and "AR Session Origin" in your scene
-* Make sure "AR Pose Driver" is attached as a component on the AR Camera ("AR Session Origin > AR Camera")
+* Make sure `Tracked Pose Driver` is attached as a component on the AR Camera ("AR Session Origin > AR Camera")
 * Drag the `XR Remote Connection` prefab into your scene, (`Packages/upm-xrremote/Runtime/Prefabs`)
 * Open your `upm-xrremote` application on your device
-* Enter your mobile device's IP address in `XR Editor Client` Script on the `XR Remote Connection` GameObject
+* Enter your mobile device's IP address in `XR Editor Client` component attached to the `XR Remote Connection` GameObject
 * Hit Play in Unity Editor
 * Press GUI button "Start XR Remote Session" to connect
 
-If you are just in the XR Remote project, itself, you can bypass this and just plug in an Android device, on the Android platform, and open the AR Remote Client scene (`Assets/XR Remote/Scenes/AR Remote Client`), and hit Play. In a moment, the application should install and launch on your phone.
-
-You can also build your own `XR Remote` APK by importing the Sample scenes into the Asset folder and build the `AR Remote Server` scene
+You can get the `upm-xrremote` apk by either:
+* manually build your own `XR Remote` APK by importing the Sample scenes into the Asset folder and build the `AR Remote Server` scene
+* downloading and installing the pre-built apk at found in the [release](https://github.com/youar/upm-xrremote/releases)
 
 ##### - iOS -
 
@@ -116,16 +110,14 @@ In order to add a feature, please expand the `Assets/Runtime/Scripts/XRRemotePac
 
 ### How to Build
 
-**WITHOUT DEVELOPMENT MODE ENABLED THIS WILL NOT CONNECT TO UNITY**
-
 * Select your desired platform
-* import the Sample scenes from the `upm-xrremte` package into the Asset folder
+* import the Sample scenes from the `upm-xrremote` package into the Asset folder
 * Build the base scene `AR Remote Server` from `Assets/Samples/upm-xrremte/[upm version]/AR Remote Server`
 * Select the following options in Build Settings: 
 	* Development Build
-	* Run in Xcode as "Debug" (if applicable)
-	* Target API Level at least 31 (if on Android)
-	* 64 bit architecture `Project Settings/Player/Other Settings/Configuration/Scripting backend` -> IL2CPP
+	* (iOS) Run in Xcode as "Debug"
+	* (Android) Target API Level at least 30
+	* (Android) 64 bit architecture `Project Settings/Player/Other Settings/Configuration/Scripting backend` -> IL2CPP
 * Hit Build
 * Sign the application with your personal key/team (if applicable)
 
@@ -138,6 +130,13 @@ In order to add a feature, please expand the `Assets/Runtime/Scripts/XRRemotePac
 * GitHub issues #6 
 
 ## Change Log:
+11/15/2020
+* Upgrade to AR Foundation 4.1.12
+* Upgrade to ARKit XR Plugin 4.1.12
+* Upgrade to ARCore XR Plugin 4.1.12
+* Upgrade to Unity 2020.3.36f1
+* Converted from use of PlayerConnection to TCP connection
+
 4/19/2020
 * Fixed Texture destroy issue causing a memory leak.
 
