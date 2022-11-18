@@ -112,7 +112,7 @@ There is an over all logging system that operates on the premise of "VERBOSE", "
 
 A feature which uses the AR Foundation SDK will need to be built into the XR Remote application that lives on the device (server). That means that any feature change will need to be built into the application which is providing the information to the Editor (client). The process for doing that sounds lengthy, but doing it on editor first, can save a lot of time. 
 
-In order to add a feature, please expand the `Assets/XR Remote/Scripts/XRRemotePacket.cs` class with additional data types that can be appropriately deserialized. 
+In order to add a feature, please expand the `Assets/Runtime/Scripts/XRRemotePacket.cs` class with additional data types that can be appropriately deserialized. 
 
 ### How to Build
 
