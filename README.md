@@ -40,6 +40,11 @@ Before using a device **Please, make sure that you have Developer Mode enabled, 
 
 Here is the quick start method: 
 
+### Android Device
+* Make sure you are at least `Android Version 12` (can be found here "Settings/About phone/Software information/Android version")
+* Install `upm-xrremote.apk` from https://github.com/youar/upm-xrremote/releases
+
+### Unity Editor
 * Make sure you are on build platform Android
 * Install `XR Remote` as a `UPM Package`
 	* Open Package Manager window at "Window/Package Manager"
@@ -57,11 +62,14 @@ Here is the quick start method:
 * Make sure you have "AR Session" and "AR Session Origin" in your scene
 * Make sure "AR Pose Driver" is attached as a component on the AR Camera ("AR Session Origin > AR Camera")
 * Drag the `XR Remote Connection` prefab into your scene, (`Packages/upm-xrremote/Runtime/Prefabs`)
-
-* Hit Play
-* Connect the device to the Editor by going to the Console window, and selecting the Android device from the dropdown. 
+* Open your `upm-xrremote` application on your device
+* Enter your mobile device's IP address in `XR Editor Client` Script on the `XR Remote Connection` GameObject
+* Hit Play in Unity Editor
+* Press GUI button "Start XR Remote Session" to connect
 
 If you are just in the XR Remote project, itself, you can bypass this and just plug in an Android device, on the Android platform, and open the AR Remote Client scene (`Assets/XR Remote/Scenes/AR Remote Client`), and hit Play. In a moment, the application should install and launch on your phone.
+
+You can also build your own `XR Remote` APK by importing the Sample scenes into the Asset folder and build the `AR Remote Server` scene
 
 ##### - iOS -
 
@@ -69,13 +77,27 @@ iOS will require you to build out the Xcode projects for the scene `Assets/XR Re
 
 After the application is installed on your iOS device, follow these steps: 
 
-* Drop the `XR Remote` folder into your project at `Assets/XR Remote`
 * Make sure you are on build platform iOS
-* Make sure you have a `Main Camera` in your scene, with a `Tracked Pose Driver`, and `AR Camera Manager`
-* Drag the `XR Remote Connection` prefab into your scene, (`Assets/XR Remote/XR Remote Connection.prefab`)
-* Start the XRRemote application built from the above.
-* Hit Play
-* Connect the device to the Editor by going to the Console window, and selecting the iOS device from the dropdown. 
+* Install `XR Remote` as a `UPM Package`
+	* Open Package Manager window at "Window/Package Manager"
+	* Select "Add package from git URL..." from the drop-down menu
+	* Install from `ssh://git@github.com/youar/upm-xrremote.git?path=/Assets/`
+
+<p align="left">
+        <img src="https://user-images.githubusercontent.com/8175726/202574695-af00b094-efee-44f6-84e4-d41e344fe28f.png">
+</p>
+<p align="left">
+        <img src="https://user-images.githubusercontent.com/8175726/202574718-0f370959-d60c-4904-8bd9-6f949ca7824f.png">
+</p>
+
+* Make sure you have "ARFoundation ver 4.1.12" installed in your project
+* Make sure you have "AR Session" and "AR Session Origin" in your scene
+* Make sure "AR Pose Driver" is attached as a component on the AR Camera ("AR Session Origin > AR Camera")
+* Drag the `XR Remote Connection` prefab into your scene, (`Packages/upm-xrremote/Runtime/Prefabs`)
+* Open your `upm-xrremote` application on your device
+* Enter your mobile device's IP address in `XR Editor Client` Script on the `XR Remote Connection` GameObject
+* Hit Play in Unity Editor
+* Press GUI button "Start XR Remote Session" to connect
 
 <a name="building_xrremote"></a>
 ## Building XR Remote
@@ -97,10 +119,13 @@ In order to add a feature, please expand the `Assets/XR Remote/Scripts/XRRemoteP
 **WITHOUT DEVELOPMENT MODE ENABLED THIS WILL NOT CONNECT TO UNITY**
 
 * Select your desired platform
-* Build the base scene `Assets/XR Remote/Scenes/AR Remote Server`
+* import the Sample scenes from the `upm-xrremte` package into the Asset folder
+* Build the base scene `AR Remote Server` from `Assets/Samples/upm-xrremte/[upm version]/AR Remote Server`
 * Select the following options in Build Settings: 
 	* Development Build
 	* Run in Xcode as "Debug" (if applicable)
+	* Target API Level at least 31 (if on Android)
+	* 64 bit architecture `Project Settings/Player/Other Settings/Configuration/Scripting backend` -> IL2CPP
 * Hit Build
 * Sign the application with your personal key/team (if applicable)
 
