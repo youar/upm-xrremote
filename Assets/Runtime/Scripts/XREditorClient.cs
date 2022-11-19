@@ -232,7 +232,7 @@ namespace XRRemote
                 {
                     Debug.LogErrorFormat(
                         XRRemoteConnectionMessage(
-                            string.Format("TrySetupTrackedPoseDriver Event: null aRPoseDriver")));
+                            string.Format("TrySetupTrackedPoseDriver Event: null TrackedPoseDriver")));
                     return;
                 }
             }
