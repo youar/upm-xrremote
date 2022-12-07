@@ -247,6 +247,14 @@ namespace XRRemote
 
         private void TrySetUpXRRemoteVideo()
         {
+            if (Camera.main == null)
+            {
+                Debug.LogErrorFormat(
+                    XRRemoteConnectionMessage(
+                        "TrySetUpXRRemoteVideo Error: AR Camera not set as MainCamera"));
+                return;
+            }
+            
             remoteVideo = Camera.main.GetComponent<XRRemoteVideo>();
             if (remoteVideo == null)
             {
