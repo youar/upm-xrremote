@@ -100,7 +100,7 @@ Building XR Remote should be fairly easy, but there are a couple things to keep 
 
 #### Logging
 
-There is an over all logging system that operates on the premise of "VERBOSE", "MINIMAL", and "QUITE" amounts of logging. This is due to the fact that an attached device will cause 2 streams of data to come into the Unity editor window, and this can sometimes be unruly to deal with. 
+There is an over all logging system that operates on the premise of "VERBOSE", "MINIMAL", and "QUIET" amounts of logging. This is due to the fact that an attached device will cause 2 streams of data to come into the Unity editor window, and this can sometimes be unruly to deal with. 
 
 #### Features
 
