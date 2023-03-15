@@ -276,7 +276,7 @@ MonoBehaviour:
   logLevel: 1
   _connectionState: 0
   cameraManager: {fileID: 1864567044}
-  arPoseDriver: {fileID: 0}
+  arPoseDriver: {fileID: 1864567045}
   connectionText: {fileID: 1169207675}
   arSystemBarText: {fileID: 998094292}
   testConnectionButton: {fileID: 465525295}

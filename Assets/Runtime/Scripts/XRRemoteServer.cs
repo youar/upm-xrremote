@@ -287,7 +287,7 @@ namespace XRRemote
                 {
                     Debug.LogErrorFormat(
                         ConnectionMessage(
-                            string.Format("Event: RegisterPlayerMethods, trackedposedriver not foudn")));
+                            string.Format("Event: RegisterPlayerMethods, trackedposedriver not found")));
                 }
                 return false;
             }
