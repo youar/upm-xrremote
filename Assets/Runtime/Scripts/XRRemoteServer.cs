@@ -121,6 +121,11 @@ namespace XRRemote
         /// </summary>
         bool arSessionInitialized = false;
 
+        /// <summary>
+        /// Reference to AR Plane Manager
+        /// </summary>
+        ARPlaneManager arPlaneManager;
+
 
         private string ConnectionMessage(string baseMessage)
         {
@@ -212,6 +217,7 @@ namespace XRRemote
             if (!SetUpTextureSystem(renderTextureWidth, renderTextureHeight, defaultMaterial)) return;
             if (!SetUpCameraManager(this.cameraManager)) return;
             if (!SetUpTrackedPoseDriver(this.arPoseDriver)) return;
+            if (!SetUpPlaneManager()) return;
 
 #if UNITY_ANDROID
             //
@@ -337,6 +343,25 @@ namespace XRRemote
             return true;
 
         }
+
+        private bool SetUpPlaneManager()
+        {
+            if (arPlaneManager != null) return true;
+
+            arPlaneManager = FindObjectOfType<ARPlaneManager>();
+            if (arPlaneManager == null)
+            {
+                if (log)
+                {
+                    Debug.LogErrorFormat(
+                        ConnectionMessage(
+                            string.Format("Event: RegisterPlayerMethods, ARPlaneManager not found")));
+                }
+                return false;
+            }
+
+            return true; 
+        }
         #endregion
 
 
@@ -370,6 +395,20 @@ namespace XRRemote
             xrRemotePacket.trackedPose = pose;
 
             xrRemotePacket.face = new XRRemote.FaceInfo();
+
+            if (arPlaneManager != null) {
+                int planeCount = arPlaneManager.trackables.count;
+                xrRemotePacket.centerPoints = new float3[planeCount];
+
+                int i = 0;
+                foreach (ARPlane aRPlane in arPlaneManager.trackables) {
+                    xrRemotePacket.centerPoints[i] = new float3(aRPlane.center);
+                    i++;
+                }
+                if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived: {i} planes added on this frame"));
+            } else {
+                if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived: ARPlaneManager not found!"));
+            }
 
 #if UNITY_IOS
             if(senderMaterial == null) senderMaterial = Resources.Load(defaultMaterial) as Material;

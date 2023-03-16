@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="float3.cs" createdby="gblikas">
+// <copyright file="XRPlane.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -23,47 +23,38 @@
 //-------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
+
 
 namespace XRRemote
 {
+    using UnityEngine.XR.ARSubsystems;
+
     [Serializable]
-    public class float3 : IEquatable<float3>, IFormattable
+    [StructLayout(LayoutKind.Sequential)]
+    public struct XRPlane : IEquatable<XRPlane>
     {
-        public float x;
-        public float y;
-        public float z;
+        public Pose center;
 
-        /// <summary>float3 zero value.</summary>
-        public static readonly float3 zero;
 
-        public float3(float x, float y, float z)
+        public bool Equals(XRPlane o)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            return  center.Equals(o.center);
         }
 
-        public float3(Vector3 v)
+        public override string ToString()
         {
-            this.x = v.x;
-            this.y = v.y;
-            this.z = v.z;
-        }
+            var sb = new System.Text.StringBuilder();
+            //sb.Append($"[XRPlane] id: {trackableId} ");
+            sb.Append($"center: {center} ");
+            //sb.Append($"state: {trackingState} ");
+            // sb.Append($"ptr: {nativePtr} ");
+            // sb.Append($"left: {leftEyePose} ");
+            // sb.Append($"right: {rightEyePose} ");
+            // sb.Append($"fixa: {fixationPoint} ");
 
-        public bool Equals(float3 rhs) { return x == rhs.x && y == rhs.y && z == rhs.z; }
-
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return string.Format("float3({0}f, {1}f, {2}f)", x.ToString(format, formatProvider), y.ToString(format, formatProvider), z.ToString(format, formatProvider));
-        }
-
-        public Vector3 ToVector3()
-        {
-            return new Vector3(x, y, z);
+            return sb.ToString();
         }
     }
 }
-

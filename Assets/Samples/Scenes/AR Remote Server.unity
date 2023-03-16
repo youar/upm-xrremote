@@ -276,7 +276,7 @@ MonoBehaviour:
   logLevel: 1
   _connectionState: 0
   cameraManager: {fileID: 1864567044}
-  arPoseDriver: {fileID: 0}
+  arPoseDriver: {fileID: 1864567045}
   connectionText: {fileID: 1169207675}
   arSystemBarText: {fileID: 998094292}
   testConnectionButton: {fileID: 465525295}
@@ -965,6 +965,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1577406471}
   - component: {fileID: 1577406470}
+  - component: {fileID: 1577406472}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -1000,6 +1001,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1577406472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577406469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PlanePrefab: {fileID: 8752457894863012287, guid: d3f86bdc1ce21304c83d9e3efe17f566, type: 3}
+  m_DetectionMode: -1
 --- !u!1 &1864567041
 GameObject:
   m_ObjectHideFlags: 0
@@ -1103,15 +1118,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1864567041}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a2a9c34df4095f47b9ca8f975175f5b, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e3c44306fb1e439a9f18b2212b8ab70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Device: 0
-  m_PoseSource: 2
-  m_PoseProviderComponent: {fileID: 0}
-  m_TrackingType: 0
-  m_UpdateType: 0
-  m_UseRelativeTransform: 0
 --- !u!4 &1864567046
 Transform:
   m_ObjectHideFlags: 0

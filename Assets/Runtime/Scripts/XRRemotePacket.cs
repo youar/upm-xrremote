@@ -54,6 +54,8 @@ namespace XRRemote
         public XRRemote.Pose trackedPose = new XRRemote.Pose();
 
         public XRRemote.SerializeableTexture2D texture;
+
+        public float3[] centerPoints; 
     }
 
 
@@ -123,6 +125,23 @@ namespace XRRemote
             foreach (var m in meshes)
             {
                 sb.AppendLine($"MESHED: {m}");
+            }
+            return sb.ToString();
+        }
+    }
+
+    [Serializable]
+    public class PlanesInfo
+    {
+        public float3[] centerPoints;
+
+        public override string ToString()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("PlanesInfo");
+            foreach (var f in centerPoints)
+            {
+                sb.AppendLine($"Center Point: {f}");
             }
             return sb.ToString();
         }
