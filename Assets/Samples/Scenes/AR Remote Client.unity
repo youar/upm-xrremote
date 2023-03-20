@@ -320,6 +320,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1056015955}
   - component: {fileID: 1056015954}
+  - component: {fileID: 1056015956}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -355,6 +356,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1056015956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056015953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PlanePrefab: {fileID: 8752457894863012287, guid: d3f86bdc1ce21304c83d9e3efe17f566, type: 3}
+  m_DetectionMode: -1
 --- !u!1 &1272421868
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,7 +399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c80772d8a617a5b4dbab4f51d2d8790c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XRPlaneCenterVisualPrefab: {fileID: 3283286298607006347, guid: 890d5ddae2ef0b34ea23bfd353914770, type: 3}
+  XRRemotePlaneVisualPrefab: {fileID: 1107657557705778436, guid: e139c43fa38022641801498dd04b6e2b, type: 3}
 --- !u!4 &1272421870
 Transform:
   m_ObjectHideFlags: 0

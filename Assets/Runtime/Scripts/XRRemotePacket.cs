@@ -55,7 +55,7 @@ namespace XRRemote
 
         public XRRemote.SerializeableTexture2D texture;
 
-        public float3[] centerPoints; 
+        public PlanesInfo planesInfo = new PlanesInfo(); 
     }
 
 
@@ -133,15 +133,15 @@ namespace XRRemote
     [Serializable]
     public class PlanesInfo
     {
-        public float3[] centerPoints;
+        public XRPlane[] xrPlanes;
 
         public override string ToString()
         {
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("PlanesInfo");
-            foreach (var f in centerPoints)
+            foreach (var f in xrPlanes)
             {
-                sb.AppendLine($"Center Point: {f}");
+                sb.AppendLine($"Planes: {f}");
             }
             return sb.ToString();
         }

@@ -35,24 +35,36 @@ namespace XRRemote
     [StructLayout(LayoutKind.Sequential)]
     public struct XRPlane : IEquatable<XRPlane>
     {
-        public Pose center;
+        //public TrackableId trackableId;
+        public Pose pose;
+        public float3 center;
+        public float3 centerInPlaneSpace;
+        public float3 normal;
+        public int trackingState;
+        public float vertexChangedThreshold;
+        public float2[] boundary;
 
 
         public bool Equals(XRPlane o)
         {
-            return  center.Equals(o.center);
+            return  center.Equals(o.center)
+                //&& trackableId.Equals(o.trackableId)
+                && pose.Equals(o.pose)
+                && normal.Equals(o.normal)
+                && trackingState.Equals(o.trackingState)
+                && vertexChangedThreshold.Equals(o.vertexChangedThreshold)
+                && boundary.Equals(o.boundary);
         }
 
         public override string ToString()
         {
             var sb = new System.Text.StringBuilder();
             //sb.Append($"[XRPlane] id: {trackableId} ");
+            sb.Append($"pose: {pose} ");
             sb.Append($"center: {center} ");
-            //sb.Append($"state: {trackingState} ");
-            // sb.Append($"ptr: {nativePtr} ");
-            // sb.Append($"left: {leftEyePose} ");
-            // sb.Append($"right: {rightEyePose} ");
-            // sb.Append($"fixa: {fixationPoint} ");
+            sb.Append($"state: {trackingState} ");
+            sb.Append($"vertexChangedThreshold: {vertexChangedThreshold} ");
+            sb.Append($"boundary: {boundary} ");
 
             return sb.ToString();
         }

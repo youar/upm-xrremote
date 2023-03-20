@@ -108,11 +108,11 @@ namespace XRRemote
             }
         }
 
-        public float3[] centerPoints
+        public PlanesInfo planesInfo
         {
             get
             {
-                return xrRemotePacketReceived == null ? null : xrRemotePacketReceived.centerPoints;
+                return xrRemotePacketReceived == null ? null : xrRemotePacketReceived.planesInfo;
             }
         }
         /////////////////////////////////////////////////////////////////////////

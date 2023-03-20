@@ -398,14 +398,26 @@ namespace XRRemote
 
             if (arPlaneManager != null) {
                 int planeCount = arPlaneManager.trackables.count;
-                xrRemotePacket.centerPoints = new float3[planeCount];
+                xrRemotePacket.planesInfo.xrPlanes = new XRPlane[planeCount];
 
                 int i = 0;
                 foreach (ARPlane aRPlane in arPlaneManager.trackables) {
-                    xrRemotePacket.centerPoints[i] = new float3(aRPlane.center);
+                    //xrRemotePacket.planesInfo.xrPlanes[i].trackableId = aRPlane.trackableId;
+                    xrRemotePacket.planesInfo.xrPlanes[i].pose = Pose.FromTransform(aRPlane.transform);
+                    xrRemotePacket.planesInfo.xrPlanes[i].center = new float3(aRPlane.center);
+                    xrRemotePacket.planesInfo.xrPlanes[i].centerInPlaneSpace = new float3(aRPlane.centerInPlaneSpace);
+                    xrRemotePacket.planesInfo.xrPlanes[i].normal = new float3(aRPlane.normal);
+                    xrRemotePacket.planesInfo.xrPlanes[i].trackingState = (int)aRPlane.trackingState;
+                    xrRemotePacket.planesInfo.xrPlanes[i].vertexChangedThreshold = aRPlane.vertexChangedThreshold;
+
+                    Vector2[] boundaryPoints = aRPlane.boundary.ToArray();
+                    xrRemotePacket.planesInfo.xrPlanes[i].boundary = new float2[boundaryPoints.Length];
+                    for (int j = 0; j < boundaryPoints.Length; j++) {
+                        xrRemotePacket.planesInfo.xrPlanes[i].boundary[j] = new float2(aRPlane.boundary[j]);
+                    }
+
                     i++;
                 }
-                if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived: {i} planes added on this frame"));
             } else {
                 if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived: ARPlaneManager not found!"));
             }
