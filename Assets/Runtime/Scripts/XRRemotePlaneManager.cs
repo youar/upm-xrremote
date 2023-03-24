@@ -6,6 +6,9 @@ using UnityEngine;
 #if UNITY_EDITOR
 namespace XRRemote
 {
+    /// <summary>
+    /// Manages a pool of XR Plane Visuals
+    /// </summary>
     public class XRRemotePlaneManager : MonoBehaviour
     {
         public Transform XRRemotePlaneVisualPrefab;
@@ -24,10 +27,13 @@ namespace XRRemote
         {
             DisableAllVisuals();
 
+            //Enable a visual for each plane sent in the packet
             for (int i = 0; i < planes.Length; i++) {
                 if (i < xrPlaneVisualList.Count) {
+                    //Use previously created visual
                     xrPlaneVisualList[i].Setup(planes[i]);
                 } else {
+                    //Create a new visual and add to list
                     Transform newVisualTransform = Instantiate(XRRemotePlaneVisualPrefab);
                     XRRemotePlaneVisual xrRemotePlaneVisual = newVisualTransform.GetComponent<XRRemotePlaneVisual>();
 

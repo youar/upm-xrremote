@@ -400,6 +400,7 @@ namespace XRRemote
                 int planeCount = arPlaneManager.trackables.count;
                 xrRemotePacket.planesInfo.xrPlanes = new XRPlane[planeCount];
 
+                //Loop through each plane that is AR Plane Manager is tracking and add to packet's array
                 int i = 0;
                 foreach (ARPlane aRPlane in arPlaneManager.trackables) {
                     //xrRemotePacket.planesInfo.xrPlanes[i].trackableId = aRPlane.trackableId;
@@ -410,6 +411,7 @@ namespace XRRemote
                     xrRemotePacket.planesInfo.xrPlanes[i].trackingState = (int)aRPlane.trackingState;
                     xrRemotePacket.planesInfo.xrPlanes[i].vertexChangedThreshold = aRPlane.vertexChangedThreshold;
 
+                    //Save the boundary array as a float2 array
                     Vector2[] boundaryPoints = aRPlane.boundary.ToArray();
                     xrRemotePacket.planesInfo.xrPlanes[i].boundary = new float2[boundaryPoints.Length];
                     for (int j = 0; j < boundaryPoints.Length; j++) {

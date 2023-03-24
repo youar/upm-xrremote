@@ -9,21 +9,27 @@ namespace XRRemote
 {
     using UnityEngine.XR.ARFoundation;
     
+    /// <summary>
+    /// Using to visualize planes in the Unity editor that are detected by the AR Plane Manager on the server
+    /// </summary>
     public class XRRemotePlaneVisual : MonoBehaviour
     {
         public Transform xrPlaneCenterVisual;
         public MeshFilter arDefaultPlaneMeshFilter;
 
+        //Set up the plane's data from XRPlane received in packet
         public void Setup(XRPlane plane)
         {
             xrPlaneCenterVisual.position = plane.center.ToVector3();
 
+            //Retrieve the boundary points
             NativeArray<Vector2> boundary = new NativeArray<Vector2>(plane.boundary.Length, Allocator.Temp);
             for (int j = 0; j < plane.boundary.Length; j++) {
                 Vector2 localPosition = plane.boundary[j].ToVector2();
                 boundary[j] = new Vector2(localPosition.x, localPosition.y);
             }
 
+            //Move the plane to correct position and rotation using the plane's pose
             Transform arPlaneTransform = arDefaultPlaneMeshFilter.gameObject.transform;
             arPlaneTransform.position = plane.pose.position.ToVector3();
             arPlaneTransform.rotation = new Quaternion(
