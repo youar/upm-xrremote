@@ -126,6 +126,10 @@ namespace XRRemote
         /// </summary>
         ARPlaneManager arPlaneManager;
 
+        /// <summary>
+        /// Reference to XR Input Reader
+        /// </summary>
+        public XRRemoteInputReader inputReader;
 
         private string ConnectionMessage(string baseMessage)
         {
@@ -218,6 +222,7 @@ namespace XRRemote
             if (!SetUpCameraManager(this.cameraManager)) return;
             if (!SetUpTrackedPoseDriver(this.arPoseDriver)) return;
             if (!SetUpPlaneManager()) return;
+            if (!SetUpInputSystem(this.inputReader)) return;
 
 #if UNITY_ANDROID
             //
@@ -362,6 +367,24 @@ namespace XRRemote
 
             return true; 
         }
+        
+        private bool SetUpInputSystem(XRRemoteInputReader addobjectOnInput)
+        {
+            if (addobjectOnInput == null) {
+                inputReader = FindObjectOfType<XRRemoteInputReader>();
+
+                if (inputReader == null) {
+                    if (log) {
+                        Debug.LogErrorFormat(
+                            ConnectionMessage(
+                                string.Format("Event: null input reader")));
+                    }
+                    return false;
+                }
+            }
+
+            return true;
+        }
         #endregion
 
 
@@ -422,6 +445,23 @@ namespace XRRemote
                 }
             } else {
                 if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived: ARPlaneManager not found!"));
+            }
+
+            //Get input
+            if (inputReader != null) {
+                if (inputReader.TryGetLastInput(out Vector3 lastTouchPosition)) {
+                    xrRemotePacket.touchPosition = new float3(lastTouchPosition.x, lastTouchPosition.y, lastTouchPosition.z);
+                } else {
+                    xrRemotePacket.touchPosition = null;
+                }
+            } else {
+                if (log)
+                {
+                    Debug.LogFormat(
+                        ConnectionMessage(
+                            "OnARCameraFrameReceived Event: XRRemoteInputManager not set up."));
+                }
+                xrRemotePacket.touchPosition = null;
             }
 
 #if UNITY_IOS
