@@ -43,6 +43,7 @@ namespace XRRemote
         public int trackingState;
         public float vertexChangedThreshold;
         public float2[] boundary;
+        public float2 size;
 
 
         public bool Equals(XRPlane o)

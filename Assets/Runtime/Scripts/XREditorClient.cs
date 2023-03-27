@@ -22,6 +22,7 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 
+using System;
 using UnityEngine;
 using UnityEngine.Networking.PlayerConnection;
 using UnityEngine.XR.ARFoundation;
@@ -115,11 +116,39 @@ namespace XRRemote
                 return xrRemotePacketReceived == null ? null : xrRemotePacketReceived.planesInfo;
             }
         }
+
+        public Vector3 touchPosition
+        {
+            get
+            {
+                if (xrRemotePacketReceived == null || xrRemotePacketReceived.touchPosition == null) 
+                    return Vector3.zero;
+                
+                return new Vector3(xrRemotePacketReceived.touchPosition.x, xrRemotePacketReceived.touchPosition.y, xrRemotePacketReceived.touchPosition.z);
+            }
+        }
+
+        public Vector2 touchPositionNormalized
+        {
+            get
+            {
+                if (xrRemotePacketReceived == null || xrRemotePacketReceived.touchPositionNormalized == null) 
+                    return Vector3.zero;
+                
+                return new Vector2(xrRemotePacketReceived.touchPositionNormalized.x, xrRemotePacketReceived.touchPositionNormalized.y);
+            }
+        }
         /////////////////////////////////////////////////////////////////////////
 
         bool isXRPlayerInitialized = false;
 
         bool readyForNewFrame = false;
+
+        /////////////////////////////////////////////////////////////////////////
+
+        // EVENTS
+
+        public event EventHandler OnInputDataReceived;
 
         private void OnEnable()
         {
@@ -216,6 +245,10 @@ namespace XRRemote
             }
 
             xrRemoteTrackingState = TrackingState.Tracking;
+
+            if (xrRemotePacketReceived.touchPosition != null) {
+                OnInputDataReceived?.Invoke(this, EventArgs.Empty);
+            }
 
 #if UNITY_IOS
             SetXRRemoteVideoFrameRGB(xrRemoteScreenRGBTex);

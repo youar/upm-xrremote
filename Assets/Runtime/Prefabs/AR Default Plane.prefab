@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 204896408777545812}
   - component: {fileID: 8863431341596748286}
   - component: {fileID: 259828282442633901}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AR Default Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!33 &204896408777545812

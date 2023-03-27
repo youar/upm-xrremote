@@ -433,6 +433,7 @@ namespace XRRemote
                     xrRemotePacket.planesInfo.xrPlanes[i].normal = new float3(aRPlane.normal);
                     xrRemotePacket.planesInfo.xrPlanes[i].trackingState = (int)aRPlane.trackingState;
                     xrRemotePacket.planesInfo.xrPlanes[i].vertexChangedThreshold = aRPlane.vertexChangedThreshold;
+                    xrRemotePacket.planesInfo.xrPlanes[i].size = new float2(aRPlane.size);
 
                     //Save the boundary array as a float2 array
                     Vector2[] boundaryPoints = aRPlane.boundary.ToArray();
@@ -451,8 +452,10 @@ namespace XRRemote
             if (inputReader != null) {
                 if (inputReader.TryGetLastInput(out Vector3 lastTouchPosition)) {
                     xrRemotePacket.touchPosition = new float3(lastTouchPosition.x, lastTouchPosition.y, lastTouchPosition.z);
+                    xrRemotePacket.touchPositionNormalized = new float3(inputReader.lastTouchPositionNormalized);
                 } else {
                     xrRemotePacket.touchPosition = null;
+                    xrRemotePacket.touchPositionNormalized = null;
                 }
             } else {
                 if (log)

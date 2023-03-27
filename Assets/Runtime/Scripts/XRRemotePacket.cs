@@ -56,6 +56,9 @@ namespace XRRemote
         public XRRemote.SerializeableTexture2D texture;
 
         public PlanesInfo planesInfo = new PlanesInfo(); 
+
+        public float3 touchPosition = null;
+        public float3 touchPositionNormalized = null;
     }
 
 
