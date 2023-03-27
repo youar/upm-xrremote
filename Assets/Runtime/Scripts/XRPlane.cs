@@ -44,6 +44,7 @@ namespace XRRemote
         public float vertexChangedThreshold;
         public float2[] boundary;
         public float2 size;
+        public bool isSubsumed;
 
 
         public bool Equals(XRPlane o)

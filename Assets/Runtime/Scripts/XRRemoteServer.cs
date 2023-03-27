@@ -434,6 +434,7 @@ namespace XRRemote
                     xrRemotePacket.planesInfo.xrPlanes[i].trackingState = (int)aRPlane.trackingState;
                     xrRemotePacket.planesInfo.xrPlanes[i].vertexChangedThreshold = aRPlane.vertexChangedThreshold;
                     xrRemotePacket.planesInfo.xrPlanes[i].size = new float2(aRPlane.size);
+                    xrRemotePacket.planesInfo.xrPlanes[i].isSubsumed = (aRPlane.subsumedBy != null);
 
                     //Save the boundary array as a float2 array
                     Vector2[] boundaryPoints = aRPlane.boundary.ToArray();

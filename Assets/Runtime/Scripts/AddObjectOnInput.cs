@@ -26,6 +26,9 @@ public class AddObjectOnInput : MonoBehaviour
         m_RaycastManager = GetComponent<ARRaycastManager>();
     }
 
+    /// <summary>
+        /// Add object or move existing one. Used in testing touch input & raycasting on device
+        /// </summary>
     public void AddObject(InputAction.CallbackContext context)
     {
         var touchPosition = context.ReadValue<Vector2>();

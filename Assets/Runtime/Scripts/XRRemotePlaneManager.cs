@@ -30,6 +30,9 @@ namespace XRRemote
             //Enable a visual for each plane sent in the packet
             for (int i = 0; i < planes.Length; i++) {
                 if (i < xrPlaneVisualList.Count) {
+                    //Skip if plane is subsumed by another plane
+                    if (planes[i].isSubsumed) continue;
+                    
                     //Use previously created visual
                     xrPlaneVisualList[i].Setup(planes[i]);
                 } else {

@@ -14,6 +14,9 @@ namespace XRRemote
 
         public event EventHandler OnTouch;
 
+        /// <summary>
+        /// Calculated touch position using normalized position sent by device
+        /// </summary>
         public Vector2 touchPosition = Vector2.zero;
 
         private Vector2 canvasSize = Vector2.one;

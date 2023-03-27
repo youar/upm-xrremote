@@ -33,6 +33,9 @@ namespace XRRemote
             } 
         }
 
+        /// <summary>
+        /// Add object or move existing one. Used in testing touch input & raycasting on Unity client
+        /// </summary>
         private void AddObject(RaycastHit raycastHit)
         {
             if (spawnedObject == null) {

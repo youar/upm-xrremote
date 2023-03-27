@@ -16,7 +16,6 @@ namespace XRRemote
     {
         public Transform xrPlaneCenterVisual;
         public MeshFilter arDefaultPlaneMeshFilter;
-        [SerializeField] Transform planeColliderHelper;
 
         //Set up the plane's data from XRPlane received in packet
         public void Setup(XRPlane plane)
@@ -48,10 +47,8 @@ namespace XRRemote
 
             //Update the collider with the new mesh
             MeshCollider meshCollider = arDefaultPlaneMeshFilter.gameObject.GetComponent<MeshCollider>();
-            meshCollider.sharedMesh = arDefaultPlaneMeshFilter.sharedMesh;
-
-            float scaleOffset = 0.1f;
-            planeColliderHelper.localScale = new Vector3(plane.size.x * scaleOffset, 0f, plane.size.y * scaleOffset);
+            meshCollider.sharedMesh = null;
+            meshCollider.sharedMesh = arDefaultPlaneMeshFilter.mesh;
 
             gameObject.SetActive(true);
         }

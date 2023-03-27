@@ -198,7 +198,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   planeLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   m_PlacedPrefab: {fileID: 1868726917569995490, guid: b4f62ad31ac118b45862883431ff0d77, type: 3}
 --- !u!4 &205345046
 Transform:
