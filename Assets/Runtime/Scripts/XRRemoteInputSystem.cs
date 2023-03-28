@@ -24,7 +24,9 @@ namespace XRRemote
         private void Awake()
         {
             if (Instance != null) {
-                Debug.LogError($"There's more than one XRRemoteInputSystem! " + transform + " = " + Instance);
+                if (DebugFlags.displayEditorConnectionStats) {
+                    Debug.LogError($"There's more than one XRRemoteInputSystem! " + transform + " = " + Instance);
+                }
                 Destroy(gameObject);
                 return;
             }
@@ -36,8 +38,6 @@ namespace XRRemote
             if (canvas != null) {
                 canvasSize.x = canvas.GetComponent<RectTransform>().rect.height;
                 canvasSize.y = canvas.GetComponent<RectTransform>().rect.width;
-
-                //Debug.LogError($"canvas size: {canvasSize.x} x {canvasSize.y}");
             }
         }
 

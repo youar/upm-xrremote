@@ -298,7 +298,7 @@ namespace XRRemote
                 {
                     Debug.LogErrorFormat(
                         ConnectionMessage(
-                            string.Format("Event: RegisterPlayerMethods, trackedposedriver not foudn")));
+                            string.Format("Event: RegisterPlayerMethods, trackedposedriver not found")));
                 }
                 return false;
             }
@@ -426,6 +426,9 @@ namespace XRRemote
                 //Loop through each plane that is AR Plane Manager is tracking and add to packet's array
                 int i = 0;
                 foreach (ARPlane aRPlane in arPlaneManager.trackables) {
+                    //Don't send ARPlane if it has been subsumed
+                    if (aRPlane.subsumedBy != null) continue;
+
                     //xrRemotePacket.planesInfo.xrPlanes[i].trackableId = aRPlane.trackableId;
                     xrRemotePacket.planesInfo.xrPlanes[i].pose = Pose.FromTransform(aRPlane.transform);
                     xrRemotePacket.planesInfo.xrPlanes[i].center = new float3(aRPlane.center);
