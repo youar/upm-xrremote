@@ -226,7 +226,7 @@ namespace XRRemote
 
 #if UNITY_ANDROID
             //
-            // make sure we have a way to get acceess to the
+            // make sure we have a way to get access to the
             // texture that we need for passing video frames. 
             if (!SetUpXRTextureExtractor(this.textureExtractor)) return;
 #endif
@@ -240,7 +240,7 @@ namespace XRRemote
 
 
         /// <summary>
-        /// Register all player messages to make sure that they system actualy
+        /// Register all player messages to make sure that they system actually
         /// is hooked up properly. 
         /// </summary>
         
