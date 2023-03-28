@@ -14,14 +14,11 @@ namespace XRRemote
     /// </summary>
     public class XRRemotePlaneVisual : MonoBehaviour
     {
-        public Transform xrPlaneCenterVisual;
         public MeshFilter arDefaultPlaneMeshFilter;
 
         //Set up the plane's data from XRPlane received in packet
         public void Setup(XRPlane plane)
         {
-            xrPlaneCenterVisual.position = plane.center.ToVector3();
-
             //Retrieve the boundary points
             NativeArray<Vector2> boundary = new NativeArray<Vector2>(plane.boundary.Length, Allocator.Temp);
             for (int j = 0; j < plane.boundary.Length; j++) {
