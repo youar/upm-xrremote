@@ -35,7 +35,7 @@ namespace XRRemote
     [StructLayout(LayoutKind.Sequential)]
     public struct XRPlane : IEquatable<XRPlane>
     {
-        public ARKitStream.Internal.TrackableId trackableId;
+        public XRRemote.TrackableId trackableId;
         public Pose pose;
         public float3 center;
         public float3 centerInPlaneSpace;

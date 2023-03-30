@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.XR.ARSubsystems;
 
-namespace ARKitStream.Internal
+namespace XRRemote
 {
     /// <summary>
     /// HACK: Neet the unsafe struct cast

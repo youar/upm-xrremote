@@ -14,7 +14,7 @@ namespace XRRemote
     /// </summary>
     public class XRRemotePlaneVisual : MonoBehaviour
     {
-        public ARKitStream.Internal.TrackableId trackableId;
+        public XRRemote.TrackableId trackableId;
         public MeshFilter arDefaultPlaneMeshFilter;
 
         //Set up the plane's data from XRPlane received in packet
