@@ -149,6 +149,7 @@ namespace XRRemote
         // EVENTS
 
         public event EventHandler OnInputDataReceived;
+        public event EventHandler OnPlanesInfoReceived;
 
         private void OnEnable()
         {
@@ -245,6 +246,10 @@ namespace XRRemote
             }
 
             xrRemoteTrackingState = TrackingState.Tracking;
+
+            if (xrRemotePacketReceived.planesInfo != null) {
+                OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
+            }
 
             if (xrRemotePacketReceived.touchPosition != null) {
                 OnInputDataReceived?.Invoke(this, EventArgs.Empty);

@@ -13,44 +13,103 @@ namespace XRRemote
     {
         public Transform XRRemotePlaneVisualPrefab;
 
-        List<XRRemotePlaneVisual> xrPlaneVisualList = new List<XRRemotePlaneVisual>();
+        [SerializeField] private List<XRRemotePlaneVisual> xrPlaneVisualList = new List<XRRemotePlaneVisual>();
 
 
-        private void Update()
+        private void OnEnable()
         {
-            if (XREditorClient.Instance.planesInfo  == null) return; //XRRemotePacket not sent yet
-
-            UpdateVisuals(XREditorClient.Instance.planesInfo.xrPlanes);
+            XREditorClient.Instance.OnPlanesInfoReceived += XREditorClient_OnPlanesInfoReceived;
         }
 
+        private void OnDisable()
+        {
+            XREditorClient.Instance.OnPlanesInfoReceived -= XREditorClient_OnPlanesInfoReceived;
+        }
+
+        /// <summary>
+        /// Create a new visual and add to list
+        /// </summary>
+        private void AddVisuals(XRPlane[] planes)
+        {
+            foreach (XRPlane plane in planes) {
+                Transform newVisualTransform = Instantiate(XRRemotePlaneVisualPrefab);
+                XRRemotePlaneVisual xrRemotePlaneVisual = newVisualTransform.GetComponent<XRRemotePlaneVisual>();
+
+                xrRemotePlaneVisual.Setup(plane);
+
+                xrPlaneVisualList.Add(xrRemotePlaneVisual);
+            }
+        }
+
+        /// <summary>
+        /// Find corresponding visual and tell it to update its data
+        /// </summary>
         private void UpdateVisuals(XRPlane[] planes)
         {
-            DisableAllVisuals();
+            foreach (XRPlane plane in planes) {
+                Predicate<XRRemotePlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
 
-            //Enable a visual for each plane sent in the packet
-            for (int i = 0; i < planes.Length; i++) {
-                if (i < xrPlaneVisualList.Count) {
-                    //Skip if plane is subsumed by another plane
-                    if (planes[i].isSubsumed) continue;
-                    
-                    //Use previously created visual
-                    xrPlaneVisualList[i].Setup(planes[i]);
-                } else {
-                    //Create a new visual and add to list
-                    Transform newVisualTransform = Instantiate(XRRemotePlaneVisualPrefab);
-                    XRRemotePlaneVisual xrRemotePlaneVisual = newVisualTransform.GetComponent<XRRemotePlaneVisual>();
+                List<XRRemotePlaneVisual> planeVisualsToUpdate = xrPlaneVisualList.FindAll(hasTrackableId);
 
-                    xrRemotePlaneVisual.Setup(planes[i]);
+                if (planeVisualsToUpdate.Count == 0) {
+                    if (DebugFlags.displayEditorConnectionStats) {
+                        Debug.LogError($"XRRemotePlaneManager - UpdateVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
+                    }
+                } else if (planeVisualsToUpdate.Count > 1) {
+                    if (DebugFlags.displayEditorConnectionStats) {
+                        Debug.LogWarning($"XRRemotePlaneManager - UpdateVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
+                    }
+                }
 
-                    xrPlaneVisualList.Add(xrRemotePlaneVisual);
+                foreach (XRRemotePlaneVisual planeVisual in planeVisualsToUpdate) {
+                    planeVisual.Setup(plane);
+
+                    // if (plane.isSubsumed) {
+                    //     planeVisual.gameObject.SetActive(false);
+                    // }
                 }
             }
         }
 
-        private void DisableAllVisuals()
+        /// <summary>
+        /// Find corresponding visual and destroy the visual and remove it from the list
+        /// </summary>
+        private void RemoveVisuals(XRPlane[] planes)
         {
-            foreach (XRRemotePlaneVisual xrRemotePlaneVisual in xrPlaneVisualList) {
-                xrRemotePlaneVisual.gameObject.SetActive(false);
+            foreach (XRPlane plane in planes) {
+                Predicate<XRRemotePlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
+
+                List<XRRemotePlaneVisual> planeVisualsToRemove = xrPlaneVisualList.FindAll(hasTrackableId);
+
+                if (planeVisualsToRemove.Count == 0) {
+                    if (DebugFlags.displayEditorConnectionStats) {
+                        Debug.LogError($"XRRemotePlaneManager - RemoveVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
+                    }
+                } else if (planeVisualsToRemove.Count > 1) {
+                    if (DebugFlags.displayEditorConnectionStats) {
+                        Debug.LogWarning($"XRRemotePlaneManager - RemoveVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
+                    }
+                }
+
+                foreach (XRRemotePlaneVisual planeVisual in planeVisualsToRemove) {
+                    xrPlaneVisualList.Remove(planeVisual);
+                    Destroy(planeVisual.gameObject);
+                }
+            }
+        }
+
+        private void XREditorClient_OnPlanesInfoReceived(object sender, EventArgs e)
+        {
+            if (XREditorClient.Instance.planesInfo.added != null) {
+                AddVisuals(XREditorClient.Instance.planesInfo.added);
+            }
+
+            if (XREditorClient.Instance.planesInfo.updated != null) {
+                UpdateVisuals(XREditorClient.Instance.planesInfo.updated);
+            }
+
+            if (XREditorClient.Instance.planesInfo.removed != null) {
+                RemoveVisuals(XREditorClient.Instance.planesInfo.removed);
             }
         }
     }

@@ -136,15 +136,25 @@ namespace XRRemote
     [Serializable]
     public class PlanesInfo
     {
-        public XRPlane[] xrPlanes;
+        public XRPlane[] added;
+        public XRPlane[] updated;
+        public XRPlane[] removed;
 
         public override string ToString()
         {
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("PlanesInfo");
-            foreach (var f in xrPlanes)
+            foreach (var f in added)
             {
-                sb.AppendLine($"Planes: {f}");
+                sb.AppendLine($"added: {f}");
+            }
+            foreach (var f in updated)
+            {
+                sb.AppendLine($"updated: {f}");
+            }
+            foreach (var f in removed)
+            {
+                sb.AppendLine($"removed: {f}");
             }
             return sb.ToString();
         }

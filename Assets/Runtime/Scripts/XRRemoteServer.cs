@@ -122,9 +122,9 @@ namespace XRRemote
         bool arSessionInitialized = false;
 
         /// <summary>
-        /// Reference to AR Plane Manager
+        /// Reference XR Plane Sender
         /// </summary>
-        ARPlaneManager arPlaneManager;
+        XRRemotePlaneSender planeSender;
 
         /// <summary>
         /// Reference to XR Input Reader
@@ -221,7 +221,7 @@ namespace XRRemote
             if (!SetUpTextureSystem(renderTextureWidth, renderTextureHeight, defaultMaterial)) return;
             if (!SetUpCameraManager(this.cameraManager)) return;
             if (!SetUpTrackedPoseDriver(this.arPoseDriver)) return;
-            if (!SetUpPlaneManager()) return;
+            if (!SetUpPlaneSender()) return;
             if (!SetUpInputSystem(this.inputReader)) return;
 
 #if UNITY_ANDROID
@@ -349,18 +349,18 @@ namespace XRRemote
 
         }
 
-        private bool SetUpPlaneManager()
+        private bool SetUpPlaneSender()
         {
-            if (arPlaneManager != null) return true;
+            if (planeSender != null) return true;
 
-            arPlaneManager = FindObjectOfType<ARPlaneManager>();
-            if (arPlaneManager == null)
+            planeSender = FindObjectOfType<XRRemotePlaneSender>();
+            if (planeSender == null)
             {
                 if (log)
                 {
                     Debug.LogErrorFormat(
                         ConnectionMessage(
-                            string.Format("Event: RegisterPlayerMethods, ARPlaneManager not found")));
+                            string.Format("Event: XRRemotePlaneSender not found")));
                 }
                 return false;
             }
@@ -377,7 +377,7 @@ namespace XRRemote
                     if (log) {
                         Debug.LogErrorFormat(
                             ConnectionMessage(
-                                string.Format("Event: null input reader")));
+                                string.Format("Event: XRRemoteInputReader not found")));
                     }
                     return false;
                 }
@@ -419,37 +419,16 @@ namespace XRRemote
 
             xrRemotePacket.face = new XRRemote.FaceInfo();
 
-            if (arPlaneManager != null) {
-                int planeCount = arPlaneManager.trackables.count;
-                xrRemotePacket.planesInfo.xrPlanes = new XRPlane[planeCount];
-
-                //Loop through each plane that is AR Plane Manager is tracking and add to packet's array
-                int i = 0;
-                foreach (ARPlane aRPlane in arPlaneManager.trackables) {
-                    //Don't send ARPlane if it has been subsumed
-                    if (aRPlane.subsumedBy != null) continue;
-
-                    //xrRemotePacket.planesInfo.xrPlanes[i].trackableId = aRPlane.trackableId;
-                    xrRemotePacket.planesInfo.xrPlanes[i].pose = Pose.FromTransform(aRPlane.transform);
-                    xrRemotePacket.planesInfo.xrPlanes[i].center = new float3(aRPlane.center);
-                    xrRemotePacket.planesInfo.xrPlanes[i].centerInPlaneSpace = new float3(aRPlane.centerInPlaneSpace);
-                    xrRemotePacket.planesInfo.xrPlanes[i].normal = new float3(aRPlane.normal);
-                    xrRemotePacket.planesInfo.xrPlanes[i].trackingState = (int)aRPlane.trackingState;
-                    xrRemotePacket.planesInfo.xrPlanes[i].vertexChangedThreshold = aRPlane.vertexChangedThreshold;
-                    xrRemotePacket.planesInfo.xrPlanes[i].size = new float2(aRPlane.size);
-                    xrRemotePacket.planesInfo.xrPlanes[i].isSubsumed = (aRPlane.subsumedBy != null);
-
-                    //Save the boundary array as a float2 array
-                    Vector2[] boundaryPoints = aRPlane.boundary.ToArray();
-                    xrRemotePacket.planesInfo.xrPlanes[i].boundary = new float2[boundaryPoints.Length];
-                    for (int j = 0; j < boundaryPoints.Length; j++) {
-                        xrRemotePacket.planesInfo.xrPlanes[i].boundary[j] = new float2(aRPlane.boundary[j]);
-                    }
-
-                    i++;
+            //Get planes
+            if (planeSender != null) {
+                if (planeSender.TryGetPlanesInfo(out PlanesInfo planesInfo)) {
+                    xrRemotePacket.planesInfo = planesInfo;
+                } else {
+                    xrRemotePacket.planesInfo = null;
                 }
             } else {
-                if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived: ARPlaneManager not found!"));
+                if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived: XRRemotePlaneSender not found!"));
+                xrRemotePacket.planesInfo = null;
             }
 
             //Get input

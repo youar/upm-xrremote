@@ -25,17 +25,17 @@
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
-
+using UnityEngine.XR.ARFoundation;
 
 namespace XRRemote
 {
-    using UnityEngine.XR.ARSubsystems;
+    //using UnityEngine.XR.ARSubsystems;
 
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public struct XRPlane : IEquatable<XRPlane>
     {
-        //public TrackableId trackableId;
+        public ARKitStream.Internal.TrackableId trackableId;
         public Pose pose;
         public float3 center;
         public float3 centerInPlaneSpace;
@@ -46,22 +46,35 @@ namespace XRRemote
         public float2 size;
         public bool isSubsumed;
 
+        public XRPlane(ARPlane arPlane)
+        {
+            trackableId = arPlane.trackableId;
+            pose = Pose.FromTransform(arPlane.transform);
+            center = new float3(arPlane.center);
+            centerInPlaneSpace = new float3(arPlane.centerInPlaneSpace);
+            normal = new float3(arPlane.normal);
+            trackingState = (int)arPlane.trackingState;
+            vertexChangedThreshold = arPlane.vertexChangedThreshold;
+            size = new float2(arPlane.size);
+            isSubsumed = (arPlane.subsumedBy != null);
+
+            //Save the boundary array as a float2 array
+            Vector2[] boundaryPoints = arPlane.boundary.ToArray();
+            boundary = new float2[boundaryPoints.Length];
+            for (int j = 0; j < boundaryPoints.Length; j++) {
+                boundary[j] = new float2(arPlane.boundary[j]);
+            }
+        }
 
         public bool Equals(XRPlane o)
         {
-            return  center.Equals(o.center)
-                //&& trackableId.Equals(o.trackableId)
-                && pose.Equals(o.pose)
-                && normal.Equals(o.normal)
-                && trackingState.Equals(o.trackingState)
-                && vertexChangedThreshold.Equals(o.vertexChangedThreshold)
-                && boundary.Equals(o.boundary);
+            return trackableId.Equals(o.trackableId);
         }
 
         public override string ToString()
         {
             var sb = new System.Text.StringBuilder();
-            //sb.Append($"[XRPlane] id: {trackableId} ");
+            sb.Append($"[XRPlane] id: {trackableId} ");
             sb.Append($"pose: {pose} ");
             sb.Append($"center: {center} ");
             sb.Append($"state: {trackingState} ");

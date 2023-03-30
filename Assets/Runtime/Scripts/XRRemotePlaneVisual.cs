@@ -14,11 +14,14 @@ namespace XRRemote
     /// </summary>
     public class XRRemotePlaneVisual : MonoBehaviour
     {
+        public ARKitStream.Internal.TrackableId trackableId;
         public MeshFilter arDefaultPlaneMeshFilter;
 
         //Set up the plane's data from XRPlane received in packet
         public void Setup(XRPlane plane)
         {
+            trackableId = plane.trackableId;
+
             //Retrieve the boundary points
             NativeArray<Vector2> boundary = new NativeArray<Vector2>(plane.boundary.Length, Allocator.Temp);
             for (int j = 0; j < plane.boundary.Length; j++) {
@@ -46,8 +49,6 @@ namespace XRRemote
             MeshCollider meshCollider = arDefaultPlaneMeshFilter.gameObject.GetComponent<MeshCollider>();
             meshCollider.sharedMesh = null;
             meshCollider.sharedMesh = arDefaultPlaneMeshFilter.mesh;
-
-            gameObject.SetActive(true);
         }
     }
 }
