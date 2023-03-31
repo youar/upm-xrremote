@@ -54,6 +54,11 @@ namespace XRRemote
         public XRRemote.Pose trackedPose = new XRRemote.Pose();
 
         public XRRemote.SerializeableTexture2D texture;
+
+        public PlanesInfo planesInfo = new PlanesInfo(); 
+
+        public float3 touchPosition = null;
+        public float3 touchPositionNormalized = null;
     }
 
 
@@ -123,6 +128,33 @@ namespace XRRemote
             foreach (var m in meshes)
             {
                 sb.AppendLine($"MESHED: {m}");
+            }
+            return sb.ToString();
+        }
+    }
+
+    [Serializable]
+    public class PlanesInfo
+    {
+        public XRPlane[] added;
+        public XRPlane[] updated;
+        public XRPlane[] removed;
+
+        public override string ToString()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("PlanesInfo");
+            foreach (var f in added)
+            {
+                sb.AppendLine($"added: {f}");
+            }
+            foreach (var f in updated)
+            {
+                sb.AppendLine($"updated: {f}");
+            }
+            foreach (var f in removed)
+            {
+                sb.AppendLine($"removed: {f}");
             }
             return sb.ToString();
         }

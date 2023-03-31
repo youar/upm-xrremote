@@ -1,4 +1,4 @@
-﻿Shader "Unlit/ARKitStreamReceiver"
+﻿Shader "Unlit/XRRemoteReceiver"
 {
     Properties
     {

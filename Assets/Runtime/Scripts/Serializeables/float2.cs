@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="float3.cs" createdby="gblikas">
+// <copyright file="float2.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -30,39 +30,36 @@ using UnityEngine;
 namespace XRRemote
 {
     [Serializable]
-    public class float3 : IEquatable<float3>, IFormattable
+    public class float2 : IEquatable<float2>, IFormattable
     {
         public float x;
         public float y;
-        public float z;
 
-        /// <summary>float3 zero value.</summary>
-        public static readonly float3 zero;
+        /// <summary>float2 zero value.</summary>
+        public static readonly float2 zero;
 
-        public float3(float x, float y, float z)
+        public float2(float x, float y)
         {
             this.x = x;
             this.y = y;
-            this.z = z;
         }
 
-        public float3(Vector3 v)
+        public float2(Vector2 v)
         {
             this.x = v.x;
             this.y = v.y;
-            this.z = v.z;
         }
 
-        public bool Equals(float3 rhs) { return x == rhs.x && y == rhs.y && z == rhs.z; }
+        public bool Equals(float2 rhs) { return x == rhs.x && y == rhs.y; }
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return string.Format("float3({0}f, {1}f, {2}f)", x.ToString(format, formatProvider), y.ToString(format, formatProvider), z.ToString(format, formatProvider));
+            return string.Format("float2({0}f, {1}f", x.ToString(format, formatProvider), y.ToString(format, formatProvider));
         }
 
-        public Vector3 ToVector3()
+        public Vector3 ToVector2()
         {
-            return new Vector3(x, y, z);
+            return new Vector2(x, y);
         }
     }
 }

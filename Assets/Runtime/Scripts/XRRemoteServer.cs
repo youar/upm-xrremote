@@ -121,6 +121,15 @@ namespace XRRemote
         /// </summary>
         bool arSessionInitialized = false;
 
+        /// <summary>
+        /// Reference XR Plane Sender
+        /// </summary>
+        XRRemotePlaneSender planeSender;
+
+        /// <summary>
+        /// Reference to XR Input Reader
+        /// </summary>
+        public XRRemoteInputReader inputReader;
 
         private string ConnectionMessage(string baseMessage)
         {
@@ -212,10 +221,12 @@ namespace XRRemote
             if (!SetUpTextureSystem(renderTextureWidth, renderTextureHeight, defaultMaterial)) return;
             if (!SetUpCameraManager(this.cameraManager)) return;
             if (!SetUpTrackedPoseDriver(this.arPoseDriver)) return;
+            if (!SetUpPlaneSender()) return;
+            if (!SetUpInputSystem(this.inputReader)) return;
 
 #if UNITY_ANDROID
             //
-            // make sure we have a way to get acceess to the
+            // make sure we have a way to get access to the
             // texture that we need for passing video frames. 
             if (!SetUpXRTextureExtractor(this.textureExtractor)) return;
 #endif
@@ -229,7 +240,7 @@ namespace XRRemote
 
 
         /// <summary>
-        /// Register all player messages to make sure that they system actualy
+        /// Register all player messages to make sure that they system actually
         /// is hooked up properly. 
         /// </summary>
         
@@ -287,7 +298,7 @@ namespace XRRemote
                 {
                     Debug.LogErrorFormat(
                         ConnectionMessage(
-                            string.Format("Event: RegisterPlayerMethods, trackedposedriver not foudn")));
+                            string.Format("Event: RegisterPlayerMethods, trackedposedriver not found")));
                 }
                 return false;
             }
@@ -337,6 +348,43 @@ namespace XRRemote
             return true;
 
         }
+
+        private bool SetUpPlaneSender()
+        {
+            if (planeSender != null) return true;
+
+            planeSender = FindObjectOfType<XRRemotePlaneSender>();
+            if (planeSender == null)
+            {
+                if (log)
+                {
+                    Debug.LogErrorFormat(
+                        ConnectionMessage(
+                            string.Format("Event: XRRemotePlaneSender not found")));
+                }
+                return false;
+            }
+
+            return true; 
+        }
+        
+        private bool SetUpInputSystem(XRRemoteInputReader addobjectOnInput)
+        {
+            if (addobjectOnInput == null) {
+                inputReader = FindObjectOfType<XRRemoteInputReader>();
+
+                if (inputReader == null) {
+                    if (log) {
+                        Debug.LogErrorFormat(
+                            ConnectionMessage(
+                                string.Format("Event: XRRemoteInputReader not found")));
+                    }
+                    return false;
+                }
+            }
+
+            return true;
+        }
         #endregion
 
 
@@ -370,6 +418,37 @@ namespace XRRemote
             xrRemotePacket.trackedPose = pose;
 
             xrRemotePacket.face = new XRRemote.FaceInfo();
+
+            //Get planes
+            if (planeSender != null) {
+                if (planeSender.TryGetPlanesInfo(out PlanesInfo planesInfo)) {
+                    xrRemotePacket.planesInfo = planesInfo;
+                } else {
+                    xrRemotePacket.planesInfo = null;
+                }
+            } else {
+                if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived: XRRemotePlaneSender not found!"));
+                xrRemotePacket.planesInfo = null;
+            }
+
+            //Get input
+            if (inputReader != null) {
+                if (inputReader.TryGetLastInput(out Vector3 lastTouchPosition)) {
+                    xrRemotePacket.touchPosition = new float3(lastTouchPosition.x, lastTouchPosition.y, lastTouchPosition.z);
+                    xrRemotePacket.touchPositionNormalized = new float3(inputReader.lastTouchPositionNormalized);
+                } else {
+                    xrRemotePacket.touchPosition = null;
+                    xrRemotePacket.touchPositionNormalized = null;
+                }
+            } else {
+                if (log)
+                {
+                    Debug.LogFormat(
+                        ConnectionMessage(
+                            "OnARCameraFrameReceived Event: XRRemoteInputManager not set up."));
+                }
+                xrRemotePacket.touchPosition = null;
+            }
 
 #if UNITY_IOS
             if(senderMaterial == null) senderMaterial = Resources.Load(defaultMaterial) as Material;

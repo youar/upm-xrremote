@@ -22,6 +22,7 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 
+using System;
 using UnityEngine;
 using UnityEngine.Networking.PlayerConnection;
 using UnityEngine.XR.ARFoundation;
@@ -107,11 +108,48 @@ namespace XRRemote
                     XRRemote.SerializeableTexture2D.FromSerializeableTexture2D(xrRemotePacketReceived.texture);
             }
         }
+
+        public PlanesInfo planesInfo
+        {
+            get
+            {
+                return xrRemotePacketReceived == null ? null : xrRemotePacketReceived.planesInfo;
+            }
+        }
+
+        public Vector3 touchPosition
+        {
+            get
+            {
+                if (xrRemotePacketReceived == null || xrRemotePacketReceived.touchPosition == null) 
+                    return Vector3.zero;
+                
+                return new Vector3(xrRemotePacketReceived.touchPosition.x, xrRemotePacketReceived.touchPosition.y, xrRemotePacketReceived.touchPosition.z);
+            }
+        }
+
+        public Vector2 touchPositionNormalized
+        {
+            get
+            {
+                if (xrRemotePacketReceived == null || xrRemotePacketReceived.touchPositionNormalized == null) 
+                    return Vector3.zero;
+                
+                return new Vector2(xrRemotePacketReceived.touchPositionNormalized.x, xrRemotePacketReceived.touchPositionNormalized.y);
+            }
+        }
         /////////////////////////////////////////////////////////////////////////
 
         bool isXRPlayerInitialized = false;
 
         bool readyForNewFrame = false;
+
+        /////////////////////////////////////////////////////////////////////////
+
+        // EVENTS
+
+        public event EventHandler OnInputDataReceived;
+        public event EventHandler OnPlanesInfoReceived;
 
         private void OnEnable()
         {
@@ -122,7 +160,7 @@ namespace XRRemote
         void Start()
         {
             //
-            // initialize the pose deliever system from
+            // initialize the pose delivery system from
             // the player. 
             TrySetupTrackedPoseDriver();
 
@@ -131,6 +169,11 @@ namespace XRRemote
             // is properly set up to recieve and then
             // push the image feed from device, to editor. 
             TrySetUpXRRemoteVideo();
+
+            //
+            // initialize the plane delivery system from
+            // the player. 
+            TrySetUpXRRemotePlaneManager();
         }
 
         void OnGUI()
@@ -204,6 +247,14 @@ namespace XRRemote
 
             xrRemoteTrackingState = TrackingState.Tracking;
 
+            if (xrRemotePacketReceived.planesInfo != null) {
+                OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
+            }
+
+            if (xrRemotePacketReceived.touchPosition != null) {
+                OnInputDataReceived?.Invoke(this, EventArgs.Empty);
+            }
+
 #if UNITY_IOS
             SetXRRemoteVideoFrameRGB(xrRemoteScreenRGBTex);
 #elif UNITY_ANDROID
@@ -259,7 +310,7 @@ namespace XRRemote
             if (remoteVideo == null)
             {
                 // add a XRRemote video to the camera
-                // add ites texture. 
+                // add its texture. 
                 remoteVideo = Camera.main.gameObject.AddComponent<XRRemoteVideo>();
                 Material defaultMaterial = Resources.Load("XRVideoMaterial") as Material;
                 if (defaultMaterial == null)
@@ -284,6 +335,21 @@ namespace XRRemote
                     Debug.LogErrorFormat(
                         XRRemoteConnectionMessage(
                             "TrySetUpXRRemoteVideo Error: remoteVideo == null"));
+                }
+            }
+        }
+
+        private void TrySetUpXRRemotePlaneManager()
+        {
+            XRRemotePlaneManager xRRemotePlaneManager = FindObjectOfType<XRRemotePlaneManager>();
+            if (xRRemotePlaneManager == null)
+            {
+                if (DebugFlags.displayXRRemoteConnectionStats)
+                {
+                    Debug.LogErrorFormat(
+                        XRRemoteConnectionMessage(
+                            string.Format("TrySetUpXRRemotePlaneManager Event: null XRRemotePlaneManager")));
+                    return;
                 }
             }
         }

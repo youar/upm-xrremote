@@ -25,7 +25,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace ARKitStream.Internal
+namespace XRRemote
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
