@@ -49,8 +49,6 @@ No additional notes were given.
 	- [ ] Add `CHANGELOG`
 - Update packages
 	- [ ] `upm-xrremote.apk`
-	- [ ] `source.zip`
-	- [ ] `source.tar.gz`
 
 ### Update Documentation
 - [ ] Update `README.md` as necessary
