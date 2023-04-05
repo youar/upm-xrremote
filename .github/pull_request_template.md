@@ -35,12 +35,27 @@ Ultimately, we have moved from <!--- Starting Error Num ---> errors to <!--- End
 
 No additional notes were given.
 
-## :chart_with_downwards_trend: Logs
+## Release Checklist
 
-No (crash) logs were given. 
+## Testing
+- [ ] Build app for Android
+- [ ] Build app for IOS
+- [ ] Make sure `README.md` instructions to build server and client work
+
+### Prepare Project
+
+- Visit the project's releases page (e.g. `open https://github.com/youar/upm-xrremote/releases`)
+	- [ ] Create a new release object for your git tag (i.e. `v$VERSION`).
+	- [ ] Add `CHANGELOG`
+- Update packages
+	- [ ] `upm-xrremote.apk`
+
+### Update Documentation
+- [ ] Update `README.md` as necessary
+	- [ ] Update requirements
+	- [ ] Document new features
 
 #### Build Status
 
 - [x] Build Passes ✅ 
 - [x] Build Fails :x: 
----> 
