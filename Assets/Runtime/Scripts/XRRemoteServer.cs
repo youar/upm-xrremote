@@ -131,6 +131,12 @@ namespace XRRemote
         /// </summary>
         public XRRemoteInputReader inputReader;
 
+        /// <summary>
+        /// Reference to RawImage component used to display remote UI canvas
+        /// </summary>
+        public RawImage remoteCanvas;
+        private Texture2D remoteCanvasTexture;
+
         private string ConnectionMessage(string baseMessage)
         {
             return $"XRRemoteServer.cs {baseMessage}";
@@ -223,7 +229,7 @@ namespace XRRemote
             if (!SetUpTrackedPoseDriver(this.arPoseDriver)) return;
             if (!SetUpPlaneSender()) return;
             if (!SetUpInputSystem(this.inputReader)) return;
-
+            if (!SetupRemoteCanvas()) return;
 #if UNITY_ANDROID
             //
             // make sure we have a way to get access to the
@@ -385,6 +391,29 @@ namespace XRRemote
 
             return true;
         }
+
+        private bool SetupRemoteCanvas()
+        {
+            if (remoteCanvas != null) return true;
+
+            remoteCanvas = GameObject.Find("XRRemoteUICanvas").GetComponent<RawImage>();
+
+            if (remoteCanvas == null)
+            {
+                if (log)
+                {
+                    Debug.LogErrorFormat(
+                        ConnectionMessage(
+                            string.Format("Event: Image component named 'XRRemoteUICanvas' not found")));
+                }
+                return false;
+            }
+
+            remoteCanvas.enabled = false;
+            remoteCanvasTexture = new Texture2D(100, 100, TextureFormat.RGBA32, false);
+
+            return true; 
+        }
         #endregion
 
 
@@ -512,6 +541,21 @@ namespace XRRemote
             readyForFrame = packet.value;
         }
 
+        private void OnUICaptureRecieved(XRUICapturePacket xrUiCapturePacket)
+        {
+            if (remoteCanvas == null) return;
+
+            Debug.LogError($"OnUICaptureRecieved: " + xrUiCapturePacket.frameCount);
+            Debug.Log($"OnUICaptureRecieved: " + xrUiCapturePacket.textureData.Length);
+            //Read data as Texture2d
+            remoteCanvasTexture.LoadImage(xrUiCapturePacket.textureData);
+            remoteCanvasTexture.Apply();
+
+            //Show remote canvas
+            remoteCanvas.texture = remoteCanvasTexture;
+            remoteCanvas.enabled = true;
+        }
+
 #region EDITOR_CONNECTION_TESTING
         public void EditorSendTest()
         {
@@ -552,6 +596,7 @@ namespace XRRemote
         public override void MessageReceived(object obj) {
             if (obj is XRFrameReadyPacket) OnReadyForFrameEvent(obj as XRFrameReadyPacket);
             if (obj is EditorARKitSessionInitialized) OnARKitSessionInitializationMessage(obj as EditorARKitSessionInitialized);
+            if (obj is XRUICapturePacket) OnUICaptureRecieved(obj as XRUICapturePacket);
         }
     }
 }

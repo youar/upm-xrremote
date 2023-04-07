@@ -38,6 +38,12 @@ namespace XRRemote
     public class ARSessionHandShakePacket {
         public bool value;
     }
+
+    [Serializable]
+    public class XRUICapturePacket {
+        public int frameCount;
+        public byte[] textureData;
+    }
     
     [Serializable]
     public class EditorARKitSessionInitialized {

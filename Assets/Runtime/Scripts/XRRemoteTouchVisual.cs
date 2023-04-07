@@ -42,6 +42,8 @@ namespace XRRemote
             imageRectTransform.localScale = Vector3.one * Mathf.Lerp(1f, fadeScale, timeSinceVisible / timeToShowVisual);
 
             timeSinceVisible += Time.deltaTime;
+
+            rectTransform.SetAsLastSibling();
         }
 
         private void XRRemoteInputSystem_OnTouch(object sender, EventArgs e)
