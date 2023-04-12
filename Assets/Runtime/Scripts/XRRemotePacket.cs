@@ -42,7 +42,7 @@ namespace XRRemote
     [Serializable]
     public class XRUICapturePacket {
         public int frameCount;
-        public byte[] textureData;
+        public byte[] textureData = null;
     }
     
     [Serializable]

@@ -408,7 +408,7 @@ namespace XRRemote
         }
 
         /// <summary>
-        /// Create packet and send UI to Player
+        /// Create packet and send compressed UI to Player
         /// </summary>
         public void SendXRUICapturePacketToPlayer(OnUICapturedArgs obj)
         {

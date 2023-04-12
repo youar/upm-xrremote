@@ -49,6 +49,24 @@ namespace XRRemote
 
     public class XRRemoteServer : Server
     {
+        private static XRRemoteServer instance = null;
+        public static XRRemoteServer Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = FindObjectOfType<XRRemoteServer>();
+                if (instance == null)
+                {
+                    if (DebugFlags.displayXRRemoteConnectionStats)
+                    {
+                        Debug.LogErrorFormat("XRRemoteServer failure");
+                    }
+                }
+                return instance;
+            }
+        }
+
         /// <summary>
         /// device reference to the DEVICE camera
         /// this will send out the frame to
@@ -136,6 +154,7 @@ namespace XRRemote
         /// </summary>
         public RawImage remoteCanvas;
         private Texture2D remoteCanvasTexture;
+        public XRRemoteUIReceiver uiReceiver;
 
         private string ConnectionMessage(string baseMessage)
         {
@@ -230,6 +249,7 @@ namespace XRRemote
             if (!SetUpPlaneSender()) return;
             if (!SetUpInputSystem(this.inputReader)) return;
             if (!SetupRemoteCanvas()) return;
+            if (!SetupUIReceiver()) return;
 #if UNITY_ANDROID
             //
             // make sure we have a way to get access to the
@@ -409,8 +429,30 @@ namespace XRRemote
                 return false;
             }
 
+            
+
             remoteCanvas.enabled = false;
             remoteCanvasTexture = new Texture2D(100, 100, TextureFormat.RGBA32, false);
+
+            return true; 
+        }
+
+        private bool SetupUIReceiver()
+        {
+            if (uiReceiver != null) return true;
+
+            uiReceiver = FindObjectOfType<XRRemoteUIReceiver>();
+
+            if (uiReceiver == null)
+            {
+                if (log)
+                {
+                    Debug.LogErrorFormat(
+                        ConnectionMessage(
+                            string.Format("Event: 'XRRemoteUIReceiver' not found")));
+                }
+                return false;
+            }
 
             return true; 
         }
@@ -545,8 +587,9 @@ namespace XRRemote
         {
             if (remoteCanvas == null) return;
 
-            Debug.LogError($"OnUICaptureRecieved: " + xrUiCapturePacket.frameCount);
-            Debug.Log($"OnUICaptureRecieved: " + xrUiCapturePacket.textureData.Length);
+            //Debug.LogError($"OnUICaptureRecieved: id=" + xrUiCapturePacket.frameCount);
+            //Debug.Log($"OnUICaptureRecieved: data length=" + xrUiCapturePacket.textureData.Length);
+
             //Read data as Texture2d
             remoteCanvasTexture.LoadImage(xrUiCapturePacket.textureData);
             remoteCanvasTexture.Apply();
@@ -554,6 +597,27 @@ namespace XRRemote
             //Show remote canvas
             remoteCanvas.texture = remoteCanvasTexture;
             remoteCanvas.enabled = true;
+        }
+
+        private void OnUIFragmentRecieved(BaseFragmentPacket fragmentPacket)
+        {
+            if (uiReceiver == null) return;
+
+            uiReceiver.ReceiveFragmentPacket(fragmentPacket);
+        }
+
+        private void OnUIStartFragmentRecieved(TestStartFragmentPacket startfragmentPacket)
+        {
+            if (uiReceiver == null) return;
+
+            uiReceiver.ReceiveStartFragmentPacket(startfragmentPacket);
+        }
+
+        private void OnUIDataFragmentRecieved(TestDataFragmentPacket datafragmentPacket)
+        {
+            if (uiReceiver == null) return;
+
+            uiReceiver.ReceiveDataFragmentPacket(datafragmentPacket);
         }
 
 #region EDITOR_CONNECTION_TESTING
@@ -597,6 +661,21 @@ namespace XRRemote
             if (obj is XRFrameReadyPacket) OnReadyForFrameEvent(obj as XRFrameReadyPacket);
             if (obj is EditorARKitSessionInitialized) OnARKitSessionInitializationMessage(obj as EditorARKitSessionInitialized);
             if (obj is XRUICapturePacket) OnUICaptureRecieved(obj as XRUICapturePacket);
+            if (obj is BaseFragmentPacket) OnUIFragmentRecieved(obj as BaseFragmentPacket);
+            if (obj is TestFragmentPacket) {
+                TestFragmentPacket packet = obj as TestFragmentPacket;
+                Debug.LogError($"MessageReceived: id = {packet.id}");
+            }
+            if (obj is TestStartFragmentPacket) {
+                TestStartFragmentPacket packet = obj as TestStartFragmentPacket;
+                //Debug.LogError($"MessageReceived: id = {packet.id}, expectedLength = {packet.expectedLength}");
+                OnUIStartFragmentRecieved(packet);
+            }
+            if (obj is TestDataFragmentPacket) {
+                TestDataFragmentPacket packet = obj as TestDataFragmentPacket;
+                //Debug.LogError($"MessageReceived: id = {packet.id}, index = {packet.index}, buffer_size = {packet.data.Length}");
+                OnUIDataFragmentRecieved(packet);
+            }
         }
     }
 }
