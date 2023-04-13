@@ -583,6 +583,9 @@ namespace XRRemote
             readyForFrame = packet.value;
         }
 
+        /// <summary>
+        /// Display compressed UI canvas preview
+        /// </summary>
         private void OnUICaptureRecieved(XRUICapturePacket xrUiCapturePacket)
         {
             if (remoteCanvas == null) return;
@@ -599,21 +602,20 @@ namespace XRRemote
             remoteCanvas.enabled = true;
         }
 
-        private void OnUIFragmentRecieved(BaseFragmentPacket fragmentPacket)
-        {
-            if (uiReceiver == null) return;
-
-            uiReceiver.ReceiveFragmentPacket(fragmentPacket);
-        }
-
-        private void OnUIStartFragmentRecieved(TestStartFragmentPacket startfragmentPacket)
+        /// <summary>
+        /// Start receiving UI canvas data
+        /// </summary>
+        private void OnUIStartFragmentRecieved(StartFragmentPacket startfragmentPacket)
         {
             if (uiReceiver == null) return;
 
             uiReceiver.ReceiveStartFragmentPacket(startfragmentPacket);
         }
 
-        private void OnUIDataFragmentRecieved(TestDataFragmentPacket datafragmentPacket)
+        /// <summary>
+        /// Receive UI canvas data fragments
+        /// </summary>
+        private void OnUIDataFragmentRecieved(DataFragmentPacket datafragmentPacket)
         {
             if (uiReceiver == null) return;
 
@@ -661,21 +663,8 @@ namespace XRRemote
             if (obj is XRFrameReadyPacket) OnReadyForFrameEvent(obj as XRFrameReadyPacket);
             if (obj is EditorARKitSessionInitialized) OnARKitSessionInitializationMessage(obj as EditorARKitSessionInitialized);
             if (obj is XRUICapturePacket) OnUICaptureRecieved(obj as XRUICapturePacket);
-            if (obj is BaseFragmentPacket) OnUIFragmentRecieved(obj as BaseFragmentPacket);
-            if (obj is TestFragmentPacket) {
-                TestFragmentPacket packet = obj as TestFragmentPacket;
-                Debug.LogError($"MessageReceived: id = {packet.id}");
-            }
-            if (obj is TestStartFragmentPacket) {
-                TestStartFragmentPacket packet = obj as TestStartFragmentPacket;
-                //Debug.LogError($"MessageReceived: id = {packet.id}, expectedLength = {packet.expectedLength}");
-                OnUIStartFragmentRecieved(packet);
-            }
-            if (obj is TestDataFragmentPacket) {
-                TestDataFragmentPacket packet = obj as TestDataFragmentPacket;
-                //Debug.LogError($"MessageReceived: id = {packet.id}, index = {packet.index}, buffer_size = {packet.data.Length}");
-                OnUIDataFragmentRecieved(packet);
-            }
+            if (obj is StartFragmentPacket) OnUIStartFragmentRecieved(obj as StartFragmentPacket);
+            if (obj is DataFragmentPacket) OnUIDataFragmentRecieved(obj as DataFragmentPacket);
         }
     }
 }

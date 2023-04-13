@@ -6,39 +6,14 @@ using UnityEngine;
 namespace XRRemote
 {
     [Serializable]
-    public abstract class BaseFragmentPacket 
-    {
-        public int transmissionId;
-    }
-
-    [Serializable]
-    public class StartFragmentPacket : BaseFragmentPacket
-    {
-        public int expectedLength;
-    }
-
-    [Serializable]
-    public class DataFragmentPacket : BaseFragmentPacket
-    {
-        public int index;
-        public byte[] data;
-    }
-
-    [Serializable]
-    public class TestFragmentPacket
-    {
-        public int id;
-    }
-
-    [Serializable]
-    public class TestStartFragmentPacket
+    public class StartFragmentPacket
     {
         public int id;
         public int expectedLength;
     }
 
     [Serializable]
-    public class TestDataFragmentPacket
+    public class DataFragmentPacket
     {
         public int id;
         public int index;
@@ -83,15 +58,8 @@ namespace XRRemote
             isSending = true;
 
             //Tell client that it is going to receive some data and tell it how much it will be.
-            // XREditorClient.Instance.Send(
-            //     new StartFragmentPacket {
-            //         transmissionId = transmissionId,
-            //         expectedLength = data.Length
-            //     }
-            // );
-            Debug.Log($"SendBytesToClientsRoutine: Start message: id = {newId}, dataLength = {data.Length}");
-             //XREditorClient.Instance.Send(new TestFragmentPacket {id = 1}); 
-             XREditorClient.Instance.Send(new TestStartFragmentPacket {id = newId, expectedLength = data.Length}); 
+            //Debug.Log($"SendBytesToClientsRoutine: Start message: id = {newId}, dataLength = {data.Length}");
+            XREditorClient.Instance.Send(new StartFragmentPacket {id = newId, expectedLength = data.Length}); 
             yield return new WaitForSeconds(timeBetweenSendingFragment);
 
             //Transmit data in chunks of bufferSize
@@ -108,16 +76,8 @@ namespace XRRemote
                 System.Array.Copy(data, currentIndex, buffer, 0, bufferSize);
 
                 //Send the chunk
-                // XREditorClient.Instance.Send(
-                //     new DataFragmentPacket {
-                //         transmissionId = transmissionId,
-                //         index = currentIndex,
-                //         data = buffer
-                //     }
-                // );
-                Debug.Log($"SendBytesToClientsRoutine: Send message: id = {currentIndex}");
-                //XREditorClient.Instance.Send(new TestFragmentPacket {id = currentIndex});
-                XREditorClient.Instance.Send(new TestDataFragmentPacket {id = newId, index = currentIndex, data = buffer});
+                //Debug.Log($"SendBytesToClientsRoutine: Send message: id = {currentIndex}");
+                XREditorClient.Instance.Send(new DataFragmentPacket {id = newId, index = currentIndex, data = buffer});
                 currentIndex += bufferSize;
 
                 

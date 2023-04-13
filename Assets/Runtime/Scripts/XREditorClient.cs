@@ -181,6 +181,9 @@ namespace XRRemote
             // the player. 
             TrySetUpXRRemotePlaneManager();
 
+            //
+            // initialize the UI component and texture
+            // needed to send canvas to device
             TrySetupRemoteUICapture();
         }
 

@@ -44,6 +44,7 @@ namespace XRRemote
             System.Array.Copy(recBuffer, 0, dataReceived, currentDataIndex, recBuffer.Length);
             currentDataIndex += recBuffer.Length;
 
+            //Received chunk
             currentPacketCount++;
             OnDataFragmentReceived?.Invoke(this, EventArgs.Empty);
 
@@ -52,6 +53,7 @@ namespace XRRemote
                 return;
             }
 
+            //Entire data has been sent
             OnDataCompletelyReceived?.Invoke(this, 
                 new OnDataCompletelyReceivedEventArgs {
                     data = dataReceived

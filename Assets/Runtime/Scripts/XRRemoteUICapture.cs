@@ -51,13 +51,13 @@ namespace XRRemote
             //     canvasHeight = Mathf.RoundToInt(uiCanvasRectTransform.rect.height);
             // }
 
-            fragmentSender = GetComponent<FragmentSender>();
-        }
-
-        private void OnEnable()
-        {
-            fragmentSender.OnDataFragmentSent += FragmentSender_OnDataFragmentSent;
-            fragmentSender.OnDataComepletelySent += FragmentSender_OnDataComepletelySent;
+            if (TryGetComponent<FragmentSender>(out FragmentSender fragmentSender)) {
+                this.fragmentSender = fragmentSender;
+            } else {
+                if (DebugFlags.displayXRFragmentSender) {
+                    Debug.LogWarningFormat("XRRemoteUICapture: required FragmentSender component not found.");
+                }
+            }
         }
 
         public void CaptureUiToRenderTexture()
@@ -87,13 +87,15 @@ namespace XRRemote
             uiScreenShot.ReadPixels(new Rect(0,0, targetTexture.width, targetTexture.height), 0, 0);
             RenderTexture.active = null;
 
+            //Start sending uncompressed version of the UI capture
             byte[] textureData = uiScreenShot.EncodeToPNG();
-            Debug.Log($"Texture UNcompressed data is {textureData.Length} bytes");
+            //Debug.Log($"Texture UNcompressed data is {textureData.Length} bytes");
             fragmentSender.SendBytesToClient(Time.frameCount, textureData);
             
+            //Compress a version that can sent over in a single transmission as placeholder
             TextureScale.Point(uiScreenShot, width, height);
             textureData = uiScreenShot.EncodeToPNG();
-            Debug.Log($"Texture compressed data is {textureData.Length} bytes");
+            //Debug.Log($"Texture compressed data is {textureData.Length} bytes");
 
             //test: Show preview on Client
             if (testImage != null) {
@@ -101,7 +103,7 @@ namespace XRRemote
                 remoteCanvasTexture.LoadImage(textureData);
                 remoteCanvasTexture.Apply();
 
-                Debug.Log($"OnUICaptureRecieved: {remoteCanvasTexture.width} x {remoteCanvasTexture.height}");
+                //Debug.Log($"OnUICaptureRecieved: {remoteCanvasTexture.width} x {remoteCanvasTexture.height}");
                 testImage.texture = remoteCanvasTexture;
             }
 
@@ -110,16 +112,6 @@ namespace XRRemote
                 frameCount = Time.frameCount,
                 data = textureData,
             });
-        }
-
-        private void FragmentSender_OnDataComepletelySent(object sender, EventArgs e)
-        {
-            Debug.Log($"Data completely sent!");
-        }
-
-        private void FragmentSender_OnDataFragmentSent(object sender, EventArgs e)
-        {
-            //Debug.Log($"Fragment sent!");
         }
     }
 #endif
