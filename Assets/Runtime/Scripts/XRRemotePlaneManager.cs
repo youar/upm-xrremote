@@ -23,6 +23,8 @@ namespace XRRemote
 
         private void OnDisable()
         {
+            if (XREditorClient.Instance == null) return;
+            
             XREditorClient.Instance.OnPlanesInfoReceived -= XREditorClient_OnPlanesInfoReceived;
         }
 

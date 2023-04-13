@@ -47,8 +47,8 @@ namespace XRRemote
                 canvasSize.x = Screen.currentResolution.height;//canvas.GetComponent<RectTransform>().rect.height;
                 canvasSize.y = Screen.currentResolution.width;//canvas.GetComponent<RectTransform>().rect.width;
 
-                Debug.Log($"Screen size: {Screen.currentResolution.width} x {Screen.currentResolution.height}");
-                Debug.Log($"Canvas size: {canvas.GetComponent<RectTransform>().rect.height} x {canvas.GetComponent<RectTransform>().rect.width}");
+                // Debug.Log($"Screen size: {Screen.currentResolution.width} x {Screen.currentResolution.height}");
+                // Debug.Log($"Canvas size: {canvas.GetComponent<RectTransform>().rect.height} x {canvas.GetComponent<RectTransform>().rect.width}");
             }
 
             if (canvas == null) {
@@ -77,6 +77,7 @@ namespace XRRemote
 
         private void OnDisable()
         {
+            if (XREditorClient.Instance == null) return;
             XREditorClient.Instance.OnInputDataReceived -= XREditorClient_OnInputDataReceived;
         }
 

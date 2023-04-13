@@ -11,7 +11,7 @@ namespace XRRemote
     public class XRRemoteTouchVisual : MonoBehaviour
     {
         private float timeToShowVisual = 0.1f;
-        private float fadeScale = 5f;
+        private float fadeScale = 10f;
         private float timeSinceVisible = float.PositiveInfinity;
 
         [SerializeField] private RectTransform imageRectTransform;

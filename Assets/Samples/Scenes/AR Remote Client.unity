@@ -249,7 +249,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 10, y: 10}
-  m_SizeDelta: {x: 54, y: 96}
+  m_SizeDelta: {x: 281.6591, y: 500.7273}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &231695042
 GameObject:
@@ -1146,8 +1146,10 @@ MonoBehaviour:
   uiCanvas: {fileID: 685474685}
   uiCamera: {fileID: 506440169}
   targetTexture: {fileID: 8400000, guid: dceaada6319e81649a2eadb1afc53f6d, type: 2}
+  layerToCapture:
+    serializedVersion: 2
+    m_Bits: 32
   testImage: {fileID: 941740735}
-  fragmentSender: {fileID: 605699979}
 --- !u!4 &605699978
 Transform:
   m_ObjectHideFlags: 0

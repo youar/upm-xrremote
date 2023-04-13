@@ -20,6 +20,7 @@ namespace XRRemote
         [SerializeField] private Canvas uiCanvas;
         [SerializeField] private Camera uiCamera;
         [SerializeField] private RenderTexture targetTexture;
+        [SerializeField] LayerMask layerToCapture;
 
         [SerializeField] private RawImage testImage;
 
@@ -29,7 +30,7 @@ namespace XRRemote
         int height = 1920 / 15;
         int depthBuffer = 0;
 
-        [SerializeField] private FragmentSender fragmentSender;
+        private FragmentSender fragmentSender;
 
         private void Awake()
         {
@@ -71,6 +72,7 @@ namespace XRRemote
             uiCanvas.renderMode = RenderMode.ScreenSpaceCamera;
             uiCanvas.worldCamera = uiCamera;
             uiCamera.targetTexture = targetTexture;
+            uiCamera.cullingMask = layerToCapture;
 
             //Capture the UI layer to targetTexture
             uiCamera.Render();
