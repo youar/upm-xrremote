@@ -238,4 +238,10 @@ namespace XRRemote
         }
     }
 
+    [Serializable]
+    public class XRRemoteServerOnConnectPacket
+    {
+        public float canvasWidth;
+        public float canvasHeight;
+    }
 }

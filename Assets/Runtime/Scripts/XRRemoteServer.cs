@@ -250,6 +250,12 @@ namespace XRRemote
             if (!SetUpInputSystem(this.inputReader)) return;
             if (!SetupRemoteCanvas()) return;
             if (!SetupUIReceiver()) return;
+
+            if (!SendOnConnectPacket()) {
+                if (log) {
+                    Debug.LogErrorFormat("XRRemoteServer: Unable to send connection packet!");
+                }
+            }
 #if UNITY_ANDROID
             //
             // make sure we have a way to get access to the
@@ -455,6 +461,24 @@ namespace XRRemote
             }
 
             return true; 
+        }
+
+        private bool SendOnConnectPacket()
+        {
+            XRRemoteServerOnConnectPacket connectionPacket = new XRRemoteServerOnConnectPacket();
+
+            Canvas canvas = FindObjectOfType<Canvas>();
+
+            if (canvas == null) return false;
+
+            if (canvas.TryGetComponent<RectTransform>(out RectTransform canvaasRectTransform)) {
+                connectionPacket.canvasWidth = canvaasRectTransform.rect.width;
+                connectionPacket.canvasHeight = canvaasRectTransform.rect.height;
+            } else {
+                return false;
+            }
+
+            return Send(connectionPacket);
         }
         #endregion
 
