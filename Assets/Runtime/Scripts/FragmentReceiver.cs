@@ -15,6 +15,7 @@ namespace XRRemote
         private int currentTransmissionId;
         private int currentDataIndex = 0;
         private byte[] dataReceived;
+        private byte[] data;
 
         private int currentPacketCount = 0;
 
@@ -53,10 +54,13 @@ namespace XRRemote
                 return;
             }
 
+            //Decompress data
+            data = CompressionHelper.ByteArrayDecompress(dataReceived);
+
             //Entire data has been sent
             OnDataCompletelyReceived?.Invoke(this, 
                 new OnDataCompletelyReceivedEventArgs {
-                    data = dataReceived
+                    data = this.data
                 }
             );
         }

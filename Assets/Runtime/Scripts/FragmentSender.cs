@@ -53,7 +53,7 @@ namespace XRRemote
         {
             //Start sending
             transmissionId = newId;
-            data = dataToSend;
+            data = CompressionHelper.ByteArrayCompress(dataToSend);
             currentIndex = 0;
             isSending = true;
 
