@@ -501,7 +501,7 @@ namespace XRRemote
         /// <param name="env"></param>
         private void OnARKitSessionInitializationMessage(EditorARKitSessionInitialized env)
         {
-            string successMesage = "XRRemoteServer Event: initialized";
+            //string successMesage = "XRRemoteServer Event: initialized";
             arSystemBarText.text = SessionInfoMessage(XRSessionInfoStates.initialized);
             arSessionInitialized = true;
             SendToEditor(new ARSessionHandShakePacket{value = true});

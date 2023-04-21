@@ -85,7 +85,7 @@ namespace XRRemote
             editorName = $"{SystemInfo.deviceUniqueIdentifier}_{DateTime.Now.ToString("hhmmss")}";
         }
 
-        protected void Update() {
+        protected virtual void Update() {
             if (connectionState == ConnectionState.CONNECTED && LastConnectionState == ConnectionState.DISCONNECTED)
             {
                 OnConnection();

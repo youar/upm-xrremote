@@ -51,6 +51,11 @@ namespace XRRemote
             return base.Equals((Pose)obj);
         }
 
+        public override int GetHashCode()
+        {
+            return position.GetHashCode() + rotation.GetHashCode();
+        }
+
         public override string ToString()
         {
             return $"Pose:(p:{position}, r:{rotation})";
