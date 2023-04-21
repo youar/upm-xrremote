@@ -11,6 +11,9 @@
 	}],
 	"dependencies": {
 		"com.unity.inputsystem": "1.4.4",
-		"com.unity.textmeshpro": "3.0.6"
+		"com.unity.textmeshpro": "3.0.6",
+		"com.unity.xr.arfoundation": "4.1.12",
+		"com.unity.xr.arcore": "4.1.12",
+		"com.unity.xr.arkit": "4.1.12"
 	}
 }
