@@ -1,14 +1,16 @@
 {
-    "name": "com.youar.upm-xrremote",
-    "displayName": "upm-xrremote",
-    "version": "0.1.2",
-    "unity": "2020.3",
-    "description": "Allows you to use data from mobile device to help build and test AR applications with Unity.",
-    "samples": [
-        {
-            "displayName": "Example Scenes",
-            "description": "Contains a bare-bones sample scene to show required components\n\n Also contains the scene used to build the XRRemote apk",
-            "path": "Samples/Scenes"
-        }
-    ]
+	"name": "com.youar.upm-xrremote",
+	"displayName": "upm-xrremote",
+	"version": "0.1.2",
+	"unity": "2020.3",
+	"description": "Allows you to use data from mobile device to help build and test AR applications with Unity.",
+	"samples": [{
+		"displayName": "Example Scenes",
+		"description": "Contains a bare-bones sample scene to show required components\n\n Also contains the scene used to build the XRRemote apk",
+		"path": "Samples/Scenes"
+	}],
+	"dependencies": {
+		"com.unity.inputsystem": "1.4.4",
+		"com.unity.textmeshpro": "3.0.6"
+	}
 }
