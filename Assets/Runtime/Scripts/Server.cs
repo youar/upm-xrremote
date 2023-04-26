@@ -30,6 +30,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace XRRemote
 {
@@ -214,7 +215,8 @@ namespace XRRemote
                     tcpServer.Start();
 		    
                 Debug.Log("Server is listening");
-                Byte[] bytes = new Byte[1024];
+                int byteLimit = 1024;
+                Byte[] bytes = new Byte[byteLimit];
 
                 while (true)
                 {
@@ -223,21 +225,38 @@ namespace XRRemote
                         using (connectedTcpClient = tcpServer.AcceptTcpClient()) {
                             Debug.Log($"Client Connected :: {(connectedTcpClient.Client.LocalEndPoint as IPEndPoint)?.Address}");
                             connectionState = ConnectionState.CONNECTED;
-                            using (NetworkStream stream = connectedTcpClient.GetStream()) {
-                                int length;
-
-                                while ((length = stream.Read(bytes, 0, bytes.Length)) != 0) {
-                                    byte[] incomingData = new byte[length];
-                                    Array.Copy(bytes, 0, incomingData, 0, length);
-
-                                    lock (messageQueue) {
-                                        messageQueue.Enqueue(incomingData);
-                                    }
-
-                                    string clientMessage = Encoding.ASCII.GetString(incomingData);
-                                    //Debug.Log("client message received as: " + clientMessage);
+                    using (NetworkStream stream = connectedTcpClient.GetStream()) {
+                        int length;
+                        while ((length = stream.Read(bytes, 0, 4)) != 0) {
+                            try { 
+                                int packetLength = BitConverter.ToInt32(bytes, 0);
+                                
+                                var incomingData = new byte[packetLength];
+                                int remainder = packetLength;
+                                int index = 0;
+                                while (packetLength != index) {
+                                    length = stream.Read(bytes, 0, Math.Min(remainder, bytes.Length));
+                                    remainder -= length;
+                                    
+                                    Array.Copy(bytes, 0, incomingData, index, length);
+                                    
+                                    index += length;
+                                }
+                                lock (messageQueue) {
+                                    Assert.AreEqual(index, packetLength);
+                                    messageQueue.Enqueue(incomingData);
                                 }
                             }
+                            catch (ArgumentOutOfRangeException e) {
+                                Debug.LogException(e);
+                                throw;
+                            }
+                            catch (ArgumentException e) {
+                                Debug.LogException(e);
+                                throw;
+                            }
+                        }
+                    }
                         }
                     }
                     catch (SocketException socketException) {

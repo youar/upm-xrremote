@@ -9,6 +9,7 @@ namespace XRRemote
     public class OnUICapturedArgs : EventArgs
     {
         public int frameCount;
+        public long timeStamp;
         public byte[] data;
     }
 
@@ -59,6 +60,18 @@ namespace XRRemote
                     Debug.LogWarningFormat("XRRemoteUICapture: required FragmentSender component not found.");
                 }
             }
+        }
+
+        private void Start()
+        {
+            StartCoroutine(StreamUiToDevice());
+        }
+
+        private IEnumerator StreamUiToDevice()
+        {
+            float timeBetweenFrames = 0.25f;
+            CaptureUiToRenderTexture();
+            yield return new WaitForSeconds(timeBetweenFrames);
         }
 
         public void CaptureUiToRenderTexture()

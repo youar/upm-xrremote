@@ -617,6 +617,10 @@ namespace XRRemote
             //Debug.LogError($"OnUICaptureRecieved: id=" + xrUiCapturePacket.frameCount);
             //Debug.Log($"OnUICaptureRecieved: data length=" + xrUiCapturePacket.textureData.Length);
 
+            System.DateTime currentTime = System.DateTime.Now;
+            System.DateTime captureTime = System.DateTime.FromBinary(xrUiCapturePacket.timeStamp);
+            Debug.LogError($"Capture took {currentTime.Subtract(captureTime).ToString()}");
+
             //Read data as Texture2d
             remoteCanvasTexture.LoadImage(xrUiCapturePacket.textureData);
             remoteCanvasTexture.Apply();

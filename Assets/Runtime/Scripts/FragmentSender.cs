@@ -23,8 +23,8 @@ namespace XRRemote
 #if UNITY_EDITOR
     public class FragmentSender : MonoBehaviour
     {
-        private static int defaultBufferSize = 512;
-        private static float timeBetweenSendingFragment = 0.2f;
+        private static int defaultBufferSize = 800;
+        private static float timeBetweenSendingFragment = 0.15f;
 
         private int transmissionId;
         private byte[] data;
@@ -58,7 +58,7 @@ namespace XRRemote
             isSending = true;
 
             //Tell client that it is going to receive some data and tell it how much it will be.
-            //Debug.Log($"SendBytesToClientsRoutine: Start message: id = {newId}, dataLength = {data.Length}");
+            Debug.Log($"SendBytesToClientsRoutine: Start message: id = {newId}, dataLength = {data.Length} at {Time.time}");
             XREditorClient.Instance.Send(new StartFragmentPacket {id = newId, expectedLength = data.Length}); 
             yield return new WaitForSeconds(timeBetweenSendingFragment);
 
@@ -88,6 +88,7 @@ namespace XRRemote
             }
 
             //Complete send
+            Debug.Log($"SendBytesToClientsRoutine: Send complete: id = {transmissionId} at {Time.time}");
             transmissionId = -1;
             Array.Clear(data, 0, data.Length);
             isSending = false;

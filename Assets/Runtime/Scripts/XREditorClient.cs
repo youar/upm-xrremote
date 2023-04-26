@@ -417,6 +417,7 @@ namespace XRRemote
         {
             Send(new XRUICapturePacket {
                 frameCount = obj.frameCount,
+                timeStamp = obj.timeStamp,
                 textureData = obj.data,
             });
         }
@@ -427,7 +428,7 @@ namespace XRRemote
             if (obj is ARSessionHandShakePacket) OnARSessionHandShakeAck(obj as ARSessionHandShakePacket);
             if (obj is XRRemoteServerOnConnectPacket) {
                 XRRemoteServerOnConnectPacket connectionPacket = obj as XRRemoteServerOnConnectPacket;
-                Debug.LogError($"ConnectionPacket: Canvas Size = {connectionPacket.canvasWidth} x {connectionPacket.canvasHeight}");
+                Debug.Log($"ConnectionPacket: Canvas Size = {connectionPacket.canvasWidth} x {connectionPacket.canvasHeight}");
             }
         }
 
