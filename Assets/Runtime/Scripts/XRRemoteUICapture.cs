@@ -23,6 +23,8 @@ namespace XRRemote
         [SerializeField] private RenderTexture targetTexture;
         [SerializeField] LayerMask layerToCapture;
 
+        [SerializeField, Range(0.01f, 1.0f)] private float textureScaleFactor = 1.0f;
+
         [SerializeField] private RawImage testImage;
 
         int canvasWidth = 1080;
@@ -69,9 +71,12 @@ namespace XRRemote
 
         private IEnumerator StreamUiToDevice()
         {
-            float timeBetweenFrames = 0.25f;
-            CaptureUiToRenderTexture();
-            yield return new WaitForSeconds(timeBetweenFrames);
+            float timeBetweenFrames = 0.10f;
+
+            while (true) {
+                CaptureUiToRenderTexture();
+                yield return new WaitForSeconds(timeBetweenFrames);
+            }
         }
 
         public void CaptureUiToRenderTexture()
@@ -86,6 +91,8 @@ namespace XRRemote
             uiCanvas.worldCamera = uiCamera;
             uiCamera.targetTexture = targetTexture;
             uiCamera.cullingMask = layerToCapture;
+            uiCamera.transform.position = Camera.main.transform.position;
+            uiCamera.transform.rotation = Camera.main.transform.rotation;
 
             //Capture the UI layer to targetTexture
             uiCamera.Render();
@@ -105,12 +112,17 @@ namespace XRRemote
             //Start sending uncompressed version of the UI capture
             byte[] textureData = uiScreenShot.EncodeToPNG();
             //Debug.Log($"Texture UNcompressed data is {textureData.Length} bytes");
-            fragmentSender.SendBytesToClient(Time.frameCount, textureData);
+            //fragmentSender.SendBytesToClient(Time.frameCount, textureData);
             
-            //Compress a version that can sent over in a single transmission as placeholder
-            TextureScale.Point(uiScreenShot, width, height);
-            textureData = uiScreenShot.EncodeToPNG();
-            //Debug.Log($"Texture compressed data is {textureData.Length} bytes");
+            //Scale texture
+            if (textureScaleFactor < 1f) {
+                int originalSize = textureData.Length;
+                width = Mathf.RoundToInt(canvasWidth * textureScaleFactor);
+                height = Mathf.RoundToInt(canvasHeight * textureScaleFactor);
+                TextureScale.Point(uiScreenShot, width, height);
+                textureData = uiScreenShot.EncodeToPNG();
+                Debug.Log($"Texture data compressed to {textureData.Length} bytes from {originalSize} bytes");
+            }
 
             //test: Show preview on Client
             if (testImage != null) {
@@ -121,6 +133,9 @@ namespace XRRemote
                 //Debug.Log($"OnUICaptureRecieved: {remoteCanvasTexture.width} x {remoteCanvasTexture.height}");
                 testImage.texture = remoteCanvasTexture;
             }
+
+            //Compress byte array before sending over
+            textureData = CompressionHelper.ByteArrayCompress(textureData);
 
             //Broadcast event
             OnUICaptured?.Invoke(this, new OnUICapturedArgs {
