@@ -65,6 +65,12 @@ namespace XRRemote
         /// </summary>
         XRRemoteVideo remoteVideo;
 
+        /// <summary>
+        /// Reference to the remote UI Capture which
+        /// will be send UI texture
+        /// </summary>
+        XRRemoteUICapture remoteUICapture;
+
         /////////////////////////////////////////////////////////////////////////
 
         // CONNECTIONS
@@ -174,6 +180,11 @@ namespace XRRemote
             // initialize the plane delivery system from
             // the player. 
             TrySetUpXRRemotePlaneManager();
+
+            //
+            // initialize the UI component and texture
+            // needed to send canvas to device
+            TrySetupRemoteUICapture();
         }
 
         void OnGUI()
@@ -212,6 +223,10 @@ namespace XRRemote
         public new void OnDisable()
         {
             base.OnDisable();
+
+            if (remoteUICapture != null) {
+                remoteUICapture.OnUICaptured -= remoteUICapture_OnUICaptured;
+            }
         }
         
         private void InitializeXRPlayer()
@@ -353,7 +368,26 @@ namespace XRRemote
                 }
             }
         }
-    #endregion
+
+        private void TrySetupRemoteUICapture()
+        {
+            if (remoteUICapture != null) return;
+
+            remoteUICapture = FindObjectOfType<XRRemoteUICapture>();
+            if (remoteUICapture == null)
+            {
+                if (DebugFlags.displayXRRemoteConnectionStats)
+                {
+                    Debug.LogErrorFormat(
+                        XRRemoteConnectionMessage(
+                            string.Format("TrySetupRemoteUICapture Event: null XRRemoteUICapture")));
+                    return;
+                }
+            }
+
+            remoteUICapture.OnUICaptured += remoteUICapture_OnUICaptured;
+        }
+        #endregion
 
         /// <summary>
         /// When the client responds that the session has been properly initialized. 
@@ -376,10 +410,31 @@ namespace XRRemote
             base.Send(serializableObject);
         }
 
+        /// <summary>
+        /// Create packet and send compressed UI to Player
+        /// </summary>
+        public void SendXRUICapturePacketToPlayer(OnUICapturedArgs obj)
+        {
+            Send(new XRUICapturePacket {
+                frameCount = obj.frameCount,
+                timeStamp = obj.timeStamp,
+                textureData = obj.data,
+            });
+        }
+
         public override void MessageReceived(object obj)
         {
             if (obj is XRRemotePacket) OnXRRemotePacketReceived(obj as XRRemotePacket);
             if (obj is ARSessionHandShakePacket) OnARSessionHandShakeAck(obj as ARSessionHandShakePacket);
+            if (obj is XRRemoteServerOnConnectPacket) {
+                XRRemoteServerOnConnectPacket connectionPacket = obj as XRRemoteServerOnConnectPacket;
+                Debug.Log($"ConnectionPacket: Canvas Size = {connectionPacket.canvasWidth} x {connectionPacket.canvasHeight}");
+            }
+        }
+
+        private void remoteUICapture_OnUICaptured(object sender, EventArgs e)
+        {
+            SendXRUICapturePacketToPlayer(e as OnUICapturedArgs);
         }
     }
 #endif

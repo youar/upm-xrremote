@@ -49,6 +49,24 @@ namespace XRRemote
 
     public class XRRemoteServer : Server
     {
+        private static XRRemoteServer instance = null;
+        public static XRRemoteServer Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = FindObjectOfType<XRRemoteServer>();
+                if (instance == null)
+                {
+                    if (DebugFlags.displayXRRemoteConnectionStats)
+                    {
+                        Debug.LogErrorFormat("XRRemoteServer failure");
+                    }
+                }
+                return instance;
+            }
+        }
+
         /// <summary>
         /// device reference to the DEVICE camera
         /// this will send out the frame to
@@ -130,6 +148,13 @@ namespace XRRemote
         /// Reference to XR Input Reader
         /// </summary>
         public XRRemoteInputReader inputReader;
+
+        /// <summary>
+        /// Reference to RawImage component used to display remote UI canvas
+        /// </summary>
+        public RawImage remoteCanvas;
+        private Texture2D remoteCanvasTexture;
+        public XRRemoteUIReceiver uiReceiver;
 
         private string ConnectionMessage(string baseMessage)
         {
@@ -223,7 +248,14 @@ namespace XRRemote
             if (!SetUpTrackedPoseDriver(this.arPoseDriver)) return;
             if (!SetUpPlaneSender()) return;
             if (!SetUpInputSystem(this.inputReader)) return;
+            if (!SetupRemoteCanvas()) return;
+            if (!SetupUIReceiver()) return;
 
+            if (!SendOnConnectPacket()) {
+                if (log) {
+                    Debug.LogErrorFormat("XRRemoteServer: Unable to send connection packet!");
+                }
+            }
 #if UNITY_ANDROID
             //
             // make sure we have a way to get access to the
@@ -385,6 +417,69 @@ namespace XRRemote
 
             return true;
         }
+
+        private bool SetupRemoteCanvas()
+        {
+            if (remoteCanvas != null) return true;
+
+            remoteCanvas = GameObject.Find("XRRemoteUICanvas").GetComponent<RawImage>();
+
+            if (remoteCanvas == null)
+            {
+                if (log)
+                {
+                    Debug.LogErrorFormat(
+                        ConnectionMessage(
+                            string.Format("Event: Image component named 'XRRemoteUICanvas' not found")));
+                }
+                return false;
+            }
+
+            
+
+            remoteCanvas.enabled = false;
+            remoteCanvasTexture = new Texture2D(100, 100, TextureFormat.RGBA32, false);
+
+            return true; 
+        }
+
+        private bool SetupUIReceiver()
+        {
+            if (uiReceiver != null) return true;
+
+            uiReceiver = FindObjectOfType<XRRemoteUIReceiver>();
+
+            if (uiReceiver == null)
+            {
+                if (log)
+                {
+                    Debug.LogErrorFormat(
+                        ConnectionMessage(
+                            string.Format("Event: 'XRRemoteUIReceiver' not found")));
+                }
+                return false;
+            }
+
+            return true; 
+        }
+
+        private bool SendOnConnectPacket()
+        {
+            XRRemoteServerOnConnectPacket connectionPacket = new XRRemoteServerOnConnectPacket();
+
+            Canvas canvas = FindObjectOfType<Canvas>();
+
+            if (canvas == null) return false;
+
+            if (canvas.TryGetComponent<RectTransform>(out RectTransform canvaasRectTransform)) {
+                connectionPacket.canvasWidth = canvaasRectTransform.rect.width;
+                connectionPacket.canvasHeight = canvaasRectTransform.rect.height;
+            } else {
+                return false;
+            }
+
+            return Send(connectionPacket);
+        }
         #endregion
 
 
@@ -512,6 +607,51 @@ namespace XRRemote
             readyForFrame = packet.value;
         }
 
+        /// <summary>
+        /// Display compressed UI canvas preview
+        /// </summary>
+        private void OnUICaptureRecieved(XRUICapturePacket xrUiCapturePacket)
+        {
+            if (remoteCanvas == null) return;
+
+            //Debug.LogError($"OnUICaptureRecieved: id=" + xrUiCapturePacket.frameCount);
+            //Debug.Log($"OnUICaptureRecieved: data length=" + xrUiCapturePacket.textureData.Length);
+
+            System.DateTime currentTime = System.DateTime.Now;
+            System.DateTime captureTime = System.DateTime.FromBinary(xrUiCapturePacket.timeStamp);
+            Debug.LogError($"Capture took {currentTime.Subtract(captureTime).ToString()}");
+
+            //Decompress and read data as Texture2d
+            //Decompress data
+            byte[] dataReceived = CompressionHelper.ByteArrayDecompress(xrUiCapturePacket.textureData);
+            remoteCanvasTexture.LoadImage(dataReceived);
+            remoteCanvasTexture.Apply();
+
+            //Show remote canvas
+            remoteCanvas.texture = remoteCanvasTexture;
+            remoteCanvas.enabled = true;
+        }
+
+        /// <summary>
+        /// Start receiving UI canvas data
+        /// </summary>
+        private void OnUIStartFragmentRecieved(StartFragmentPacket startfragmentPacket)
+        {
+            if (uiReceiver == null) return;
+
+            uiReceiver.ReceiveStartFragmentPacket(startfragmentPacket);
+        }
+
+        /// <summary>
+        /// Receive UI canvas data fragments
+        /// </summary>
+        private void OnUIDataFragmentRecieved(DataFragmentPacket datafragmentPacket)
+        {
+            if (uiReceiver == null) return;
+
+            uiReceiver.ReceiveDataFragmentPacket(datafragmentPacket);
+        }
+
 #region EDITOR_CONNECTION_TESTING
         public void EditorSendTest()
         {
@@ -552,6 +692,9 @@ namespace XRRemote
         public override void MessageReceived(object obj) {
             if (obj is XRFrameReadyPacket) OnReadyForFrameEvent(obj as XRFrameReadyPacket);
             if (obj is EditorARKitSessionInitialized) OnARKitSessionInitializationMessage(obj as EditorARKitSessionInitialized);
+            if (obj is XRUICapturePacket) OnUICaptureRecieved(obj as XRUICapturePacket);
+            if (obj is StartFragmentPacket) OnUIStartFragmentRecieved(obj as StartFragmentPacket);
+            if (obj is DataFragmentPacket) OnUIDataFragmentRecieved(obj as DataFragmentPacket);
         }
     }
 }

@@ -44,8 +44,11 @@ namespace XRRemote
             Canvas canvas = FindObjectOfType<Canvas>();
 
             if (canvas != null) {
-                canvasSize.x = canvas.GetComponent<RectTransform>().rect.height;
-                canvasSize.y = canvas.GetComponent<RectTransform>().rect.width;
+                canvasSize.x = Screen.currentResolution.height;//canvas.GetComponent<RectTransform>().rect.height;
+                canvasSize.y = Screen.currentResolution.width;//canvas.GetComponent<RectTransform>().rect.width;
+
+                // Debug.Log($"Screen size: {Screen.currentResolution.width} x {Screen.currentResolution.height}");
+                // Debug.Log($"Canvas size: {canvas.GetComponent<RectTransform>().rect.height} x {canvas.GetComponent<RectTransform>().rect.width}");
             }
 
             if (canvas == null) {
@@ -74,6 +77,7 @@ namespace XRRemote
 
         private void OnDisable()
         {
+            if (XREditorClient.Instance == null) return;
             XREditorClient.Instance.OnInputDataReceived -= XREditorClient_OnInputDataReceived;
         }
 
@@ -85,8 +89,8 @@ namespace XRRemote
 
             //Update touch position
             touchPosition = new Vector2(
-                XREditorClient.Instance.touchPositionNormalized.x * canvasSize.x,
-                XREditorClient.Instance.touchPositionNormalized.y * canvasSize.y
+                XREditorClient.Instance.touchPositionNormalized.x * canvasSize.x * 2,
+                XREditorClient.Instance.touchPositionNormalized.y * canvasSize.y / 2
             );
 
             //Create an input event on the new Input System

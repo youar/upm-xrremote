@@ -38,6 +38,13 @@ namespace XRRemote
     public class ARSessionHandShakePacket {
         public bool value;
     }
+
+    [Serializable]
+    public class XRUICapturePacket {
+        public int frameCount;
+        public long timeStamp;
+        public byte[] textureData = null;
+    }
     
     [Serializable]
     public class EditorARKitSessionInitialized {
@@ -232,4 +239,10 @@ namespace XRRemote
         }
     }
 
+    [Serializable]
+    public class XRRemoteServerOnConnectPacket
+    {
+        public float canvasWidth;
+        public float canvasHeight;
+    }
 }

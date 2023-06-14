@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -240,18 +241,23 @@ namespace XRRemote
 
         public bool Send(byte[] data) 
         {
-            if (connectionState == ConnectionState.DISCONNECTED) return false;
-            //if (log) Debug.Log(FormatConnectionMessage($"send event from {(tcpClient.Client.LocalEndPoint as IPEndPoint)?.Address} on channel {(tcpClient.Client.RemoteEndPoint as IPEndPoint)?.Address}"));
-            try {
+            try
+            {
+                if (connectionState == ConnectionState.DISCONNECTED) return false;
+
                 NetworkStream stream = tcpClient.GetStream();
                 if (stream.CanWrite) {
-                    stream.Write(data, 0, data.Length);
+                    byte[] dataWithHeader = BitConverter.GetBytes(data.Length).Concat(data).ToArray();
+                    stream.Write(dataWithHeader, 0, dataWithHeader.Length);
+
+                    return true;
                 }
             }
-            catch (Exception e) {
-                Debug.LogException(e);
+            catch (Exception e)
+            {
+                Debug.LogError($"EXCEPTION reason: {e.Message}");
             }
-            return true;
+            return false;
         }
 
         public void ToggleLogLevel(LogLevel logLevel)
