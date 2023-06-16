@@ -478,6 +478,17 @@ namespace XRRemote
                 return false;
             }
 
+            if (planeSender != null) {
+                if (planeSender.TryGetAllPlanesInfo(out PlanesInfo planesInfo)) {
+                    connectionPacket.planesInfo = planesInfo;
+                } else {
+                    connectionPacket.planesInfo = null;
+                }
+            } else {
+                if (log) Debug.Log(ConnectionMessage($"OnARCameraFrameReceived: XRRemotePlaneSender not found!"));
+                connectionPacket.planesInfo = null;
+            }
+
             return Send(connectionPacket);
         }
         #endregion

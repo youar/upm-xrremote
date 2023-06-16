@@ -244,5 +244,7 @@ namespace XRRemote
     {
         public float canvasWidth;
         public float canvasHeight;
+
+        public PlanesInfo planesInfo = new PlanesInfo();
     }
 }
