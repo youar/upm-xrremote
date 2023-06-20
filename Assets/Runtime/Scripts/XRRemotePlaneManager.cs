@@ -28,11 +28,6 @@ namespace XRRemote
             XREditorClient.Instance.OnPlanesInfoReceived -= XREditorClient_OnPlanesInfoReceived;
         }
 
-        public void CreatePlanes(XRPlane[] planes)
-        {
-            AddVisuals(planes);
-        }
-
         /// <summary>
         /// Create a new visual and add to list
         /// </summary>

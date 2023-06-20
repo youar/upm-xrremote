@@ -426,20 +426,9 @@ namespace XRRemote
         {
             if (obj is XRRemotePacket) OnXRRemotePacketReceived(obj as XRRemotePacket);
             if (obj is ARSessionHandShakePacket) OnARSessionHandShakeAck(obj as ARSessionHandShakePacket);
-            if (obj is XRRemoteServerOnConnectPacket) OnXRRemoteServerConnectReceived(obj as XRRemoteServerOnConnectPacket);
-        }
-
-        private void OnXRRemoteServerConnectReceived(XRRemoteServerOnConnectPacket connectionPacket)
-        {
-            Debug.Log($"ConnectionPacket: Canvas Size = {connectionPacket.canvasWidth} x {connectionPacket.canvasHeight}");
-
-            if (connectionPacket.planesInfo != null) 
-            {
-                XRRemotePlaneManager xRRemotePlaneManager = FindObjectOfType<XRRemotePlaneManager>();
-                if (xRRemotePlaneManager != null)
-                {
-                    xRRemotePlaneManager.CreatePlanes(connectionPacket.planesInfo.added);
-                }
+            if (obj is XRRemoteServerOnConnectPacket) {
+                XRRemoteServerOnConnectPacket connectionPacket = obj as XRRemoteServerOnConnectPacket;
+                Debug.Log($"ConnectionPacket: Canvas Size = {connectionPacket.canvasWidth} x {connectionPacket.canvasHeight}");
             }
         }
 
