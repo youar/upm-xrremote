@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-// using XRRemote;
 using UnityEngine;
 using Klak.Ndi;
 
@@ -44,8 +43,6 @@ public class CustomNdiReceiver : MonoBehaviour
         {
             ndiReceiver.ndiName = ndiName;
         }
-        
-        Debug.Log($"finish init ndi, {ndiReceiver.ndiName}");
     }
 
     private void OnDisable()
@@ -74,18 +71,13 @@ public class CustomNdiReceiver : MonoBehaviour
             {
                 return;
             }
-
             //add Metadata here
-            UnityEngine.Debug.Log("ndiReceiver.metadata = " + ndiReceiver.metadata);
             string base64 = ndiReceiver.metadata.Substring(9, ndiReceiver.metadata.Length - 9 - 3);
-            UnityEngine.Debug.Log("base64 = " + base64);
             byte[] data = Convert.FromBase64String(base64);
 
             RemotePacket receivedData = ObjectSerializationExtension.Deserialize<RemotePacket>(data); 
             CustomNdiReceiver.Instance.remotePacket = receivedData;
             ndiReceiver.metadata = null;
-            
-            UnityEngine.Debug.Log(receivedData);
         }
     }
 
@@ -133,11 +125,6 @@ public class CustomNdiReceiver : MonoBehaviour
 
     private static string FindNdiName()
     {
-        foreach (var sourceName in NdiFinder.sourceNames)
-        {
-            Debug.Log($"sourceName: {sourceName}");
-        }
-
         return NdiFinder.sourceNames.FirstOrDefault();
     }
 }
