@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
-// using KlakNDI_Test.Assets.Scripts.ObjectSerializationExtension;
+using KlakNDI_Test.Assets.Scripts.ObjectSerializationExtension;
 
 [DisallowMultipleComponent]
 [Serializable]
@@ -73,12 +73,12 @@ public sealed class CustomNdiSender : MonoBehaviour
             InitNdi(width, height);
 
             //Set metadata
-            // RemotePacket testPacket = new RemotePacket();
+            RemotePacket testPacket = new RemotePacket();
 
-            // //Serialize metadata
-            // byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(testPacket); 
-            // ndiSender.metadata = "<![CDATA[" + Convert.ToBase64String(serializedData) + "]]>";
-            // Debug.Log(ndiSender.metadata);
+            //Serialize metadata
+            byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(testPacket); 
+            ndiSender.metadata = "<![CDATA[" + Convert.ToBase64String(serializedData) + "]]>";
+            Debug.Log(ndiSender.metadata);
         }
         
         commandBuffer.Blit(null, renderTexture, cameraBackground.material);

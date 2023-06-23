@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Klak.Ndi;
 
-// using KlakNDI_Test.Assets.Scripts.ObjectSerializationExtension;
+using KlakNDI_Test.Assets.Scripts.ObjectSerializationExtension;
 
 public class CustomNdiReceiver : MonoBehaviour
 {
@@ -15,7 +15,7 @@ public class CustomNdiReceiver : MonoBehaviour
 
     public UnityEngine.UI.RawImage rawImage = null;
     public static CustomNdiReceiver Instance { get; private set; } = null;
-    // public RemotePacket remotePacket { get; private set; } = null;
+    public RemotePacket remotePacket { get; private set; } = null;
 
     private void Awake()
     {
@@ -70,22 +70,22 @@ public class CustomNdiReceiver : MonoBehaviour
             rawImage.texture = rt;
             
             // //check metadata
-            // if (ndiReceiver.metadata == null)
-            // {
-            //     return;
-            // }
+            if (ndiReceiver.metadata == null)
+            {
+                return;
+            }
 
-            // //add Metadata here
-            // UnityEngine.Debug.Log("ndiReceiver.metadata = " + ndiReceiver.metadata);
-            // string base64 = ndiReceiver.metadata.Substring(9, ndiReceiver.metadata.Length - 9 - 3);
-            // UnityEngine.Debug.Log("base64 = " + base64);
-            // byte[] data = Convert.FromBase64String(base64);
+            //add Metadata here
+            UnityEngine.Debug.Log("ndiReceiver.metadata = " + ndiReceiver.metadata);
+            string base64 = ndiReceiver.metadata.Substring(9, ndiReceiver.metadata.Length - 9 - 3);
+            UnityEngine.Debug.Log("base64 = " + base64);
+            byte[] data = Convert.FromBase64String(base64);
 
-            // RemotePacket receivedData = ObjectSerializationExtension.Deserialize<RemotePacket>(data); 
-            // CustomNdiReceiver.Instance.remotePacket = receivedData;
-            // ndiReceiver.metadata = null;
+            RemotePacket receivedData = ObjectSerializationExtension.Deserialize<RemotePacket>(data); 
+            CustomNdiReceiver.Instance.remotePacket = receivedData;
+            ndiReceiver.metadata = null;
             
-            // UnityEngine.Debug.Log(receivedData);
+            UnityEngine.Debug.Log(receivedData);
         }
     }
 
