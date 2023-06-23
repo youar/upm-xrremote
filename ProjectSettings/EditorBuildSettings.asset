@@ -11,13 +11,19 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Samples/Scenes/AR Remote Server.unity
     guid: b79a3b73cef284b2996b92b1c496f3b3
-  - enabled: 1
-    path: Assets/Samples/Scenes/TCPRemoteServer.unity
-    guid: 6c1319b8a5fa8b144852d5e815d8d7a3
   - enabled: 0
-    path: Assets/Samples/Scenes/TCPRemoteClient.unity
-    guid: 5e22e8ea504c2c249ae136b399c9659f
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Samples/Scenes/NDI Sender.unity
+    guid: 5fc990492e6e60c49926297410489ac4
+  - enabled: 0
+    path: Assets/Samples/Scenes/NDI Receiver.unity
+    guid: 9eca745677f3b9945a652c8056272fb6
   m_configObjects:
-    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 6d1db0134cd349746a290ef7c28908aa, type: 2}
-    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 131857a1ce1de4e4eb22f47a3ea2a3da, type: 2}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 3e276441aae87954392e857c0dce62d4, type: 2}
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 8ee21b375d0c8134fbe01661b1a6bf8f, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: aeaa9409a9af5f845bcb053579bd5394, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 941f005001e04114295d97a0a431ce15, type: 2}
