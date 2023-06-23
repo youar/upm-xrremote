@@ -1,5 +1,4 @@
 using System;
-// using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
@@ -78,7 +77,6 @@ public sealed class CustomNdiSender : MonoBehaviour
             //Serialize metadata
             byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(testPacket); 
             ndiSender.metadata = "<![CDATA[" + Convert.ToBase64String(serializedData) + "]]>";
-            Debug.Log(ndiSender.metadata);
         }
         
         commandBuffer.Blit(null, renderTexture, cameraBackground.material);
