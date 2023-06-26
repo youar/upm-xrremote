@@ -9,10 +9,8 @@ public class CustomNdiReceiver : MonoBehaviour
 {
     [SerializeField] 
     private NdiResources resources = null;
-
     private NdiReceiver ndiReceiver = null;
-
-    public UnityEngine.UI.RawImage rawImage = null;
+    public CustomRawImage rawImage = null;
     public static CustomNdiReceiver Instance { get; private set; } = null;
     public RemotePacket remotePacket { get; private set; } = null;
 
