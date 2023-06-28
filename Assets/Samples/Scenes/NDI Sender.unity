@@ -348,6 +348,50 @@ MonoBehaviour:
   m_TrackingType: 0
   m_UpdateType: 0
   m_UseRelativeTransform: 0
+--- !u!1 &653155907
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 653155909}
+  - component: {fileID: 653155908}
+  m_Layer: 0
+  m_Name: Cusom Plane Sender
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &653155908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653155907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99cba46fe6d3045428c0bc7685740f76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &653155909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653155907}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &742894095
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,6 +437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4facf0e97720547be8e6dd36f2ce3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planeSender: {fileID: 653155908}
   cameraManager: {fileID: 586251446}
   cameraBackground: {fileID: 586251445}
   resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}

@@ -4,24 +4,22 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
 using XRRemote;
+using XRRemote.Serializables;
 
 [DisallowMultipleComponent]
 [Serializable]
 
 public sealed class CustomNdiSender : MonoBehaviour
 {    
+    [SerializeField] private CustomPlaneSender planeSender = null;
     [SerializeField] private ARCameraManager cameraManager = null;
     [SerializeField] private ARCameraBackground cameraBackground = null;
     [SerializeField] private NdiResources resources = null;
-    
-    private int frameCount = 0;
-    
-    public MeshRenderer ndiSenderVisualizer = null;
 
+    private int frameCount = 0;
+    public MeshRenderer ndiSenderVisualizer = null;
     private NdiSender ndiSender = null;
-    
     private RenderTexture renderTexture;
-    
     private CommandBuffer commandBuffer;
 
     private void Awake()
@@ -70,14 +68,20 @@ public sealed class CustomNdiSender : MonoBehaviour
             int width = cameraBackground.material.mainTexture.width; 
             int height = cameraBackground.material.mainTexture.height;
             InitNdi(width, height);
-
-            //Set metadata
-            RemotePacket testPacket = new RemotePacket();
-
-            //Serialize metadata
-            byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(testPacket); 
-            ndiSender.metadata = "<![CDATA[" + Convert.ToBase64String(serializedData) + "]]>";
         }
+
+        //Set metadata
+        RemotePacket testPacket = new RemotePacket();
+
+        if (planeSender.TryGetPlanesInfo(out PlanesInfo planesInfo)) {
+            testPacket.planesInfo = planesInfo;
+        } else {
+            testPacket.planesInfo = null;
+        }
+
+        //Serialize metadata
+        byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(testPacket); 
+        ndiSender.metadata = "<![CDATA[" + Convert.ToBase64String(serializedData) + "]]>";
         
         commandBuffer.Blit(null, renderTexture, cameraBackground.material);
         Graphics.ExecuteCommandBuffer(commandBuffer);
