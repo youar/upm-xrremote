@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
-using KlakNDI_Test.Assets.Scripts.ObjectSerializationExtension;
+using XRRemote;
 
 [DisallowMultipleComponent]
 [Serializable]

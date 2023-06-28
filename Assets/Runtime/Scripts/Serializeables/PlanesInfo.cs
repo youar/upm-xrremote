@@ -1,7 +1,7 @@
 using System;
-using UnityEngine;
 
-namespace XRRemote
+
+namespace XRRemote.Serializables 
 {
     [Serializable]
     public class PlanesInfo

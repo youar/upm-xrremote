@@ -25,7 +25,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace XRRemote
+namespace XRRemote.Serializables 
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]

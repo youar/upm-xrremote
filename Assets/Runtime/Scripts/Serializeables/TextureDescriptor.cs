@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.XR.ARSubsystems;
 
-namespace XRRemote
+namespace XRRemote.Serializables 
 {
     /// <summary>
     /// HACK: Neet the unsafe struct cast

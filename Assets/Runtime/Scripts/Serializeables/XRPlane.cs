@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-namespace XRRemote
+namespace XRRemote.Serializables 
 {
     //using UnityEngine.XR.ARSubsystems;
 
@@ -35,7 +35,7 @@ namespace XRRemote
     [StructLayout(LayoutKind.Sequential)]
     public struct XRPlane : IEquatable<XRPlane>
     {
-        public XRRemote.TrackableId trackableId;
+        public TrackableId trackableId;
         public Pose pose;
         public float3 center;
         public float3 centerInPlaneSpace;

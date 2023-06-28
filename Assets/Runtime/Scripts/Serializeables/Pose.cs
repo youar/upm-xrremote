@@ -26,8 +26,7 @@ using System;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-
-namespace XRRemote
+namespace XRRemote.Serializables 
 {
 
     using UnityEngine.SpatialTracking;
@@ -75,12 +74,12 @@ namespace XRRemote
             Pose pose = new Pose();
             var transform = arPoseDriver.transform;
             var position1 = transform.position;
-            pose.position = new XRRemote.float3(
+            pose.position = new float3(
                 position1.x,
                 position1.y,
                 position1.z);
             var rotation1 = transform.rotation;
-            pose.rotation = new XRRemote.float4(
+            pose.rotation = new float4(
                 rotation1.x,
                 rotation1.y,
                 rotation1.z,

@@ -1,15 +1,15 @@
 using System;
 using UnityEngine;
 
-namespace XRRemote 
+namespace XRRemote.Serializables 
 {
     [Serializable]
     public class CameraFrameEvent : IEquatable<CameraFrameEvent>
     {
         // public ARLightEstimationData lightEstimation;
         public long timestampNs;
-        public XRRemote.Pose projectionMatrix;
-        public XRRemote.Pose displayMatrix;
+        public Pose projectionMatrix;
+        public Pose displayMatrix;
 
         public bool Equals(CameraFrameEvent o)
         {

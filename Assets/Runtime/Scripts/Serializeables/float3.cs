@@ -23,11 +23,9 @@
 //-------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace XRRemote
+namespace XRRemote.Serializables 
 {
     [Serializable]
     public class float3 : IEquatable<float3>, IFormattable
