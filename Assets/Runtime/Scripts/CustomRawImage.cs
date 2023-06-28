@@ -1,11 +1,11 @@
-using UnityEngine;
 using UnityEngine.UI;
+// using UnityEngine;
 
 public class CustomRawImage : RawImage
 {
     public float deviceAspectRatio; // Property in the custom object class
 
-    private void Start()
+    protected override void Start()
     {
         AspectRatioFitter aspectFitter = GetComponent<AspectRatioFitter>();
         if (aspectFitter != null)

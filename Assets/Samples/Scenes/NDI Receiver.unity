@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
-  rawImage: {fileID: 0}
+  rawImage: {fileID: 626219204}
 --- !u!1 &303196831
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 626219204}
   - component: {fileID: 626219203}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: Custom Raw Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -343,7 +343,7 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
-  dropdownField: {fileID: 0}
+  deviceAspectRatio: 0
 --- !u!222 &626219205
 CanvasRenderer:
   m_ObjectHideFlags: 0
