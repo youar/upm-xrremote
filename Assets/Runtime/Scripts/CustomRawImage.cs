@@ -10,6 +10,7 @@ using UnityEngine.UI;
             if (aspectFitter != null)
             {
                 aspectFitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+                
                 // Set the property of the required AspectRatioFitter component based on the custom object class property
                 aspectFitter.aspectRatio = deviceAspectRatio;
                 if (aspectFitter.aspectRatio == 0)
