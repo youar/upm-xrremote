@@ -21,7 +21,6 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-
 using System;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;

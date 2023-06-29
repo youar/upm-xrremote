@@ -3,8 +3,6 @@ using System.Linq;
 using UnityEngine;
 using Klak.Ndi;
 using UnityEngine.SpatialTracking;
-// using UnityEngine.XR.ARFoundation;
-// using XRRemote.Serializables;
 
 namespace XRRemote
 {
@@ -81,16 +79,6 @@ namespace XRRemote
 
                 RemotePacket receivedData = ObjectSerializationExtension.Deserialize<RemotePacket>(data); 
                 CustomNdiReceiver.Instance.remotePacket = receivedData;
-
-                Debug.Log("Received data: " + receivedData.cameraPose);
-
-                //make new pose from received data
-                // Pose newPoseData = new Pose(receivedData.cameraPose);
-                //get main camera object
-
-                //integrate our pose with our own version of XRRemotePoseProvider.cs
-                //trySetupTrackedPoseDriver
-                //apply pose to main camera?
 
                 //check and add planes info
                 if (receivedData.planesInfo != null) 

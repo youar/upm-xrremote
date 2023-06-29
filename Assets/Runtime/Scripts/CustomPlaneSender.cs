@@ -1,9 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using XRRemote.Serializables;
+// using System;
+// using System.Collections;
 
 namespace XRRemote
 {

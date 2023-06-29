@@ -21,7 +21,6 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-
 using UnityEngine;
 using UnityEngine.Experimental.XR.Interaction;
 using UnityEngine.SpatialTracking;

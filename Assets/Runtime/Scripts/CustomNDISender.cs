@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
-// using XRRemote;
 using XRRemote.Serializables;
 
 namespace XRRemote

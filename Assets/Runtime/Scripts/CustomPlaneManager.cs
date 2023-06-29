@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XRRemote.Serializables;
+// using System.Collections;
 
 #if UNITY_EDITOR
 namespace XRRemote
