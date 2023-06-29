@@ -1,5 +1,7 @@
 using UnityEngine.UI;
 
+namespace XRRemote
+{
     public class CustomRawImage : RawImage
     {
         public float deviceAspectRatio; // Property in the custom object class
@@ -20,3 +22,4 @@ using UnityEngine.UI;
             }
         }
     }
+}

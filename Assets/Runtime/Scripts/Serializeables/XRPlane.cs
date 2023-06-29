@@ -32,7 +32,7 @@ namespace XRRemote.Serializables
 
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct XRPlane : IEquatable<XRPlane>
+    public struct XRPlaneNdi : IEquatable<XRPlaneNdi>
     {
         public TrackableId trackableId;
         public Pose pose;
@@ -45,7 +45,7 @@ namespace XRRemote.Serializables
         public float2 size;
         public bool isSubsumed;
 
-        public XRPlane(ARPlane arPlane)
+        public XRPlaneNdi(ARPlane arPlane)
         {
             trackableId = arPlane.trackableId;
             pose = Pose.FromTransform(arPlane.transform);
@@ -65,7 +65,7 @@ namespace XRRemote.Serializables
             }
         }
 
-        public bool Equals(XRPlane o)
+        public bool Equals(XRPlaneNdi o)
         {
             return trackableId.Equals(o.trackableId);
         }

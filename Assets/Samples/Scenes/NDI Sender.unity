@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 653155909}
   - component: {fileID: 653155908}
   m_Layer: 0
-  m_Name: Cusom Plane Sender
+  m_Name: Custom Plane Sender
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

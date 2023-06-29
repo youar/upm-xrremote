@@ -30,10 +30,10 @@ namespace XRRemote
         /// <summary>
         /// Create a new visual and add to list
         /// </summary>
-        private void AddVisuals(XRPlane[] planes)
+        private void AddVisuals(XRPlaneNdi[] planes)
         {
             Debug.Log("Planes = " + planes.Length);
-            foreach (XRPlane plane in planes) {
+            foreach (XRPlaneNdi plane in planes) {
                 Transform newVisualTransform = Instantiate(CustomPlaneVisualPrefab);
                 CustomPlaneVisual xrRemotePlaneVisual = newVisualTransform.GetComponent<CustomPlaneVisual>();
 
@@ -46,9 +46,9 @@ namespace XRRemote
         /// <summary>
         /// Find corresponding visual and tell it to update its data
         /// </summary>
-        private void UpdateVisuals(XRPlane[] planes)
+        private void UpdateVisuals(XRPlaneNdi[] planes)
         {
-            foreach (XRPlane plane in planes) {
+            foreach (XRPlaneNdi plane in planes) {
                 Predicate<CustomPlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
 
                 List<CustomPlaneVisual> planeVisualsToUpdate = xrPlaneVisualList.FindAll(hasTrackableId);
@@ -76,9 +76,9 @@ namespace XRRemote
         /// <summary>
         /// Find corresponding visual and destroy the visual and remove it from the list
         /// </summary>
-        private void RemoveVisuals(XRPlane[] planes)
+        private void RemoveVisuals(XRPlaneNdi[] planes)
         {
-            foreach (XRPlane plane in planes) {
+            foreach (XRPlaneNdi plane in planes) {
                 Predicate<CustomPlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
 
                 List<CustomPlaneVisual> planeVisualsToRemove = xrPlaneVisualList.FindAll(hasTrackableId);

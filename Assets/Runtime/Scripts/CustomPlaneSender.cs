@@ -50,16 +50,16 @@ namespace XRRemote
             return true;
         }
 
-        private XRPlane[] GetArrayOfXRPlanes(List<ARPlane> arPlanes)
+        private XRPlaneNdi[] GetArrayOfXRPlanes(List<ARPlane> arPlanes)
         {
             if (arPlanes == null || arPlanes.Count == 0) {
                 return null;
             }
 
-            XRPlane[] xrPlanes = new XRPlane[arPlanes.Count];
+            XRPlaneNdi[] xrPlanes = new XRPlaneNdi[arPlanes.Count];
 
             for (int i = 0; i < arPlanes.Count; i++) {
-                xrPlanes[i] = new XRPlane(arPlanes[i]);
+                xrPlanes[i] = new XRPlaneNdi(arPlanes[i]);
             }
 
             return xrPlanes;
