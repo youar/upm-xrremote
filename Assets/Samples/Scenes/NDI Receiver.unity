@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 29770801}
   - component: {fileID: 29770802}
+  - component: {fileID: 29770803}
   m_Layer: 0
   m_Name: NDI Receiver
   m_TagString: Untagged
@@ -169,6 +170,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
   rawImage: {fileID: 626219204}
+--- !u!114 &29770803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29770799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdfeb72ade5fd6345bc0a24632b6fe55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &303196831
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,7 +488,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Device: 0
   m_PoseSource: 6
-  m_PoseProviderComponent: {fileID: 0}
+  m_PoseProviderComponent: {fileID: 29770803}
   m_TrackingType: 0
   m_UpdateType: 0
   m_UseRelativeTransform: 0

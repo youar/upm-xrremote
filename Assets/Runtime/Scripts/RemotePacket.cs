@@ -8,6 +8,8 @@ namespace XRRemote
     {
         public CameraFrameEvent cameraFrame;
         public PlanesInfo planesInfo;
+        public Pose cameraPose = null;
+        
         // todo make frameInfo and timestamp their own object classes
         public int frameInfo;
         public long? timestamp;

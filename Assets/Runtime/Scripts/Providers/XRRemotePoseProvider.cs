@@ -23,31 +23,30 @@
 //-------------------------------------------------------------------------------------------------------
 
 using UnityEngine;
-
-#if UNITY_EDITOR
 using UnityEngine.Experimental.XR.Interaction;
 using UnityEngine.SpatialTracking;
 
-public class XRRemotePoseProvider : BasePoseProvider
-{
-    public override PoseDataFlags GetPoseFromProvider(out Pose output)
+    public class XRRemotePoseProvider : BasePoseProvider
     {
-        XRRemote.XREditorClient connection = XRRemote.XREditorClient.Instance;
-        if (connection == null)
+        public override PoseDataFlags GetPoseFromProvider(out Pose output)
         {
-            output = Pose.identity;
-            return PoseDataFlags.NoData;
-        }
+            XRRemote.CustomNdiReceiver connection = XRRemote.CustomNdiReceiver.Instance;
+            if (connection == null)
+            {
+                output = Pose.identity;
+                return PoseDataFlags.NoData;
+            }
 
-        XRRemote.Pose pose = connection.xrRemoteTrackedPose;
-        if (pose == null)
-        {
-            output = Pose.identity;
-            return PoseDataFlags.NoData;
-        }
+            XRRemote.Serializables.Pose pose = connection.remotePacket.cameraPose;
+            if (pose == null)
+            {
+                output = Pose.identity;
+                return PoseDataFlags.NoData;
+            }
 
-        output = pose;
-        return PoseDataFlags.Position | PoseDataFlags.Rotation; 
+            output = pose;
+            return PoseDataFlags.Position | PoseDataFlags.Rotation; 
+        }
     }
-}
-#endif 
+
+

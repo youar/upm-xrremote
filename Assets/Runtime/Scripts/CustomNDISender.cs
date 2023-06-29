@@ -15,6 +15,7 @@ namespace XRRemote
     {    
         [SerializeField] private CustomPlaneSender planeSender = null;
         [SerializeField] private ARCameraManager cameraManager = null;
+        [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
         [SerializeField] private NdiResources resources = null;
 
@@ -74,12 +75,19 @@ namespace XRRemote
 
             //Set metadata
             RemotePacket testPacket = new RemotePacket();
+            testPacket.cameraPose = arPoseDriver;
 
             if (planeSender.TryGetPlanesInfo(out PlanesInfo planesInfo)) {
                 testPacket.planesInfo = planesInfo;
             } else {
                 testPacket.planesInfo = null;
             }
+
+            // if (poseSender.TryGetPoseInfo(out XRRemote.Serializables.Pose pose)) {
+            //     testPacket.cameraPose = pose;
+            // } else {
+            //     testPacket.cameraPose = null;
+            // }
 
             //Serialize metadata
             byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(testPacket); 

@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using UnityEngine;
 using Klak.Ndi;
-// using XRRemote;
+using UnityEngine.SpatialTracking;
+// using UnityEngine.XR.ARFoundation;
+// using XRRemote.Serializables;
 
 namespace XRRemote
 {
@@ -44,6 +46,7 @@ namespace XRRemote
             {
                 ndiReceiver.ndiName = ndiName;
             }
+            TrySetupTrackedPoseDriver();
         }
 
         private void OnDisable()
@@ -79,6 +82,16 @@ namespace XRRemote
                 RemotePacket receivedData = ObjectSerializationExtension.Deserialize<RemotePacket>(data); 
                 CustomNdiReceiver.Instance.remotePacket = receivedData;
 
+                Debug.Log("Received data: " + receivedData.cameraPose);
+
+                //make new pose from received data
+                // Pose newPoseData = new Pose(receivedData.cameraPose);
+                //get main camera object
+
+                //integrate our pose with our own version of XRRemotePoseProvider.cs
+                //trySetupTrackedPoseDriver
+                //apply pose to main camera?
+
                 //check and add planes info
                 if (receivedData.planesInfo != null) 
                 {
@@ -92,6 +105,24 @@ namespace XRRemote
         private static string FindNdiName()
         {
             return NdiFinder.sourceNames.FirstOrDefault();
+        }
+
+        private bool TrySetupTrackedPoseDriver()
+        {
+            TrackedPoseDriver trackedPoseDriver = FindObjectOfType<TrackedPoseDriver>();
+            if (trackedPoseDriver == null) {
+                    Debug.LogErrorFormat("TrySetupTrackedPoseDriver Event: null TrackedPoseDriver on main camera");
+                    return false;
+            }
+
+            if (TryGetComponent<XRRemotePoseProvider>(out XRRemotePoseProvider remotePoseProvider))
+            {
+                trackedPoseDriver.poseProviderComponent = remotePoseProvider;
+                return true;
+            }
+
+            Debug.LogErrorFormat("TrySetupTrackedPoseDriver Event: null XRRemotePoseProvider on Ndi receiver");
+            return false;
         }
     }
 }
