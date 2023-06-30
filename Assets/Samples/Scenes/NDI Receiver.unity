@@ -169,7 +169,47 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
+  ndiReceiver: {fileID: 0}
   rawImage: {fileID: 626219204}
+  <remotePacket>k__BackingField:
+    cameraFrame:
+      timestampNs: 0
+      projectionMatrix:
+        position:
+          x: 0
+          y: 0
+          z: 0
+        rotation:
+          x: 0
+          y: 0
+          z: 0
+          w: 0
+      displayMatrix:
+        position:
+          x: 0
+          y: 0
+          z: 0
+        rotation:
+          x: 0
+          y: 0
+          z: 0
+          w: 0
+    planesInfo:
+      added: []
+      updated: []
+      removed: []
+    cameraPose:
+      position:
+        x: 0
+        y: 0
+        z: 0
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+    frameInfo: 0
+    bytesSent: 0
   aspectRatio: 0
 --- !u!114 &29770803
 MonoBehaviour:
@@ -329,7 +369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 3
-  m_AspectRatio: 0.001
+  m_AspectRatio: 0.565
 --- !u!114 &626219204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,8 +397,6 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
-  aspectFitter: {fileID: 626219203}
-  deviceAspectRatio: 0
 --- !u!222 &626219205
 CanvasRenderer:
   m_ObjectHideFlags: 0
