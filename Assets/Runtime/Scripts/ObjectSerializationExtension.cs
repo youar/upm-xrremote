@@ -27,7 +27,7 @@
 //-------------------------------------------------------------------------------------------------------
 using System.IO;
 
-namespace XRRemote 
+namespace XRRemote
 {
 
     using System.Runtime.Serialization.Formatters.Binary;

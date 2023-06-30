@@ -11,8 +11,10 @@
 /[Mm]emoryCaptures/
 /[Uu]ser[Ss]ettings/
 
+
 .DS_Store
 *_BackUpThisFolder_ButDontShipItWithYourGame/
+
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
