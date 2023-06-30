@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections;
 using UnityEngine;
 using Klak.Ndi;
 using UnityEngine.SpatialTracking;
@@ -16,6 +17,9 @@ namespace XRRemote
         public static CustomNdiReceiver Instance { get; private set; } = null;
         public RemotePacket remotePacket { get; private set; } = null;
         public event EventHandler OnPlanesInfoReceived;
+        
+        public float aspectRatio;
+        public event EventHandler OnAspectRatioChanged;
 
         private void Awake()
         {
@@ -45,6 +49,7 @@ namespace XRRemote
                 ndiReceiver.ndiName = ndiName;
             }
             TrySetupTrackedPoseDriver();
+            StartCoroutine(CheckAspectRatio());
         }
 
         private void OnDisable()
@@ -73,6 +78,7 @@ namespace XRRemote
                 {
                     return;
                 }
+
                 //add Metadata here
                 string base64 = ndiReceiver.metadata.Substring(9, ndiReceiver.metadata.Length - 9 - 3);
                 byte[] data = Convert.FromBase64String(base64);
@@ -85,8 +91,27 @@ namespace XRRemote
                 {
                     OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
                 }
-                
+
                 ndiReceiver.metadata = null;
+            }
+        }
+
+        private IEnumerator CheckAspectRatio()
+        {
+            while (true)
+            {   
+                Debug.Log("checkAspectRatio Ran");
+                
+                if (ndiReceiver.texture!=null)
+                {
+                    float receivedRatio = (float)ndiReceiver.texture.width / (float)ndiReceiver.texture.height;
+                    if (receivedRatio != aspectRatio)
+                    {
+                        aspectRatio = receivedRatio;
+                        OnAspectRatioChanged?.Invoke(this, EventArgs.Empty);
+                    }
+                }
+                yield return new WaitForSeconds(5f);
             }
         }
 

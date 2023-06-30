@@ -1,25 +1,52 @@
 using UnityEngine.UI;
+using UnityEngine;
+using System;
+
 
 namespace XRRemote
 {
     public class CustomRawImage : RawImage
     {
-        public float deviceAspectRatio; // Property in the custom object class
+        // public float? height= null;
+        // public float? width = null;
+        public AspectRatioFitter aspectFitter = null;
+        public float deviceAspectRatio = .565f; // Property in the custom object class
 
         protected override void Start()
         {
-            AspectRatioFitter aspectFitter = GetComponent<AspectRatioFitter>();
+            aspectFitter = GetComponent<AspectRatioFitter>();
+           
             if (aspectFitter != null)
             {
-                aspectFitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-                
-                // Set the property of the required AspectRatioFitter component based on the custom object class property
                 aspectFitter.aspectRatio = deviceAspectRatio;
-                if (aspectFitter.aspectRatio == 0)
-                {
-                    aspectFitter.aspectRatio = .565f;    
-                } 
+                aspectFitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
             }
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            if (CustomNdiReceiver.Instance == null) return;
+            CustomNdiReceiver.Instance.OnAspectRatioChanged += CustomNdiReceiver_OnAspectRatioChanged;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            if (CustomNdiReceiver.Instance == null) return;
+            CustomNdiReceiver.Instance.OnAspectRatioChanged -= CustomNdiReceiver_OnAspectRatioChanged;
+        }
+
+
+        protected void CustomNdiReceiver_OnAspectRatioChanged(object sender, EventArgs e)
+        {
+            Debug.Log("OnAspectRatioChanged Ran");
+            if (this.texture != null)
+            {
+                deviceAspectRatio = (float)this.texture.height / (float)this.texture.width;
+                aspectFitter.aspectRatio = deviceAspectRatio;
+            }
+            
         }
     }
 }

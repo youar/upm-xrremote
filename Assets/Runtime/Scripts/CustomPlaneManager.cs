@@ -19,11 +19,13 @@ namespace XRRemote
 
         private void OnEnable()
         {
+            if (CustomNdiReceiver.Instance == null) return;
             CustomNdiReceiver.Instance.OnPlanesInfoReceived += CustomNdiReceiver_OnPlanesInfoReceived;
         }
 
         private void OnDisable()
         {
+            if (CustomNdiReceiver.Instance == null) return;
             CustomNdiReceiver.Instance.OnPlanesInfoReceived -= CustomNdiReceiver_OnPlanesInfoReceived;
         }
 

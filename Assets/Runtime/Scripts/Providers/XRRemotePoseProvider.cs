@@ -36,6 +36,12 @@ using UnityEngine.SpatialTracking;
                 return PoseDataFlags.NoData;
             }
 
+            if (connection.remotePacket == null)
+            {
+                output = Pose.identity;
+                return PoseDataFlags.NoData;
+            }
+
             XRRemote.Serializables.Pose pose = connection.remotePacket.cameraPose;
             if (pose == null)
             {
