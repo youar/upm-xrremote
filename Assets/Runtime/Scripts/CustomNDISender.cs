@@ -82,12 +82,6 @@ namespace XRRemote
                 testPacket.planesInfo = null;
             }
 
-            // if (poseSender.TryGetPoseInfo(out XRRemote.Serializables.Pose pose)) {
-            //     testPacket.cameraPose = pose;
-            // } else {
-            //     testPacket.cameraPose = null;
-            // }
-
             //Serialize metadata
             byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(testPacket); 
             ndiSender.metadata = "<![CDATA[" + Convert.ToBase64String(serializedData) + "]]>";

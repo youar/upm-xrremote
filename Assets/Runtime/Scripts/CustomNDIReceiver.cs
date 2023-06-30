@@ -18,6 +18,7 @@ namespace XRRemote
         public RemotePacket remotePacket { get; private set; } = null;
         public event EventHandler OnPlanesInfoReceived;
         
+        [Tooltip("Aspect Ratio or Pixel Count of the Mobile Device (Width/Height)")]
         public float aspectRatio;
         public event EventHandler OnAspectRatioChanged;
 
@@ -49,7 +50,6 @@ namespace XRRemote
                 ndiReceiver.ndiName = ndiName;
             }
             TrySetupTrackedPoseDriver();
-            StartCoroutine(CheckAspectRatio());
         }
 
         private void OnDisable()
@@ -95,26 +95,7 @@ namespace XRRemote
                 ndiReceiver.metadata = null;
             }
         }
-
-        private IEnumerator CheckAspectRatio()
-        {
-            while (true)
-            {   
-                Debug.Log("checkAspectRatio Ran");
-                
-                if (ndiReceiver.texture!=null)
-                {
-                    float receivedRatio = (float)ndiReceiver.texture.width / (float)ndiReceiver.texture.height;
-                    if (receivedRatio != aspectRatio)
-                    {
-                        aspectRatio = receivedRatio;
-                        OnAspectRatioChanged?.Invoke(this, EventArgs.Empty);
-                    }
-                }
-                yield return new WaitForSeconds(5f);
-            }
-        }
-
+        
         private static string FindNdiName()
         {
             return NdiFinder.sourceNames.FirstOrDefault();

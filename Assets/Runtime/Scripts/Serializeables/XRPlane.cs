@@ -28,8 +28,6 @@ using UnityEngine.XR.ARFoundation;
 
 namespace XRRemote.Serializables 
 {
-    //using UnityEngine.XR.ARSubsystems;
-
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public struct XRPlaneNdi : IEquatable<XRPlaneNdi>
