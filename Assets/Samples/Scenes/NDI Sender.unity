@@ -231,9 +231,9 @@ GameObject:
   m_Component:
   - component: {fileID: 586251449}
   - component: {fileID: 586251444}
-  - component: {fileID: 586251450}
   - component: {fileID: 586251446}
   - component: {fileID: 586251445}
+  - component: {fileID: 586251450}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: Untagged
@@ -339,15 +339,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 586251443}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a2a9c34df4095f47b9ca8f975175f5b, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e3c44306fb1e439a9f18b2212b8ab70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Device: 0
-  m_PoseSource: 6
-  m_PoseProviderComponent: {fileID: 0}
-  m_TrackingType: 0
-  m_UpdateType: 0
-  m_UseRelativeTransform: 0
+--- !u!1 &653155907
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 653155909}
+  - component: {fileID: 653155908}
+  m_Layer: 0
+  m_Name: Custom Plane Sender
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &653155908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653155907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99cba46fe6d3045428c0bc7685740f76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &653155909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653155907}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &742894095
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,7 +431,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4facf0e97720547be8e6dd36f2ce3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planeSender: {fileID: 653155908}
   cameraManager: {fileID: 586251446}
+  arPoseDriver: {fileID: 586251450}
   cameraBackground: {fileID: 586251445}
   resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
   ndiSenderVisualizer: {fileID: 114567776}
@@ -561,6 +601,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2068114034}
   - component: {fileID: 2068114033}
+  - component: {fileID: 2068114035}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -597,3 +638,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2068114035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068114032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PlanePrefab: {fileID: 3059882415172814138, guid: 2dc4f846d28e9b4409416ae04bc8b9cd, type: 3}
+  m_DetectionMode: -1

@@ -21,21 +21,18 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-namespace XRRemote
+namespace XRRemote.Serializables 
 {
-    //using UnityEngine.XR.ARSubsystems;
-
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct XRPlane : IEquatable<XRPlane>
+    public struct XRPlaneNdi : IEquatable<XRPlaneNdi>
     {
-        public XRRemote.TrackableId trackableId;
+        public TrackableId trackableId;
         public Pose pose;
         public float3 center;
         public float3 centerInPlaneSpace;
@@ -46,7 +43,7 @@ namespace XRRemote
         public float2 size;
         public bool isSubsumed;
 
-        public XRPlane(ARPlane arPlane)
+        public XRPlaneNdi(ARPlane arPlane)
         {
             trackableId = arPlane.trackableId;
             pose = Pose.FromTransform(arPlane.transform);
@@ -66,7 +63,7 @@ namespace XRRemote
             }
         }
 
-        public bool Equals(XRPlane o)
+        public bool Equals(XRPlaneNdi o)
         {
             return trackableId.Equals(o.trackableId);
         }

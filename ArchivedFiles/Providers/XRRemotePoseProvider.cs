@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="float4.cs" createdby="gblikas">
+// <copyright file="XRRemotePoseProvider.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -21,34 +21,33 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-using System;
 
-namespace XRRemote.Serializables 
+using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEngine.Experimental.XR.Interaction;
+using UnityEngine.SpatialTracking;
+
+public class XRRemotePoseProvider : BasePoseProvider
 {
-    [Serializable]
-    public class float4 : IEquatable<float4>, IFormattable
+    public override PoseDataFlags GetPoseFromProvider(out Pose output)
     {
-        public float x;
-        public float y;
-        public float z;
-        public float w;
-
-        /// <summary>float3 zero value.</summary>
-        public static readonly float4 zero;
-
-        public float4(float x, float y, float z, float w)
+        XRRemote.XREditorClient connection = XRRemote.XREditorClient.Instance;
+        if (connection == null)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.w = w;
+            output = Pose.identity;
+            return PoseDataFlags.NoData;
         }
 
-        public bool Equals(float4 rhs) { return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w; }
-
-        public string ToString(string format, IFormatProvider formatProvider)
+        XRRemote.Pose pose = connection.xrRemoteTrackedPose;
+        if (pose == null)
         {
-            return string.Format("float3({0}f, {1}f, {2}f), {3}f", x.ToString(format, formatProvider), y.ToString(format, formatProvider), z.ToString(format, formatProvider), w.ToString(format, formatProvider));
+            output = Pose.identity;
+            return PoseDataFlags.NoData;
         }
+
+        output = pose;
+        return PoseDataFlags.Position | PoseDataFlags.Rotation; 
     }
 }
+#endif 

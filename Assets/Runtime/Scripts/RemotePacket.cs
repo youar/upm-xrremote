@@ -1,16 +1,20 @@
 using System;
+using XRRemote.Serializables;
 
-namespace KlakNDI_Test.Assets.Scripts.ObjectSerializationExtension 
+namespace XRRemote 
 {
     [Serializable]
     public partial class RemotePacket
     {
         public CameraFrameEvent cameraFrame;
-        // public FaceInfo face;
-        // public Pose trackedPose;
-        public PlaneInfo plane;
-        // // public HumanBodyInfo humanBody;
-
+        public PlanesInfo planesInfo;
+        public Pose cameraPose = null;
+        
+        // todo make frameInfo and timestamp their own object classes
+        public int frameInfo;
+        public long? timestamp;
+        public int bytesSent;
     }
-
 }
+
+

@@ -25,10 +25,9 @@
 //
 // </modified> 
 //-------------------------------------------------------------------------------------------------------
-
 using System.IO;
 
-namespace KlakNDI_Test.Assets.Scripts.ObjectSerializationExtension 
+namespace XRRemote
 {
 
     using System.Runtime.Serialization.Formatters.Binary;
