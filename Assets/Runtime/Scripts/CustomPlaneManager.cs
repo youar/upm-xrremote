@@ -68,9 +68,6 @@ namespace XRRemote
                 foreach (CustomPlaneVisual planeVisual in planeVisualsToUpdate) {
                     planeVisual.Setup(plane);
 
-                    // if (plane.isSubsumed) {
-                    //     planeVisual.gameObject.SetActive(false);
-                    // }
                 }
             }
         }

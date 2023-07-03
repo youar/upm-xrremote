@@ -2,8 +2,6 @@ using Unity.Collections;
 using UnityEngine;
 using XRRemote.Serializables;
 using UnityEngine.XR.ARFoundation;
-// using System.Collections;
-// using System.Collections.Generic;
 
 #if UNITY_EDITOR
 namespace XRRemote
