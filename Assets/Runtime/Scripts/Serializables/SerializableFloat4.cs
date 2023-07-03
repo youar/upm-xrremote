@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="RemotePacket.cs" createdby="gblikas">
+// <copyright file="SerializableFloat4.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -22,22 +22,33 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
-using XRRemote.Serializables;
 
-namespace XRRemote 
+namespace XRRemote.Serializables 
 {
     [Serializable]
-    public partial class RemotePacket
+    public class SerializableFloat4 : IEquatable<SerializableFloat4>, IFormattable
     {
-        public SerializableCameraFrameEvent cameraFrame;
-        public SerializablePlanesInfo planesInfo;
-        public SerializablePose cameraPose = null;
-        
-        // todo make frameInfo and timestamp their own object classes
-        public int frameInfo;
-        public long? timestamp;
-        public int bytesSent;
+        public float x;
+        public float y;
+        public float z;
+        public float w;
+
+        /// <summary>float3 zero value.</summary>
+        public static readonly SerializableFloat4 zero;
+
+        public SerializableFloat4(float x, float y, float z, float w)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
+        }
+
+        public bool Equals(SerializableFloat4 rhs) { return x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w; }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return string.Format("float3({0}f, {1}f, {2}f), {3}f", x.ToString(format, formatProvider), y.ToString(format, formatProvider), z.ToString(format, formatProvider), w.ToString(format, formatProvider));
+        }
     }
 }
-
-

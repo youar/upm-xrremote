@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="XRRemotePoseProvider.cs" createdby="gblikas">
+// <copyright file="CustomRawImage.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -21,37 +21,30 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
+using UnityEngine.UI;
 using UnityEngine;
-using UnityEngine.Experimental.XR.Interaction;
-using UnityEngine.SpatialTracking;
+using System;
 
-    public class XRRemotePoseProvider : BasePoseProvider
+namespace XRRemote
+{
+    public class CustomRawImage : RawImage
     {
-        public override PoseDataFlags GetPoseFromProvider(out Pose output)
+        // public AspectRatioFitter aspectFitter = null;
+
+        protected override void Start()
         {
-            XRRemote.CustomNdiReceiver connection = XRRemote.CustomNdiReceiver.Instance;
-            if (connection == null)
+            AspectRatioFitter aspectFitter = GetComponent<AspectRatioFitter>();
+           
+            if (aspectFitter != null)
             {
-                output = Pose.identity;
-                return PoseDataFlags.NoData;
+                
+                if (CustomNdiReceiver.Instance.aspectRatio != 0f)
+                {
+                    aspectFitter.aspectRatio = CustomNdiReceiver.Instance.aspectRatio;
+                }
+                // aspectFitter.aspectRatio = (Mathf.Approximately(CustomNdiReceiver.Instance.aspectRatio, 0) ? deviceAspectRatio : CustomNdiReceiver.Instance.aspectRatio);            
+                aspectFitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
             }
-
-            if (connection.remotePacket == null)
-            {
-                output = Pose.identity;
-                return PoseDataFlags.NoData;
-            }
-
-            XRRemote.Serializables.SerializablePose pose = connection.remotePacket.cameraPose;
-            if (pose == null)
-            {
-                output = Pose.identity;
-                return PoseDataFlags.NoData;
-            }
-
-            output = pose;
-            return PoseDataFlags.Position | PoseDataFlags.Rotation; 
         }
     }
-
-
+}

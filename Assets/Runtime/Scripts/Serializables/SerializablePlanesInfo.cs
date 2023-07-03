@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="XRRemotePoseProvider.cs" createdby="gblikas">
+// <copyright file="SerializablePlanesInfo.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -21,37 +21,34 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-using UnityEngine;
-using UnityEngine.Experimental.XR.Interaction;
-using UnityEngine.SpatialTracking;
+using System;
 
-    public class XRRemotePoseProvider : BasePoseProvider
+namespace XRRemote.Serializables 
+{
+    [Serializable]
+    public class SerializablePlanesInfo
     {
-        public override PoseDataFlags GetPoseFromProvider(out Pose output)
+        public SerializableXRPlaneNdi[] added;
+        public SerializableXRPlaneNdi[] updated;
+        public SerializableXRPlaneNdi[] removed;
+
+        public override string ToString()
         {
-            XRRemote.CustomNdiReceiver connection = XRRemote.CustomNdiReceiver.Instance;
-            if (connection == null)
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("PlanesInfo");
+            foreach (var f in added)
             {
-                output = Pose.identity;
-                return PoseDataFlags.NoData;
+                sb.AppendLine($"added: {f}");
             }
-
-            if (connection.remotePacket == null)
+            foreach (var f in updated)
             {
-                output = Pose.identity;
-                return PoseDataFlags.NoData;
+                sb.AppendLine($"updated: {f}");
             }
-
-            XRRemote.Serializables.SerializablePose pose = connection.remotePacket.cameraPose;
-            if (pose == null)
+            foreach (var f in removed)
             {
-                output = Pose.identity;
-                return PoseDataFlags.NoData;
+                sb.AppendLine($"removed: {f}");
             }
-
-            output = pose;
-            return PoseDataFlags.Position | PoseDataFlags.Rotation; 
+            return sb.ToString();
         }
     }
-
-
+}

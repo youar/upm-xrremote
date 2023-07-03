@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="RemotePacket.cs" createdby="gblikas">
+// <copyright file="SerializableCameraFrameEvent.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -22,22 +22,29 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
-using XRRemote.Serializables;
 
-namespace XRRemote 
+namespace XRRemote.Serializables 
 {
     [Serializable]
-    public partial class RemotePacket
+    public class SerializableCameraFrameEvent : IEquatable<SerializableCameraFrameEvent>
     {
-        public SerializableCameraFrameEvent cameraFrame;
-        public SerializablePlanesInfo planesInfo;
-        public SerializablePose cameraPose = null;
-        
-        // todo make frameInfo and timestamp their own object classes
-        public int frameInfo;
-        public long? timestamp;
-        public int bytesSent;
+        // public ARLightEstimationData lightEstimation;
+        public long timestampNs;
+        public SerializablePose projectionMatrix;
+        public SerializablePose displayMatrix;
+
+        public bool Equals(SerializableCameraFrameEvent o)
+        {
+            return timestampNs.Equals(o.timestampNs)
+                && projectionMatrix.Equals(o.projectionMatrix)
+                && displayMatrix.Equals(o.displayMatrix);
+        }
+
+        public override string ToString()
+        {
+            return $"[time: {timestampNs}, projection: {projectionMatrix}, display: {displayMatrix}]";
+        }
+
+        // public static int DataSize => sizeof(long) + Marshal.SizeOf(typeof(Matrix4x4)) * 2;
     }
 }
-
-

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="XRRemotePoseProvider.cs" createdby="gblikas">
+// <copyright file="SerializableFloat2.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -21,37 +21,42 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
+using System;
 using UnityEngine;
-using UnityEngine.Experimental.XR.Interaction;
-using UnityEngine.SpatialTracking;
 
-    public class XRRemotePoseProvider : BasePoseProvider
+namespace XRRemote.Serializables 
+{
+    [Serializable]
+    public class SerializableFloat2 : IEquatable<SerializableFloat2>, IFormattable
     {
-        public override PoseDataFlags GetPoseFromProvider(out Pose output)
+        public float x;
+        public float y;
+
+        /// <summary>float2 zero value.</summary>
+        public static readonly SerializableFloat2 zero;
+
+        public SerializableFloat2(float x, float y)
         {
-            XRRemote.CustomNdiReceiver connection = XRRemote.CustomNdiReceiver.Instance;
-            if (connection == null)
-            {
-                output = Pose.identity;
-                return PoseDataFlags.NoData;
-            }
+            this.x = x;
+            this.y = y;
+        }
 
-            if (connection.remotePacket == null)
-            {
-                output = Pose.identity;
-                return PoseDataFlags.NoData;
-            }
+        public SerializableFloat2(Vector2 v)
+        {
+            this.x = v.x;
+            this.y = v.y;
+        }
 
-            XRRemote.Serializables.SerializablePose pose = connection.remotePacket.cameraPose;
-            if (pose == null)
-            {
-                output = Pose.identity;
-                return PoseDataFlags.NoData;
-            }
+        public bool Equals(SerializableFloat2 rhs) { return x == rhs.x && y == rhs.y; }
 
-            output = pose;
-            return PoseDataFlags.Position | PoseDataFlags.Rotation; 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return string.Format("float2({0}f, {1}f", x.ToString(format, formatProvider), y.ToString(format, formatProvider));
+        }
+
+        public Vector3 ToVector2()
+        {
+            return new Vector2(x, y);
         }
     }
-
-
+}
