@@ -66,6 +66,5 @@ namespace XRRemote
 				return obj;
 			}
 		}
-
 	}
 }
