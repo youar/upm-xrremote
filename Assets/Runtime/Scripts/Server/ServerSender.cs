@@ -31,6 +31,7 @@ using XRRemote.Serializables;
 
 namespace XRRemote
 {   
+    
     [DisallowMultipleComponent]
     [Serializable]
 
