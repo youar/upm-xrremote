@@ -26,21 +26,16 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
-using XRRemote.Serializables;
+// using XRRemote.Serializables;
 
 namespace XRRemote
 {   
     [DisallowMultipleComponent]
     [Serializable]
 
-    public sealed class CustomNdiSender : MonoBehaviour
+    public abstract class CustomNdiSender : MonoBehaviour
     {    
-        [SerializeField] private CustomPlaneSender planeSender = null;
-        [SerializeField] private ARCameraManager cameraManager = null;
-        [SerializeField] private ARPoseDriver arPoseDriver = null;
-        [SerializeField] private ARCameraBackground cameraBackground = null;
         [SerializeField] private NdiResources resources = null;
-
         private int frameCount = 0;
         public MeshRenderer ndiSenderVisualizer = null;
         private NdiSender ndiSender = null;
@@ -57,62 +52,56 @@ namespace XRRemote
             }
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             frameCount = 0;
             commandBuffer = new CommandBuffer();
             commandBuffer.name = "CustomNdiSender";
-            cameraManager.frameReceived += OnCameraFrameReceived;
         }
 
         private void OnDestroy()
         {
             frameCount = 0;
-            if (cameraManager != null)
-            {
-                cameraManager.frameReceived -= OnCameraFrameReceived;
-            }
-            
             commandBuffer?.Dispose();
         }
-        
-        private void OnValidate()
-        {
-            if (cameraManager == null)
-            {
-                cameraManager = FindObjectOfType<ARCameraManager>();
-            }
-        }
 
-        // CustomNdiSender.cs
-        private void OnCameraFrameReceived(ARCameraFrameEventArgs args)
+        private void SetTexture(int width, int height)
         {
             if (renderTexture == null)
             {
-                //Set texture
-                int width = cameraBackground.material.mainTexture.width; 
-                int height = cameraBackground.material.mainTexture.height;
+                //set texture
                 InitNdi(width, height);
             }
+        }
+
+        private string SerializeMetadata(RemotePacket packet)
+        {
+            byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(packet); 
+            return "<![CDATA[" + Convert.ToBase64String(serializedData) + "]]>";
+        }
+
+        protected abstract RemotePacket GetPacketData();
+        
+        protected void CommandBufferActions(Material background)
+        {
+            commandBuffer.Blit(null, renderTexture, background);
+            Graphics.ExecuteCommandBuffer(commandBuffer);
+            commandBuffer.Clear(); 
+        }
+
+        protected abstract Material GetCameraFrameMaterial();
+
+        private void OnCameraFrameReceived(ARCameraFrameEventArgs args)
+        {
+            Material material = GetCameraFrameMaterial();
+            SetTexture(material.mainTexture.width, material.mainTexture.height);
 
             //Set metadata
-            RemotePacket testPacket = new RemotePacket();
-            testPacket.cameraPose = arPoseDriver;
+            RemotePacket packetToSend = GetPacketData();
+   
+            ndiSender.metadata = SerializeMetadata(packetToSend); //Add metadata here?
 
-            if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
-                testPacket.planesInfo = planesInfo;
-            } else {
-                testPacket.planesInfo = null;
-            }
-
-            //Serialize metadata
-            byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(testPacket); 
-            ndiSender.metadata = "<![CDATA[" + Convert.ToBase64String(serializedData) + "]]>";
-            
-            commandBuffer.Blit(null, renderTexture, cameraBackground.material);
-            Graphics.ExecuteCommandBuffer(commandBuffer);
-            commandBuffer.Clear();
-            
+            CommandBufferActions(GetCameraFrameMaterial());
             frameCount++;
         } 
 
@@ -123,7 +112,6 @@ namespace XRRemote
             var name = string.Format("CustomNdiSender");
             var go = new GameObject(name);
             go.transform.SetParent(transform, false);
-
             ndiSender = go.AddComponent<NdiSender>();
             ndiSender.SetResources(resources);
             ndiSender.captureMethod = CaptureMethod.Texture;
