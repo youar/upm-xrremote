@@ -29,7 +29,7 @@ using UnityEngine.SpatialTracking;
     {
         public override PoseDataFlags GetPoseFromProvider(out Pose output)
         {
-            XRRemote.CustomNdiReceiver connection = XRRemote.CustomNdiReceiver.Instance;
+            XRRemote.ClientReceiver connection = XRRemote.ClientReceiver.Instance;
             if (connection == null)
             {
                 output = Pose.identity;
@@ -53,5 +53,3 @@ using UnityEngine.SpatialTracking;
             return PoseDataFlags.Position | PoseDataFlags.Rotation; 
         }
     }
-
-

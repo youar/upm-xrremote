@@ -41,14 +41,14 @@ namespace XRRemote
 
         private void OnEnable()
         {
-            if (CustomNdiReceiver.Instance == null) return;
-            CustomNdiReceiver.Instance.OnPlanesInfoReceived += CustomNdiReceiver_OnPlanesInfoReceived;
+            if (ClientReceiver.Instance == null) return;
+            ClientReceiver.Instance.OnPlanesInfoReceived += CustomNdiReceiver_OnPlanesInfoReceived;
         }
 
         private void OnDisable()
         {
-            if (CustomNdiReceiver.Instance == null) return;
-            CustomNdiReceiver.Instance.OnPlanesInfoReceived -= CustomNdiReceiver_OnPlanesInfoReceived;
+            if (ClientReceiver.Instance == null) return;
+            ClientReceiver.Instance.OnPlanesInfoReceived -= CustomNdiReceiver_OnPlanesInfoReceived;
         }
 
         /// <summary>
@@ -122,17 +122,17 @@ namespace XRRemote
         }
 
         private void CustomNdiReceiver_OnPlanesInfoReceived(object sender, EventArgs e)
-        {
-            if (CustomNdiReceiver.Instance.remotePacket.planesInfo.added != null) {
-                AddVisuals(CustomNdiReceiver.Instance.remotePacket.planesInfo.added);
+        {            
+            if (ClientReceiver.Instance.remotePacket.planesInfo.added != null) {
+                AddVisuals(ClientReceiver.Instance.remotePacket.planesInfo.added);
             }
 
-            if (CustomNdiReceiver.Instance.remotePacket.planesInfo.updated != null) {
-                UpdateVisuals(CustomNdiReceiver.Instance.remotePacket.planesInfo.updated);
+            if (ClientReceiver.Instance.remotePacket.planesInfo.updated != null) {
+                UpdateVisuals(ClientReceiver.Instance.remotePacket.planesInfo.updated);
             }
 
-            if (CustomNdiReceiver.Instance.remotePacket.planesInfo.removed != null) {
-                RemoveVisuals(CustomNdiReceiver.Instance.remotePacket.planesInfo.removed);
+            if (ClientReceiver.Instance.remotePacket.planesInfo.removed != null) {
+                RemoveVisuals(ClientReceiver.Instance.remotePacket.planesInfo.removed);
             }
         }
     }

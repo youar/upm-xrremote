@@ -27,42 +27,25 @@ using System.Collections;
 using UnityEngine;
 using Klak.Ndi;
 using UnityEngine.SpatialTracking;
+using UnityEngine.UI;
+using UnityEngine.XR;
+using XRRemote;
 
 namespace XRRemote
 {
-    public class CustomNdiReceiver : MonoBehaviour
+    public abstract class CustomNdiReceiver : MonoBehaviour
     {
         [SerializeField] 
         private NdiResources resources = null;
         private NdiReceiver ndiReceiver = null;
+        // public static CustomNdiReceiver Instance = null;
         public CustomRawImage rawImage = null;
 
-        public static CustomNdiReceiver Instance { get; private set; } = null;
-        public ServerRemotePacket remotePacket { get; private set; } = null;
-        public event EventHandler OnPlanesInfoReceived;
         
         [Tooltip("Aspect Ratio or Pixel Count of the Mobile Device (Width/Height)")]
         public float aspectRatio;
 
-        private void Awake()
-        {
-            // It works only in Editor!
-            if (!Application.isEditor)
-            {
-                Destroy(gameObject);
-                Debug.LogError("cannot use CustomNdiReceiver in Editor.");
-                return;
-            }
-
-            if (Instance != null)
-            {
-                Debug.LogError("CustomNdiReceiver must be only one in the scene.");
-            }
-
-            Instance = this;
-        }
-
-        private void Start()
+        protected virtual void Start()
         {
             ndiReceiver = gameObject.AddComponent<NdiReceiver>();
             ndiReceiver.SetResources(resources);
@@ -71,13 +54,9 @@ namespace XRRemote
             {
                 ndiReceiver.ndiName = ndiName;
             }
-            TrySetupTrackedPoseDriver();
         }
 
-        private void OnDisable()
-        {
-            Instance = null;
-        }
+      
 
         private void Update()
         {
@@ -94,51 +73,37 @@ namespace XRRemote
             {
                 //add texture to rawImage
                 rawImage.texture = rt;
-                
-                // //check metadata
-                if (ndiReceiver.metadata == null)
+
+                if (!MetadataNullCheck())
                 {
-                    return;
+                    ProcessPacketData(DeserializePacket());
+                    NullMetadata();
                 }
-
-                //add Metadata here
-                string base64 = ndiReceiver.metadata.Substring(9, ndiReceiver.metadata.Length - 9 - 3);
-                byte[] data = Convert.FromBase64String(base64);
-
-                ServerRemotePacket receivedData = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(data); 
-                CustomNdiReceiver.Instance.remotePacket = receivedData;
-
-                //check and add planes info
-                if (receivedData.planesInfo != null) 
-                {
-                    OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
-                }
-
-                ndiReceiver.metadata = null;
             }
+        }
+
+        protected abstract void ProcessPacketData(byte[] data);
+
+        private bool MetadataNullCheck()
+        {
+            return (ndiReceiver.metadata == null);
+        }
+
+        private void NullMetadata()
+        {
+            ndiReceiver.metadata = null;
+        }
+
+        private byte[] DeserializePacket()
+        {
+            string base64 = ndiReceiver.metadata.Substring(9, ndiReceiver.metadata.Length - 9 - 3);
+            byte[] data = Convert.FromBase64String(base64); 
+            return data;
         }
         
         private static string FindNdiName()
         {
             return NdiFinder.sourceNames.FirstOrDefault();
-        }
-
-        private bool TrySetupTrackedPoseDriver()
-        {
-            TrackedPoseDriver trackedPoseDriver = FindObjectOfType<TrackedPoseDriver>();
-            if (trackedPoseDriver == null) {
-                    Debug.LogErrorFormat("TrySetupTrackedPoseDriver Event: null TrackedPoseDriver on main camera");
-                    return false;
-            }
-
-            if (TryGetComponent<XRRemotePoseProvider>(out XRRemotePoseProvider remotePoseProvider))
-            {
-                trackedPoseDriver.poseProviderComponent = remotePoseProvider;
-                return true;
-            }
-
-            Debug.LogErrorFormat("TrySetupTrackedPoseDriver Event: null XRRemotePoseProvider on Ndi receiver");
-            return false;
         }
     }
 }

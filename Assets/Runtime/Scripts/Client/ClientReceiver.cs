@@ -21,3 +21,90 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
+using System;
+using System.Linq;
+using System.Collections;
+using UnityEngine;
+using Klak.Ndi;
+using UnityEngine.SpatialTracking;
+
+namespace XRRemote
+{
+    public class ClientReceiver : CustomNdiReceiver
+    {
+        public static ClientReceiver Instance { get; private set; } = null;
+        public ServerRemotePacket remotePacket { get; private set; } = null;
+        public event EventHandler OnPlanesInfoReceived;
+
+        private void Awake()
+        {
+            // It works only in Editor!
+            if (!Application.isEditor)
+            {
+                Destroy(gameObject);
+                Debug.LogError("cannot use CustomNdiReceiver in Editor.");
+                return;
+            }
+
+            if (ClientReceiver.Instance != null)
+            {
+                Debug.LogError("CustomNdiReceiver must be only one in the scene.");
+            }
+
+            ClientReceiver.Instance = this;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            TrySetupTrackedPoseDriver();
+        }
+
+
+        protected override void ProcessPacketData(byte[] bytes)
+        {
+            //ServerRemotePacket remotePacket = CreatePacket(bytes) as ServerRemotePacket;
+            ServerRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(bytes);
+            this.remotePacket = remotePacket;
+            PlanesInfoCheck(remotePacket);
+        }
+
+        private void PlanesInfoCheck(ServerRemotePacket remotePacket)
+        {
+            if (remotePacket.planesInfo != null) 
+            {
+                OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
+            } 
+        }
+
+        //need to return ServerRemotePacket??
+        // protected override RemotePacket CreatePacket(byte[] data)
+        // {
+        //     ServerRemotePacket receivedData = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(data); 
+        //     return receivedData;
+        // }
+
+        private void OnDisable()
+        {
+            Instance = null;
+        }
+        
+        private bool TrySetupTrackedPoseDriver()
+        {
+            TrackedPoseDriver trackedPoseDriver = FindObjectOfType<TrackedPoseDriver>();
+            if (trackedPoseDriver == null) {
+                    Debug.LogErrorFormat("TrySetupTrackedPoseDriver Event: null TrackedPoseDriver on main camera");
+                    return false;
+            }
+
+            if (TryGetComponent<XRRemotePoseProvider>(out XRRemotePoseProvider remotePoseProvider))
+            {
+                trackedPoseDriver.poseProviderComponent = remotePoseProvider;
+                return true;
+            }
+
+            Debug.LogErrorFormat("TrySetupTrackedPoseDriver Event: null XRRemotePoseProvider on Ndi receiver");
+            return false;
+        }
+    }
+}

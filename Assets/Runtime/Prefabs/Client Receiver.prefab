@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 313385340780897174}
   - component: {fileID: 313385340780897175}
   m_Layer: 0
-  m_Name: NDI Receiver
+  m_Name: Client Receiver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 313385340780897163}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03fb156e742c7ed40902c9d79ae27243, type: 3}
+  m_Script: {fileID: 11500000, guid: 9e8c322d3e587467f853881e76cd2e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}

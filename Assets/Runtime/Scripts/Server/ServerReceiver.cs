@@ -21,3 +21,21 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
+using System;
+using System.Linq;
+using System.Collections;
+using UnityEngine;
+using Klak.Ndi;
+using UnityEngine.SpatialTracking;
+
+namespace XRRemote
+{
+    public class ServerReceiver : CustomNdiReceiver
+    {
+        public static ServerReceiver Instance {get; private set;} = null;
+        protected override void ProcessPacketData(byte[] bytes) 
+        {
+            
+        }
+    }
+}

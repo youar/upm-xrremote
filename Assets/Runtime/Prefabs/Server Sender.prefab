@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 5587092121833666919}
   - component: {fileID: 5587092121833666916}
   m_Layer: 0
-  m_Name: NDI Sender
+  m_Name: Server Sender
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

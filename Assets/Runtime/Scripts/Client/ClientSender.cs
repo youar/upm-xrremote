@@ -40,7 +40,7 @@
 //         [SerializeField] private ARCameraManager cameraManager = null;
 //         [SerializeField] private ARPoseDriver arPoseDriver = null;
 //         [SerializeField] private ARCameraBackground cameraBackground = null;
-//         [SerializeField] private NdiResources resources = null;
+//         [SerializeField] private NdiResources resources =  null;
 
 //         private int frameCount = 0;
 //         public MeshRenderer ndiSenderVisualizer = null;

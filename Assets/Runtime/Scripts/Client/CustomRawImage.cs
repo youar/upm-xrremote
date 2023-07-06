@@ -37,10 +37,16 @@ namespace XRRemote
            
             if (aspectFitter != null)
             {
-                
-                if (CustomNdiReceiver.Instance.aspectRatio != 0f)
+                CustomNdiReceiver receiver = FindObjectOfType<CustomNdiReceiver>();
+                if (receiver == null) 
                 {
-                    aspectFitter.aspectRatio = CustomNdiReceiver.Instance.aspectRatio;
+                    Debug.LogError($"{gameObject.name}: Receiver not found");
+                    return;
+                }
+                
+                if (receiver.aspectRatio != 0f)
+                {
+                    aspectFitter.aspectRatio = receiver.aspectRatio;
                 }
                 // aspectFitter.aspectRatio = (Mathf.Approximately(CustomNdiReceiver.Instance.aspectRatio, 0) ? deviceAspectRatio : CustomNdiReceiver.Instance.aspectRatio);            
                 aspectFitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
