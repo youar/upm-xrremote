@@ -36,17 +36,29 @@ namespace XRRemote.Serializables
         {
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("PlanesInfo");
-            foreach (var f in added)
-            {
-                sb.AppendLine($"added: {f}");
+            if (added != null) {
+                foreach (var f in added)
+                {
+                    sb.AppendLine($"added: {f}");
+                }
+            } else {
+                sb.AppendLine($"added: No planes added");
             }
-            foreach (var f in updated)
-            {
-                sb.AppendLine($"updated: {f}");
+            if (updated != null) {
+                foreach (var f in updated)
+                {
+                    sb.AppendLine($"updated: {f}");
+                }
+            } else {
+                sb.AppendLine($"updated: No planes updated");
             }
-            foreach (var f in removed)
-            {
-                sb.AppendLine($"removed: {f}");
+            if (removed != null) {
+                foreach (var f in removed)
+                {
+                    sb.AppendLine($"removed: {f}");
+                }
+            } else {
+                sb.AppendLine($"removed: No planes removed");
             }
             return sb.ToString();
         }

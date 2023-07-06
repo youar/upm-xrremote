@@ -21,3 +21,15 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
+using System;
+using XRRemote.Serializables;
+
+namespace XRRemote 
+{
+    [Serializable]
+    public partial class ServerRemotePacket : RemotePacket
+    {
+        public SerializablePlanesInfo planesInfo;
+        public SerializablePose cameraPose = null;
+    }
+}

@@ -38,7 +38,7 @@ namespace XRRemote
         public CustomRawImage rawImage = null;
 
         public static CustomNdiReceiver Instance { get; private set; } = null;
-        public RemotePacket remotePacket { get; private set; } = null;
+        public ServerRemotePacket remotePacket { get; private set; } = null;
         public event EventHandler OnPlanesInfoReceived;
         
         [Tooltip("Aspect Ratio or Pixel Count of the Mobile Device (Width/Height)")]
@@ -105,7 +105,7 @@ namespace XRRemote
                 string base64 = ndiReceiver.metadata.Substring(9, ndiReceiver.metadata.Length - 9 - 3);
                 byte[] data = Convert.FromBase64String(base64);
 
-                RemotePacket receivedData = ObjectSerializationExtension.Deserialize<RemotePacket>(data); 
+                ServerRemotePacket receivedData = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(data); 
                 CustomNdiReceiver.Instance.remotePacket = receivedData;
 
                 //check and add planes info

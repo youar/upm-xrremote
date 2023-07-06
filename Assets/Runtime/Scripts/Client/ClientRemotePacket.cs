@@ -21,3 +21,14 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
+using System;
+using XRRemote.Serializables;
+
+namespace XRRemote 
+{
+    [Serializable]
+    public partial class ClientRemotePacket : RemotePacket
+    {
+        // public SerializableUIInfo uiInfo;
+    }
+}

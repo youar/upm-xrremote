@@ -41,6 +41,7 @@ namespace XRRemote
         private NdiSender ndiSender = null;
         private RenderTexture renderTexture;
         private CommandBuffer commandBuffer;
+        protected string ndiSenderName = "CustomNdiSender";
 
         private void Awake()
         {
@@ -56,10 +57,10 @@ namespace XRRemote
         {
             frameCount = 0;
             commandBuffer = new CommandBuffer();
-            commandBuffer.name = "CustomNdiSender";
+            commandBuffer.name = ndiSenderName;
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             frameCount = 0;
             commandBuffer?.Dispose();
@@ -91,32 +92,34 @@ namespace XRRemote
 
         protected abstract Material GetCameraFrameMaterial();
 
-        private void OnCameraFrameReceived(ARCameraFrameEventArgs args)
+        protected void OnCameraFrameReceived()
         {
             Material material = GetCameraFrameMaterial();
             SetTexture(material.mainTexture.width, material.mainTexture.height);
-
-            //Set metadata
-            RemotePacket packetToSend = GetPacketData();
    
-            ndiSender.metadata = SerializeMetadata(packetToSend); //Add metadata here?
+            ndiSender.metadata = SerializeMetadata(GetPacketData());
 
-            CommandBufferActions(GetCameraFrameMaterial());
+            CommandBufferActions(material);
             frameCount++;
+        } 
+
+        protected void OnCameraFrameReceived(ARCameraFrameEventArgs args)
+        {
+            OnCameraFrameReceived();
         } 
 
         private void InitNdi(int width, int height)
         {
             Debug.Log($"Init NDI width: {width} height: {height}");
             renderTexture = new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-            var name = string.Format("CustomNdiSender");
-            var go = new GameObject(name);
+            // var name = string.Format("CustomNdiSender");
+            var go = new GameObject(ndiSenderName);
             go.transform.SetParent(transform, false);
             ndiSender = go.AddComponent<NdiSender>();
             ndiSender.SetResources(resources);
             ndiSender.captureMethod = CaptureMethod.Texture;
             ndiSender.keepAlpha = false;
-            ndiSender.ndiName = "CustomNdiSender";
+            ndiSender.ndiName = ndiSenderName;
             ndiSender.sourceTexture = renderTexture;
 
             if (ndiSenderVisualizer != null)

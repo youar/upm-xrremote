@@ -30,14 +30,10 @@ namespace XRRemote
     public partial class RemotePacket
     {
         public SerializableCameraFrameEvent cameraFrame;
-        public SerializablePlanesInfo planesInfo;
-        public SerializablePose cameraPose = null;
-        
+                
         // todo make frameInfo and timestamp their own object classes
         public int frameInfo;
         public long? timestamp;
         public int bytesSent;
     }
 }
-
-

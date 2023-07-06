@@ -56,7 +56,7 @@ namespace XRRemote
         /// </summary>
         private void AddVisuals(SerializableXRPlaneNdi[] planes)
         {
-            Debug.Log("Planes = " + planes.Length);
+            // Debug.Log("Planes = " + planes.Length);
             foreach (SerializableXRPlaneNdi plane in planes) {
                 Transform newVisualTransform = Instantiate(CustomPlaneVisualPrefab);
                 CustomPlaneVisual xrRemotePlaneVisual = newVisualTransform.GetComponent<CustomPlaneVisual>();

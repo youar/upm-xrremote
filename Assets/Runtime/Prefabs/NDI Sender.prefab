@@ -141,15 +141,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5587092121833666937}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4facf0e97720547be8e6dd36f2ce3d, type: 3}
+  m_Script: {fileID: 11500000, guid: fb981256cd4894b4f847e5e5da8da926, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
+  ndiSenderVisualizer: {fileID: 0}
   planeSender: {fileID: 5587092122012388658}
   cameraManager: {fileID: 0}
   arPoseDriver: {fileID: 0}
   cameraBackground: {fileID: 0}
-  resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
-  ndiSenderVisualizer: {fileID: 5587092121473841430}
 --- !u!1 &5587092122012388661
 GameObject:
   m_ObjectHideFlags: 0
