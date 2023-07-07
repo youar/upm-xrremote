@@ -37,9 +37,10 @@ namespace XRRemote
     {
         [SerializeField] 
         private NdiResources resources = null;
-        private NdiReceiver ndiReceiver = null;
-        // public static CustomNdiReceiver Instance = null;
+        protected NdiReceiver ndiReceiver = null;
         public CustomRawImage rawImage = null;
+        protected string targetNdiSenderName = "CustomNdiSender";
+        
 
         
         [Tooltip("Aspect Ratio or Pixel Count of the Mobile Device (Width/Height)")]
@@ -53,6 +54,8 @@ namespace XRRemote
             if (!string.IsNullOrWhiteSpace(ndiName))
             {
                 ndiReceiver.ndiName = ndiName;
+            } else {
+                Debug.LogError("Can't connect to " + targetNdiSenderName);
             }
         }
 
@@ -98,12 +101,28 @@ namespace XRRemote
         {
             string base64 = ndiReceiver.metadata.Substring(9, ndiReceiver.metadata.Length - 9 - 3);
             byte[] data = Convert.FromBase64String(base64); 
+            
             return data;
         }
         
-        private static string FindNdiName()
+        private string FindNdiName()
         {
-            return NdiFinder.sourceNames.FirstOrDefault();
+            string returnedName = NdiFinder.sourceNames.FirstOrDefault(s => s.Contains(targetNdiSenderName));
+            // string returnedName = NdiFinder.sourceNames.Where(s => s.Contains(targetNdiSenderName));
+            return returnedName;
+            // if (Application.isEditor)
+            // {
+            //     string returnedName = NdiFinder.sourceNames.FirstOrDefault();
+            //     Debug.Log($"Editor Found: {returnedName}");
+            //     return returnedName;
+            // }
+            // else
+            // {
+            //     string returnedName = NdiFinder.sourceNames.FirstOrDefault();
+            //     Debug.Log($"Phone Found: {returnedName}");
+            //     return returnedName;
+            // }
+            
         }
     }
 }

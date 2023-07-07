@@ -54,7 +54,6 @@ namespace XRRemote
         protected override void Start()
         {
             base.Start();
-            //in OG CustomNdiSender, the following line subscribes to an 'OnCameraFrameReceived' function
             cameraManager.frameReceived += OnCameraFrameReceived;
         }
 

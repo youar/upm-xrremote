@@ -35,23 +35,25 @@ namespace XRRemote
 
     public abstract class CustomNdiSender : MonoBehaviour
     {    
-        [SerializeField] private NdiResources resources = null;
+        [SerializeField] 
+        protected NdiResources resources = null;
         private int frameCount = 0;
         public MeshRenderer ndiSenderVisualizer = null;
-        private NdiSender ndiSender = null;
-        private RenderTexture renderTexture;
-        private CommandBuffer commandBuffer;
+        protected NdiSender ndiSender = null;
+        protected RenderTexture renderTexture;
+        protected CommandBuffer commandBuffer;
         protected string ndiSenderName = "CustomNdiSender";
+        public event EventHandler OnInitNdi;
 
-        private void Awake()
-        {
-            if (Application.isEditor)
-            {
-                Destroy(gameObject);
-                Debug.LogError("cannot use CustomNdiSender in Editor.");
-                return;
-            }
-        }
+        // private void Awake()
+        // {
+        //     if (Application.isEditor)
+        //     {
+        //         Destroy(gameObject);
+        //         Debug.LogError("cannot use CustomNdiSender in Editor.");
+        //         return;
+        //     }
+        // }
 
         protected virtual void Start()
         {
@@ -108,6 +110,11 @@ namespace XRRemote
             OnCameraFrameReceived();
         } 
 
+        protected void OnCameraFrameReceived(Camera camera)
+        {
+            OnCameraFrameReceived();
+        }
+
         private void InitNdi(int width, int height)
         {
             Debug.Log($"Init NDI width: {width} height: {height}");
@@ -126,6 +133,7 @@ namespace XRRemote
             {
                 ndiSenderVisualizer.material.mainTexture = renderTexture;
             }
+            OnInitNdi?.Invoke(this, EventArgs.Empty);
         }
     }
 }

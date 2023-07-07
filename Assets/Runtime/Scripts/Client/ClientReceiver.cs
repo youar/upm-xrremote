@@ -52,6 +52,8 @@ namespace XRRemote
             }
 
             ClientReceiver.Instance = this;
+
+            targetNdiSenderName = "ServerSender";
         }
 
         protected override void Start()
@@ -63,7 +65,6 @@ namespace XRRemote
 
         protected override void ProcessPacketData(byte[] bytes)
         {
-            //ServerRemotePacket remotePacket = CreatePacket(bytes) as ServerRemotePacket;
             ServerRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(bytes);
             this.remotePacket = remotePacket;
             PlanesInfoCheck(remotePacket);
@@ -76,13 +77,6 @@ namespace XRRemote
                 OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
             } 
         }
-
-        //need to return ServerRemotePacket??
-        // protected override RemotePacket CreatePacket(byte[] data)
-        // {
-        //     ServerRemotePacket receivedData = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(data); 
-        //     return receivedData;
-        // }
 
         private void OnDisable()
         {

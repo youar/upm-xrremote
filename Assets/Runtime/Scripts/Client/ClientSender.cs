@@ -22,127 +22,91 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 
-// using System;
-// // using UnityEngine;
-// // using UnityEngine.Rendering;
-// // using UnityEngine.XR.ARFoundation;
-// // using Klak.Ndi;
-// using XRRemote.Serializables;
+using System;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.XR.ARFoundation;
+using Klak.Ndi;
+using XRRemote.Serializables;
 
-// namespace XRRemote
-// {   
-//     [DisallowMultipleComponent]
-//     [Serializable]
+namespace XRRemote
+{   
+    [DisallowMultipleComponent]
+    [Serializable]
 
-//     public sealed class ClientSender : CustomNdiSender
-//     {    
-//         [SerializeField] private CustomPlaneSender planeSender = null;
-//         [SerializeField] private ARCameraManager cameraManager = null;
-//         [SerializeField] private ARPoseDriver arPoseDriver = null;
-//         [SerializeField] private ARCameraBackground cameraBackground = null;
-//         [SerializeField] private NdiResources resources =  null;
+    public sealed class ClientSender : CustomNdiSender
+    {    
+        [SerializeField] 
+        public Camera uiCamera = null;
+        public static ClientSender Instance { get; private set; }
+        public Material renderMaterial;
 
-//         private int frameCount = 0;
-//         public MeshRenderer ndiSenderVisualizer = null;
-//         private NdiSender ndiSender = null;
-//         private RenderTexture renderTexture;
-//         private CommandBuffer commandBuffer;
+        private void Awake()
+        {
+            // It works only in Editor!
+            if (!Application.isEditor)
+            {
+                Destroy(gameObject);
+                Debug.LogError("Cannot use ClientSender in non-Editor environment.");
+                return;
+            }
 
-//         private void Awake()
-//         {
-//             if (Application.isEditor)
-//             {
-//                 Destroy(gameObject);
-//                 Debug.LogError("cannot use CustomNdiSender in Editor.");
-//                 return;
-//             }
-//         }
+            if (ClientSender.Instance != null)
+            {
+                Debug.LogError("Only 1 Ndi Sender may exist in the scene.");
+                return;
+            }
 
-//         protected override void Start()
-//         {
-//             base.Start();
-//             //in OG CustomNdiSender, the following line subscribes to an 'OnCameraFrameReceived' function
-//             // cameraManager.frameReceived += OnCameraFrameReceived;
-//         }
+            ClientSender.Instance = this;
+            ndiSenderName = "ClientSender";
+        }
 
-//         // private void Start()
-//         // {
-//         //     frameCount = 0;
-//         //     commandBuffer = new CommandBuffer();
-//         //     commandBuffer.name = "CustomNdiSender";
-//         //     cameraManager.frameReceived += OnCameraFrameReceived;
-//         // }
+        protected override void Start()
+        {
+            base.Start();
+            ClientSender.Instance.OnInitNdi += ClientSender_OnNdiInitialized;
+            Camera.onPostRender += OnCameraFrameReceived;
+           
+        }
 
-//         // private void OnDestroy()
-//         // {
-//         //     frameCount = 0;
-//         //     if (cameraManager != null)
-//         //     {
-//         //         cameraManager.frameReceived -= OnCameraFrameReceived;
-//         //     }
-            
-//         //     commandBuffer?.Dispose();
-//         // }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            ClientSender.Instance.OnInitNdi -= ClientSender_OnNdiInitialized;
+            Camera.onPostRender -= OnCameraFrameReceived;
+        }
+
+
+        private void OnValidate()
+        {
+            if (uiCamera == null)
+            {
+                //may pull wrong camera if multiple in scene?? refine later
+                uiCamera = FindAnyObjectByType<Camera>();
+            }
+        } 
+
+        private void ClientSender_OnNdiInitialized(object sender, EventArgs e)
+        {
+            //set ui camera to render to NDI Init texture
+            uiCamera.targetTexture = renderTexture;
+        }
+
+        protected override Material GetCameraFrameMaterial()
+        {
+            renderMaterial.mainTexture = new RenderTexture(200, 200, 0, RenderTextureFormat.ARGB32);
+            return renderMaterial;
+        }
+
+        protected override RemotePacket GetPacketData()
+        {
+            ClientRemotePacket packet = new ClientRemotePacket();
+
+            //test metadata transmission
+            packet.testNumber = 555;
+            return packet;
+        }
         
-//         // private void OnValidate()
-//         // {
-//         //     if (cameraManager == null)
-//         //     {
-//         //         cameraManager = FindObjectOfType<ARCameraManager>();
-//         //     }
-//         // }
 
-//         // CustomNdiSender.cs
-//         private void OnCameraFrameReceived(ARCameraFrameEventArgs args)
-//         {
-//             if (renderTexture == null)
-//             {
-//                 //Set texture
-//                 int width = cameraBackground.material.mainTexture.width; 
-//                 int height = cameraBackground.material.mainTexture.height;
-//                 InitNdi(width, height);
-//             }
-
-//             //Set metadata
-//             RemotePacket testPacket = new RemotePacket();
-//             testPacket.cameraPose = arPoseDriver;
-
-//             if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
-//                 testPacket.planesInfo = planesInfo;
-//             } else {
-//                 testPacket.planesInfo = null;
-//             }
-
-//             //Serialize metadata
-//             byte[] serializedData = ObjectSerializationExtension.SerializeToByteArray(testPacket); 
-//             ndiSender.metadata = "<![CDATA[" + Convert.ToBase64String(serializedData) + "]]>";
-            
-//             commandBuffer.Blit(null, renderTexture, cameraBackground.material);
-//             Graphics.ExecuteCommandBuffer(commandBuffer);
-//             commandBuffer.Clear();
-            
-//             frameCount++;
-//         } 
-
-//         private void InitNdi(int width, int height)
-//         {
-//             Debug.Log($"Init NDI width: {width} height: {height}");
-//             renderTexture = new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
-//             var name = string.Format("CustomNdiSender");
-//             var go = new GameObject(name);
-//             go.transform.SetParent(transform, false);
-
-//             ndiSender = go.AddComponent<NdiSender>();
-//             ndiSender.SetResources(resources);
-//             ndiSender.captureMethod = CaptureMethod.Texture;
-//             ndiSender.keepAlpha = false;
-//             ndiSender.ndiName = "CustomNdiSender";
-//             ndiSender.sourceTexture = renderTexture;
-
-//             if (ndiSenderVisualizer != null)
-//             {
-//                 ndiSenderVisualizer.material.mainTexture = renderTexture;
-//             }
-//         }
-//     }
-// }
+    }
+}
