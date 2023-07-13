@@ -51,7 +51,7 @@ namespace XRRemote.Serializables
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return string.Format("float2({0}f, {1}f", x.ToString(format, formatProvider), y.ToString(format, formatProvider));
+            return string.Format("float2({0}f, {1}f)", x.ToString(format, formatProvider), y.ToString(format, formatProvider));
         }
 
         public Vector3 ToVector2()

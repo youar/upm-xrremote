@@ -29,7 +29,8 @@ namespace XRRemote
     [Serializable]
     public partial class ServerRemotePacket : RemotePacket
     {
-        public SerializablePlanesInfo planesInfo;
         public SerializablePose cameraPose = null;
+        public SerializablePlanesInfo planesInfo;
+        public SerializableFloat2 touchPositionNormalized = null;
     }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -207,7 +207,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &551358858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,7 +222,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
   rawImage: {fileID: 1164117827}
-  targetNdiSenderName: ClientSender
   aspectRatio: 0
   testText: {fileID: 707480759}
   receiverNameText: {fileID: 1908419456}
@@ -684,9 +683,9 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -849.985, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1164117826
 MonoBehaviour:
@@ -946,6 +945,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5587092121833666916, guid: d820ef8e619efcd469a772c68164b29f, type: 3}
+      propertyPath: inputReader
+      value: 
+      objectReference: {fileID: 5587092121493492600}
+    - target: {fileID: 5587092121833666916, guid: d820ef8e619efcd469a772c68164b29f, type: 3}
       propertyPath: arPoseDriver
       value: 
       objectReference: {fileID: 586251450}
@@ -1012,3 +1015,14 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5587092121473841430, guid: d820ef8e619efcd469a772c68164b29f, type: 3}
   m_PrefabInstance: {fileID: 5587092121493492598}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5587092121493492600 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2307265936151565911, guid: d820ef8e619efcd469a772c68164b29f, type: 3}
+  m_PrefabInstance: {fileID: 5587092121493492598}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 532f981c5b81aa74da5c4a0cf3d5cdd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

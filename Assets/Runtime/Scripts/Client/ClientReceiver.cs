@@ -34,7 +34,9 @@ namespace XRRemote
     {
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
+
         public event EventHandler OnPlanesInfoReceived;
+        public event EventHandler OnInputDataReceived;
 
         private void Awake()
         {
@@ -68,6 +70,10 @@ namespace XRRemote
             ServerRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(bytes);
             this.remotePacket = remotePacket;
             PlanesInfoCheck(remotePacket);
+
+            if (remotePacket.touchPositionNormalized != null) {
+                OnInputDataReceived?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void PlanesInfoCheck(ServerRemotePacket remotePacket)

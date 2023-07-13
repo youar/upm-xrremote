@@ -70,6 +70,8 @@ namespace XRRemote
                 if (!string.IsNullOrWhiteSpace(ndiName) && ndiReceiver.ndiName != ndiName)
                 {
                     ndiReceiver.ndiName = ndiName;
+                } else {
+                    Debug.LogError("Can't connect to " + targetNdiSenderName);
                 }
             }
             else
@@ -107,9 +109,13 @@ namespace XRRemote
         
         private string FindNdiName()
         {
+            // string returnedName = NdiFinder.sourceNames.FirstOrDefault();
+            // Debug.Log($"Editor Found: {returnedName}");
+            // return returnedName;
+            
             string returnedName = NdiFinder.sourceNames.FirstOrDefault(s => s.Contains(targetNdiSenderName));
-            // string returnedName = NdiFinder.sourceNames.Where(s => s.Contains(targetNdiSenderName));
             return returnedName;
+
             // if (Application.isEditor)
             // {
             //     string returnedName = NdiFinder.sourceNames.FirstOrDefault();
