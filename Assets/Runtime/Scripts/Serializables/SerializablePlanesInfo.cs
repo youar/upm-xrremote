@@ -28,9 +28,9 @@ namespace XRRemote.Serializables
     [Serializable]
     public class SerializablePlanesInfo
     {
-        public SerializableXRPlaneNdi[] added;
-        public SerializableXRPlaneNdi[] updated;
-        public SerializableXRPlaneNdi[] removed;
+        public SerializableARPlane[] added;
+        public SerializableARPlane[] updated;
+        public SerializableARPlane[] removed;
 
         public override string ToString()
         {

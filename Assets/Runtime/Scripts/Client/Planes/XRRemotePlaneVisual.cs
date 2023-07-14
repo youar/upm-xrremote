@@ -38,7 +38,7 @@ namespace XRRemote
         public MeshFilter arDefaultPlaneMeshFilter;
 
         //Set up the plane's data from XRPlane received in packet
-        public void Setup(SerializableXRPlaneNdi plane)
+        public void Setup(SerializableARPlane plane)
         {
             trackableId = plane.trackableId;
 
