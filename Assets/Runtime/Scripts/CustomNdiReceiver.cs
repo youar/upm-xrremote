@@ -55,7 +55,9 @@ namespace XRRemote
             {
                 ndiReceiver.ndiName = ndiName;
             } else {
-                Debug.LogError("Can't connect to " + targetNdiSenderName);
+                if (DebugFlags.displayXRRemoteConnectionStats) {
+                    Debug.LogError($"Can't connect to " + targetNdiSenderName);
+                }                
             }
         }
 
@@ -71,7 +73,9 @@ namespace XRRemote
                 {
                     ndiReceiver.ndiName = ndiName;
                 } else {
-                    Debug.LogError("Can't connect to " + targetNdiSenderName);
+                if (DebugFlags.displayXRRemoteConnectionStats) {
+                    Debug.LogError($"Can't connect to " + targetNdiSenderName);
+                } 
                 }
             }
             else
@@ -109,26 +113,9 @@ namespace XRRemote
         
         private string FindNdiName()
         {
-            // string returnedName = NdiFinder.sourceNames.FirstOrDefault();
-            // Debug.Log($"Editor Found: {returnedName}");
-            // return returnedName;
-            
             string returnedName = NdiFinder.sourceNames.FirstOrDefault(s => s.Contains(targetNdiSenderName));
-            return returnedName;
-
-            // if (Application.isEditor)
-            // {
-            //     string returnedName = NdiFinder.sourceNames.FirstOrDefault();
-            //     Debug.Log($"Editor Found: {returnedName}");
-            //     return returnedName;
-            // }
-            // else
-            // {
-            //     string returnedName = NdiFinder.sourceNames.FirstOrDefault();
-            //     Debug.Log($"Phone Found: {returnedName}");
-            //     return returnedName;
-            // }
             
+            return returnedName;
         }
     }
 }

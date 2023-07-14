@@ -47,7 +47,6 @@ namespace XRRemote.Input
         {
             canvasSize.x = Screen.width;
             canvasSize.y = Screen.height;
-            // Debug.LogError($"canvas size: {canvasSize.x} x {canvasSize.y}");
         }
 
         public bool TryGetLastInput(out Vector2 touchPosition)

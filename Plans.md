@@ -1,4 +1,37 @@
-            /*
+/*
+
+            ServerReceiver.cs
+                ServerReceiver : CustomNdiReceiver
+                class information specific to the ServerReceiver
+
+                    create override method like unpackMetadata();
+
+
+        13  and then we gotta paint         a beautiful picture with the UI information that gets unpacked from the ClientSender.Metadata package thingy
+
+
+    TODO:
+        - Re-implement debug flags & reenable errors
+        - Decouple planes and input classes from sender/receiver class
+            - pass data using EventArgs
+        - Fix singleton problems so we don't have to rely on script execution order
+        - Finish Bidirectional Sender
+            - Client packet
+            - Send packet on OnCameraRender?
+        - Too many canvases?
+            - Check if they block raycasting
+            - Maybe switch from FindObjectByType to finding by name
+        - Planes
+            -Refactor to provider format (see ArkitSender project)
+        - Cysharp serializer
+        - Rename SerializableXRPlaneNdi
+        - PlaneSender fix
+            - OnConnect send all data
+
+
+    DONE:
+
+                
             CustomNdiSender.cs : MonoBehavior
                 CustomNdiSender
                 Class information and properties and stuff
@@ -49,7 +82,6 @@
 
             ---------------------------------------------------------
 
-
         1   set the aspect ratio fitter     to respond dynamically to the w x h dimensions earlier in the function (idk if that makes sense)
 
         3   we also have to create a        function that encapsulates the metadata that we can call every time we're sending metadata both in the ServerSender and ClientSender places
@@ -57,6 +89,5 @@
         5   also we gotta unpack            the metadata that the ServerReceiver receives
         
         9   we can also                     remove CUSTOM from things that don't need custom involved in their names
-        13  and then we gotta paint         a beautiful picture with the UI information that gets unpacked from the ClientSender.Metadata package thingy
-            */
+*/
 

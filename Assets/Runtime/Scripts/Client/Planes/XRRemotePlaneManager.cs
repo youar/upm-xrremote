@@ -77,15 +77,15 @@ namespace XRRemote
 
                 List<XRRemotePlaneVisual> planeVisualsToUpdate = xrPlaneVisualList.FindAll(hasTrackableId);
 
-                // if (planeVisualsToUpdate.Count == 0) {
-                //     if (DebugFlags.displayEditorConnectionStats) {
-                //         Debug.LogError($"XRRemotePlaneManager - UpdateVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
-                //     }
-                // } else if (planeVisualsToUpdate.Count > 1) {
-                //     if (DebugFlags.displayEditorConnectionStats) {
-                //         Debug.LogWarning($"XRRemotePlaneManager - UpdateVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
-                //     }
-                // }
+                if (planeVisualsToUpdate.Count == 0) {
+                    if (DebugFlags.displayXRRemotePlaneStats) {
+                        Debug.LogError($"XRRemotePlaneManager - UpdateVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
+                    }
+                } else if (planeVisualsToUpdate.Count > 1) {
+                    if (DebugFlags.displayXRRemotePlaneStats) {
+                        Debug.LogWarning($"XRRemotePlaneManager - UpdateVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
+                    }
+                }
 
                 foreach (XRRemotePlaneVisual planeVisual in planeVisualsToUpdate) {
                     planeVisual.Setup(plane);
@@ -104,15 +104,15 @@ namespace XRRemote
 
                 List<XRRemotePlaneVisual> planeVisualsToRemove = xrPlaneVisualList.FindAll(hasTrackableId);
 
-                // if (planeVisualsToRemove.Count == 0) {
-                //     if (DebugFlags.displayEditorConnectionStats) {
-                //         Debug.LogError($"XRRemotePlaneManager - RemoveVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
-                //     }
-                // } else if (planeVisualsToRemove.Count > 1) {
-                //     if (DebugFlags.displayEditorConnectionStats) {
-                //         Debug.LogWarning($"XRRemotePlaneManager - RemoveVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
-                //     }
-                // }
+                if (planeVisualsToRemove.Count == 0) {
+                    if (DebugFlags.displayXRRemotePlaneStats) {
+                        Debug.LogError($"XRRemotePlaneManager - RemoveVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
+                    }
+                } else if (planeVisualsToRemove.Count > 1) {
+                    if (DebugFlags.displayXRRemotePlaneStats) {
+                        Debug.LogWarning($"XRRemotePlaneManager - RemoveVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
+                    }
+                }
 
                 foreach (XRRemotePlaneVisual planeVisual in planeVisualsToRemove) {
                     xrPlaneVisualList.Remove(planeVisual);

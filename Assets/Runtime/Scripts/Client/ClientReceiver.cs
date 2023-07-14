@@ -93,7 +93,9 @@ namespace XRRemote
         {
             TrackedPoseDriver trackedPoseDriver = FindObjectOfType<TrackedPoseDriver>();
             if (trackedPoseDriver == null) {
-                    Debug.LogErrorFormat("TrySetupTrackedPoseDriver Event: null TrackedPoseDriver on main camera");
+                    if (DebugFlags.displayEditorConnectionStats) {
+                        Debug.LogError("TrySetupTrackedPoseDriver Event: null TrackedPoseDriver on main camera");
+                    }
                     return false;
             }
 
@@ -103,7 +105,9 @@ namespace XRRemote
                 return true;
             }
 
-            Debug.LogErrorFormat("TrySetupTrackedPoseDriver Event: null XRRemotePoseProvider on Ndi receiver");
+            if (DebugFlags.displayEditorConnectionStats) {
+                Debug.LogError("TrySetupTrackedPoseDriver Event: null XRRemotePoseProvider on Ndi receiver");
+            }
             return false;
         }
     }

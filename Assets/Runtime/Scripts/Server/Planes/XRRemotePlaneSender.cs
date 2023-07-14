@@ -39,9 +39,9 @@ namespace XRRemote
             arPlaneManager = FindObjectOfType<ARPlaneManager>();
 
             if (arPlaneManager == null) {
-                // if (DebugFlags.displayEditorConnectionStats) {
-                //     Debug.LogError($"XRRemotePlaneSender: Unable to ARPlaneManager. Please make sure there is one in the scene.");
-                // }
+                if (DebugFlags.displayXRRemotePlaneStats) {
+                    Debug.LogError($"XRRemotePlaneSender: Unable find to ARPlaneManager. Please make sure there is one in the scene.");
+                }
 
                 enabled = false;
                 return;

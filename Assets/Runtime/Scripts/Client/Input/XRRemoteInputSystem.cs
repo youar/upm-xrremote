@@ -56,37 +56,37 @@ namespace XRRemote
         {
             //Set up singleton
             if (Instance != null) {
-                // if (DebugFlags.displayEditorConnectionStats) {
-                //     Debug.LogError($"There's more than one XRRemoteInputSystem! " + transform + " = " + Instance);
-                // }
+                if (DebugFlags.displayXRRemoteInputStats) {
+                    Debug.LogError($"There's more than one XRRemoteInputSystem! " + transform + " = " + Instance);
+                }
                 Destroy(gameObject);
                 return;
             }
             Instance = this;
 
             customRawImage = FindObjectOfType<CustomRawImage>();
-            // if (m_Raycaster == null) {
-            //     if (DebugFlags.displayEditorConnectionStats) {
-            //         Debug.LogError($"XRRemoteInputSystem: Unable to find GraphicRaycaster or EventSystem. Please make sure there is one in the scene.");
-            //     }
-            //     return;
-            // }
+            if (customRawImage == null) {
+                if (DebugFlags.displayXRRemoteInputStats) {
+                    Debug.LogError($"XRRemoteInputSystem: Unable to find CustomRawImage. Please make sure there is one in the scene.");
+                }
+                return;
+            }
 
             raycaster = GameObject.FindObjectOfType<GraphicRaycaster>();
-            // if (m_Raycaster == null) {
-            //     if (DebugFlags.displayEditorConnectionStats) {
-            //         Debug.LogError($"XRRemoteInputSystem: Unable to find GraphicRaycaster or EventSystem. Please make sure there is one in the scene.");
-            //     }
-            //     return;
-            // }
+            if (raycaster == null) {
+                if (DebugFlags.displayXRRemoteInputStats) {
+                    Debug.LogError($"XRRemoteInputSystem: Unable to find GraphicRaycaster. Please make sure there is one in the scene.");
+                }
+                return;
+            }
 
             eventSystem = GameObject.FindObjectOfType<EventSystem>();
-            // if (m_Raycaster == null) {
-            //     if (DebugFlags.displayEditorConnectionStats) {
-            //         Debug.LogError($"XRRemoteInputSystem: Unable to find GraphicRaycaster or EventSystem. Please make sure there is one in the scene.");
-            //     }
-            //     return;
-            // }
+            if (eventSystem == null) {
+                if (DebugFlags.displayXRRemoteInputStats) {
+                    Debug.LogError($"XRRemoteInputSystem: Unable to find EventSystem. Please make sure there is one in the scene.");
+                }
+                return;
+            }
         }
 
         private void Start()
@@ -151,7 +151,9 @@ namespace XRRemote
             {
                 //On button, invoke its onClick event
                 if (result.gameObject.TryGetComponent(out Button button)) {
-                    Debug.Log("Hit " + result.gameObject.name);
+                    if (DebugFlags.displayXRRemoteInputStats) {
+                        Debug.Log($"Hit " + result.gameObject.name);
+                    }
                     button.onClick?.Invoke();
                 }
             }

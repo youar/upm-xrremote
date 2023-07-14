@@ -110,7 +110,9 @@ namespace XRRemote
             inputReader = FindObjectOfType<XRRemoteInputReader>();
             if (inputReader != null) return true;
 
-            Debug.LogError(string.Format($"{gameObject.name}: XRRemoteInputReader not found"));
+            if (DebugFlags.displayXRRemoteConnectionStats) {
+               Debug.LogError(string.Format($"{gameObject.name}: XRRemoteInputReader not found"));
+            }
             return false;
         }
     }
