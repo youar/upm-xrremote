@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="CustomPlaneSender.cs" createdby="gblikas">
+// <copyright file="XRRemotePlaneSender.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -28,7 +28,7 @@ using XRRemote.Serializables;
 
 namespace XRRemote
 {
-    public class CustomPlaneSender : MonoBehaviour
+    public class XRRemotePlaneSender : MonoBehaviour
     {
         private SerializablePlanesInfo planesInfo = null;
 

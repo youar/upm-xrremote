@@ -35,7 +35,7 @@ namespace XRRemote
 
     public class ServerSender : CustomNdiSender
     {    
-        [SerializeField] private CustomPlaneSender planeSender = null;
+        [SerializeField] private XRRemotePlaneSender planeSender = null;
         [SerializeField] private ARCameraManager cameraManager = null;
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;

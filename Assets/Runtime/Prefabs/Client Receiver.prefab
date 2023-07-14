@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c1314343e00ec642b6de50edf2424d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CustomPlaneVisualPrefab: {fileID: 1107657557705778436, guid: e139c43fa38022641801498dd04b6e2b, type: 3}
+  XRRemotePlaneVisualPrefab: {fileID: 1107657557705778436, guid: e139c43fa38022641801498dd04b6e2b, type: 3}
   xrPlaneVisualList: []
 --- !u!1 &313385341393993573
 GameObject:

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="CustomPlaneVisual.cs" createdby="gblikas">
+// <copyright file="XRRemotePlaneVisual.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -32,7 +32,7 @@ namespace XRRemote
     /// <summary>
     /// Using to visualize planes in the Unity editor that are detected by the AR Plane Manager on the server
     /// </summary>
-    public class CustomPlaneVisual : MonoBehaviour
+    public class XRRemotePlaneVisual : MonoBehaviour
     {
         public SerializableTrackableId trackableId;
         public MeshFilter arDefaultPlaneMeshFilter;

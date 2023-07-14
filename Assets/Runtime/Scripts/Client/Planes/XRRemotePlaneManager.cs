@@ -32,11 +32,11 @@ namespace XRRemote
     /// <summary>
     /// Manages a pool of XR Plane Visuals
     /// </summary>
-    public class CustomPlaneManager : MonoBehaviour
+    public class XRRemotePlaneManager : MonoBehaviour
     {
-        public Transform CustomPlaneVisualPrefab;
+        [SerializeField] private Transform XRRemotePlaneVisualPrefab;
 
-        [SerializeField] private List<CustomPlaneVisual> xrPlaneVisualList = new List<CustomPlaneVisual>();
+        [SerializeField] private List<XRRemotePlaneVisual> xrPlaneVisualList = new List<XRRemotePlaneVisual>();
 
 
         private void OnEnable()
@@ -58,8 +58,8 @@ namespace XRRemote
         {
             // Debug.Log("Planes = " + planes.Length);
             foreach (SerializableXRPlaneNdi plane in planes) {
-                Transform newVisualTransform = Instantiate(CustomPlaneVisualPrefab);
-                CustomPlaneVisual xrRemotePlaneVisual = newVisualTransform.GetComponent<CustomPlaneVisual>();
+                Transform newVisualTransform = Instantiate(XRRemotePlaneVisualPrefab);
+                XRRemotePlaneVisual xrRemotePlaneVisual = newVisualTransform.GetComponent<XRRemotePlaneVisual>();
 
                 xrRemotePlaneVisual.Setup(plane);
 
@@ -73,21 +73,21 @@ namespace XRRemote
         private void UpdateVisuals(SerializableXRPlaneNdi[] planes)
         {
             foreach (SerializableXRPlaneNdi plane in planes) {
-                Predicate<CustomPlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
+                Predicate<XRRemotePlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
 
-                List<CustomPlaneVisual> planeVisualsToUpdate = xrPlaneVisualList.FindAll(hasTrackableId);
+                List<XRRemotePlaneVisual> planeVisualsToUpdate = xrPlaneVisualList.FindAll(hasTrackableId);
 
                 // if (planeVisualsToUpdate.Count == 0) {
                 //     if (DebugFlags.displayEditorConnectionStats) {
-                //         Debug.LogError($"CustomPlaneManager - UpdateVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
+                //         Debug.LogError($"XRRemotePlaneManager - UpdateVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
                 //     }
                 // } else if (planeVisualsToUpdate.Count > 1) {
                 //     if (DebugFlags.displayEditorConnectionStats) {
-                //         Debug.LogWarning($"CustomPlaneManager - UpdateVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
+                //         Debug.LogWarning($"XRRemotePlaneManager - UpdateVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
                 //     }
                 // }
 
-                foreach (CustomPlaneVisual planeVisual in planeVisualsToUpdate) {
+                foreach (XRRemotePlaneVisual planeVisual in planeVisualsToUpdate) {
                     planeVisual.Setup(plane);
 
                 }
@@ -100,21 +100,21 @@ namespace XRRemote
         private void RemoveVisuals(SerializableXRPlaneNdi[] planes)
         {
             foreach (SerializableXRPlaneNdi plane in planes) {
-                Predicate<CustomPlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
+                Predicate<XRRemotePlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
 
-                List<CustomPlaneVisual> planeVisualsToRemove = xrPlaneVisualList.FindAll(hasTrackableId);
+                List<XRRemotePlaneVisual> planeVisualsToRemove = xrPlaneVisualList.FindAll(hasTrackableId);
 
                 // if (planeVisualsToRemove.Count == 0) {
                 //     if (DebugFlags.displayEditorConnectionStats) {
-                //         Debug.LogError($"CustomPlaneManager - RemoveVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
+                //         Debug.LogError($"XRRemotePlaneManager - RemoveVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
                 //     }
                 // } else if (planeVisualsToRemove.Count > 1) {
                 //     if (DebugFlags.displayEditorConnectionStats) {
-                //         Debug.LogWarning($"CustomPlaneManager - RemoveVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
+                //         Debug.LogWarning($"XRRemotePlaneManager - RemoveVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
                 //     }
                 // }
 
-                foreach (CustomPlaneVisual planeVisual in planeVisualsToRemove) {
+                foreach (XRRemotePlaneVisual planeVisual in planeVisualsToRemove) {
                     xrPlaneVisualList.Remove(planeVisual);
                     Destroy(planeVisual.gameObject);
                 }
