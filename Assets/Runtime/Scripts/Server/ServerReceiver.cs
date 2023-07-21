@@ -35,12 +35,18 @@ namespace XRRemote
 {
     public class ServerReceiver : CustomNdiReceiver
     {
-        [SerializeField] 
-        public ClientRemotePacket remotePacket {get; private set;} = null;
         public static ServerReceiver Instance {get; private set;} = null;
-        public Text testText;
-        public Text receiverNameText;
 
+        [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
+        [SerializeField] private Canvas debugCanvas;
+        
+        [HideInInspector] public bool debugMode {get; private set;} = false;
+
+        [SerializeField] private Text testText;
+        [SerializeField] private Text receiverNameText;
+        [SerializeField] private Text debugText;
+
+        public event EventHandler OnDebugModeChanged;
      
         private void Awake()
         {
@@ -60,12 +66,14 @@ namespace XRRemote
         {
             base.Start();
             Debug.Log("ServerReceiver Start");
+            OnDebugModeChanged += ServerReceiver_OnDebugModeChanged;
             //Add subscriptions hereee??!?
         }
 
         private void OnDisable()
         {
             Instance = null;
+            OnDebugModeChanged -= ServerReceiver_OnDebugModeChanged;
             //Remove subscriptions hereee??!?
         }
 
@@ -73,11 +81,25 @@ namespace XRRemote
         {
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
+            DebugStatusCheck(remotePacket);
             //Do other things with packet data here, UI Display method
             receiverNameText.text = ndiReceiver.ndiName;
             testText.text = remotePacket.testNumber.ToString();
         }
 
+        private void DebugStatusCheck(ClientRemotePacket remotePacket)
+        {
+            debugText.text = "Debug Mode: " + remotePacket.debugMode.ToString();
+            if (this.debugMode != remotePacket.debugMode)
+            {
+                this.debugMode = remotePacket.debugMode;
+                OnDebugModeChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
+        private void ServerReceiver_OnDebugModeChanged(object sender, EventArgs e)
+        {
+            debugCanvas.gameObject.SetActive(debugMode);
+        }
     }
 }

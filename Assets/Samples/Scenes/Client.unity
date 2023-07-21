@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -674,6 +674,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 313385340780897174, guid: 6c7ea7b596f85854791bf3a5ef395762, type: 3}
+      propertyPath: debugMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 313385340780897174, guid: 6c7ea7b596f85854791bf3a5ef395762, type: 3}
       propertyPath: targetNdiSenderName
       value: ServerSender
       objectReference: {fileID: 0}
@@ -764,7 +768,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3745883731167663159, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7592824571947259466, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
       propertyPath: m_LocalPosition.z

@@ -34,6 +34,8 @@ namespace XRRemote
     {
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
+        [SerializeField]
+        public bool debugMode = false;
 
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
