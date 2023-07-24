@@ -72,10 +72,13 @@ namespace XRRemote
                 if (!string.IsNullOrWhiteSpace(ndiName) && ndiReceiver.ndiName != ndiName)
                 {
                     ndiReceiver.ndiName = ndiName;
-                } else {
-                if (DebugFlags.displayXRRemoteConnectionStats) {
-                    Debug.LogError($"Can't connect to " + targetNdiSenderName);
                 } 
+                else 
+                {
+                    if (DebugFlags.displayXRRemoteConnectionStats) 
+                    {
+                        Debug.LogError($"Can't connect to " + targetNdiSenderName);
+                    } 
                 }
             }
             else

@@ -33,48 +33,48 @@ namespace XRRemote
 {   
     [DisallowMultipleComponent]
     public class UIRenderer : MonoBehaviour
-{
-    public static UIRenderer Instance { get; private set; } = null;
-    public event EventHandler OnDebugModeChanged;
-    [SerializeField] private Canvas debugCanvas;
-
-    [HideInInspector][SerializeField] private bool _debugMode;
-    [SerializeField] public bool debugMode;
-
-    private void Update()
     {
-        if (_debugMode != debugMode)
-        {
-            _debugMode = debugMode;
-            OnDebugModeChanged?.Invoke(this, EventArgs.Empty);
-        } 
-    }
+        public static UIRenderer Instance { get; private set; } = null;
+        public event EventHandler OnDebugModeChanged;
+        [SerializeField] private Canvas debugCanvas;
 
-    private void Awake()
-    {
-        if (UIRenderer.Instance != null)
+        [HideInInspector][SerializeField] private bool _debugMode;
+        [SerializeField] public bool debugMode;
+
+        private void Update()
         {
-            Debug.LogError("UIRenderer must be only one in the scene.");
-            // need to destroy one or return here??
+            if (_debugMode != debugMode)
+            {
+                _debugMode = debugMode;
+                OnDebugModeChanged?.Invoke(this, EventArgs.Empty);
+            } 
         }
 
-        UIRenderer.Instance = this;
-    }
+        private void Awake()
+        {
+            //[review] best practice to destroy an instance for singleton use?
+            if (UIRenderer.Instance != null)
+            {
+                Debug.LogError("UIRenderer must be only one in the scene.");
+            }
 
-    private void Start()
-    {
-        OnDebugModeChanged += UIRenderer_OnDebugModeChanged;
-        UIRenderer_OnDebugModeChanged(this, EventArgs.Empty);
-    }
+            UIRenderer.Instance = this;
+        }
 
-    private void OnDisable()
-    {
-        OnDebugModeChanged -= UIRenderer_OnDebugModeChanged;
-    }
+        private void Start()
+        {
+            OnDebugModeChanged += UIRenderer_OnDebugModeChanged;
+            UIRenderer_OnDebugModeChanged(this, EventArgs.Empty);
+        }
 
-    private void UIRenderer_OnDebugModeChanged(object sender, EventArgs e)
-    {
-        debugCanvas.gameObject.SetActive(_debugMode);
+        private void OnDisable()
+        {
+            OnDebugModeChanged -= UIRenderer_OnDebugModeChanged;
+        }
+
+        private void UIRenderer_OnDebugModeChanged(object sender, EventArgs e)
+        {
+            debugCanvas.gameObject.SetActive(_debugMode);
+        }
     }
-}
 }

@@ -112,7 +112,7 @@ namespace XRRemote
         }
 
 
-        //eventually replace
+        //[review] slow update on server side.... something to do with this??
         private IEnumerator SendData()
         {
             while (true)
