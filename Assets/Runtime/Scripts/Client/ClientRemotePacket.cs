@@ -30,7 +30,5 @@ namespace XRRemote
     public partial class ClientRemotePacket : RemotePacket
     {
         public bool debugMode;
-        // public SerializableUIInfo uiInfo;
-        public int testNumber;
     }
 }

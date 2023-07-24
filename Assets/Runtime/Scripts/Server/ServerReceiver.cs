@@ -38,10 +38,6 @@ namespace XRRemote
         public static ServerReceiver Instance {get; private set;} = null;
 
         [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
-        
-        [SerializeField] private Text testText;
-        [SerializeField] private Text receiverNameText;
-        [SerializeField] private Text debugText;
      
         private void Awake()
         {
@@ -61,13 +57,11 @@ namespace XRRemote
         {
             base.Start();
             Debug.Log("ServerReceiver Start");
-            //Add subscriptions hereee??!?
         }
 
         private void OnDisable()
         {
             Instance = null;
-            //Remove subscriptions hereee??!?
         }
 
         protected override void ProcessPacketData(byte[] bytes) 
@@ -75,15 +69,13 @@ namespace XRRemote
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
             DebugStatusCheck(remotePacket);
-            //Do other things with packet data here, UI Display method
-            receiverNameText.text = ndiReceiver.ndiName;
-            testText.text = remotePacket.testNumber.ToString();
         }
 
         private void DebugStatusCheck(ClientRemotePacket remotePacket)
         {
-
+            //[review] ultimately, this should live under UIRenderer.cs
             debugText.text = "Debug Mode: " + remotePacket.debugMode.ToString();
+            receiverNameText.text = ndiReceiver.ndiName;
 
             //[review] null check necessary here??
             if (UIRenderer.Instance.debugMode != remotePacket.debugMode)

@@ -109,5 +109,10 @@ namespace XRRemote
             }
             return false;
         }
+
+        // private void DebugDataUpdate()
+        // {
+        //     receiverNameText = 
+        // }
     }
 }

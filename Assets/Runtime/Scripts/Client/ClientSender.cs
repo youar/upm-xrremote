@@ -105,9 +105,6 @@ namespace XRRemote
         {
             ClientRemotePacket packet = new ClientRemotePacket();
             packet.debugMode = UIRenderer.Instance.debugMode;
-            
-            //test metadata transmission
-            packet.testNumber = 555;
             return packet;
         }
 
