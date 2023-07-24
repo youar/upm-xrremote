@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 7398817371547673047}
   - component: {fileID: 4457723919214970518}
   m_Layer: 0
-  m_Name: XRRemote Input Manager
+  m_Name: XRRemote Input System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -447,6 +447,10 @@ PrefabInstance:
     - target: {fileID: 5522309095048357131, guid: 2daceb541eccc5c469e39051d00293d8, type: 3}
       propertyPath: m_Name
       value: XRRemoteTouchVisual
+      objectReference: {fileID: 0}
+    - target: {fileID: 5522309095048357131, guid: 2daceb541eccc5c469e39051d00293d8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2daceb541eccc5c469e39051d00293d8, type: 3}

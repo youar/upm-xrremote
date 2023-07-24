@@ -38,15 +38,10 @@ namespace XRRemote
         public static ServerReceiver Instance {get; private set;} = null;
 
         [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
-        [SerializeField] private Canvas debugCanvas;
         
-        [HideInInspector] public bool debugMode {get; private set;} = false;
-
         [SerializeField] private Text testText;
         [SerializeField] private Text receiverNameText;
         [SerializeField] private Text debugText;
-
-        public event EventHandler OnDebugModeChanged;
      
         private void Awake()
         {
@@ -66,14 +61,12 @@ namespace XRRemote
         {
             base.Start();
             Debug.Log("ServerReceiver Start");
-            OnDebugModeChanged += ServerReceiver_OnDebugModeChanged;
             //Add subscriptions hereee??!?
         }
 
         private void OnDisable()
         {
             Instance = null;
-            OnDebugModeChanged -= ServerReceiver_OnDebugModeChanged;
             //Remove subscriptions hereee??!?
         }
 
@@ -89,17 +82,15 @@ namespace XRRemote
 
         private void DebugStatusCheck(ClientRemotePacket remotePacket)
         {
+
             debugText.text = "Debug Mode: " + remotePacket.debugMode.ToString();
-            if (this.debugMode != remotePacket.debugMode)
+
+            //[review] null check necessary here??
+            if (UIRenderer.Instance.debugMode != remotePacket.debugMode)
             {
-                this.debugMode = remotePacket.debugMode;
-                OnDebugModeChanged?.Invoke(this, EventArgs.Empty);
+                UIRenderer.Instance.debugMode = remotePacket.debugMode;
             }
         }
 
-        private void ServerReceiver_OnDebugModeChanged(object sender, EventArgs e)
-        {
-            debugCanvas.gameObject.SetActive(debugMode);
-        }
     }
 }
