@@ -48,7 +48,7 @@ namespace XRRemote
                 return;
             }
 
-            ServerReceiver.Instance = this;
+            Instance = this;
 
             targetNdiSenderName = "ClientSender";
         }
@@ -56,7 +56,6 @@ namespace XRRemote
         protected override void Start()
         {
             base.Start();
-            Debug.Log("ServerReceiver Start");
         }
 
         private void OnDisable()
@@ -71,13 +70,14 @@ namespace XRRemote
             DebugStatusCheck(remotePacket);
         }
 
+        protected override void ReceiveTexture(RenderTexture texture)
+        {
+            //eventually, add received UI Overlay Texture actions here
+            return;
+        }
+
         private void DebugStatusCheck(ClientRemotePacket remotePacket)
         {
-            //[review] ultimately, this should live under UIRenderer.cs
-            debugText.text = "Debug Mode: " + remotePacket.debugMode.ToString();
-            receiverNameText.text = ndiReceiver.ndiName;
-
-            //[review] null check necessary here??
             if (UIRenderer.Instance.debugMode != remotePacket.debugMode)
             {
                 UIRenderer.Instance.debugMode = remotePacket.debugMode;

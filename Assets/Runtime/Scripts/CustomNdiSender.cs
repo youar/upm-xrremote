@@ -46,16 +46,6 @@ namespace XRRemote
         protected string ndiSenderName = "CustomNdiSender";
         public event EventHandler OnInitNdi;
 
-        // private void Awake()
-        // {
-        //     if (Application.isEditor)
-        //     {
-        //         Destroy(gameObject);
-        //         Debug.LogError("cannot use CustomNdiSender in Editor.");
-        //         return;
-        //     }
-        // }
-
         protected virtual void Start()
         {
             frameCount = 0;
@@ -110,11 +100,6 @@ namespace XRRemote
         {
             OnCameraFrameReceived();
         } 
-
-        // protected void OnCameraFrameReceived(Camera camera)
-        // {
-        //     OnCameraFrameReceived();
-        // }
 
         private void InitNdi(int width, int height)
         {

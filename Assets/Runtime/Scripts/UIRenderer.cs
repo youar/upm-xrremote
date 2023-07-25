@@ -35,9 +35,7 @@ namespace XRRemote
     public class UIRenderer : MonoBehaviour
     {
         public static UIRenderer Instance { get; private set; } = null;
-        public event EventHandler OnDebugModeChanged;
         [SerializeField] private Canvas debugCanvas;
-
         [HideInInspector][SerializeField] private bool _debugMode;
         [SerializeField] public bool debugMode;
 
@@ -46,33 +44,26 @@ namespace XRRemote
             if (_debugMode != debugMode)
             {
                 _debugMode = debugMode;
-                OnDebugModeChanged?.Invoke(this, EventArgs.Empty);
+                UpdateDebugUI();
             } 
-        }
-
-        private void Awake()
-        {
-            //[review] best practice to destroy an instance for singleton use?
-            if (UIRenderer.Instance != null)
-            {
-                Debug.LogError("UIRenderer must be only one in the scene.");
-            }
-
-            UIRenderer.Instance = this;
-        }
-
-        private void Start()
-        {
-            OnDebugModeChanged += UIRenderer_OnDebugModeChanged;
-            UIRenderer_OnDebugModeChanged(this, EventArgs.Empty);
         }
 
         private void OnDisable()
         {
-            OnDebugModeChanged -= UIRenderer_OnDebugModeChanged;
+            Instance = null;
         }
 
-        private void UIRenderer_OnDebugModeChanged(object sender, EventArgs e)
+        private void Awake()
+        {
+            if (Instance != null)
+            {
+                Debug.LogError("UIRenderer must be only one in the scene.");
+            }
+
+            Instance = this;
+        }
+
+        private void UpdateDebugUI()
         {
             debugCanvas.gameObject.SetActive(_debugMode);
         }
