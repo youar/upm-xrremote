@@ -26,6 +26,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
+using UnityEngine.UI;
 // using XRRemote.Serializables;
 
 namespace XRRemote
@@ -38,22 +39,12 @@ namespace XRRemote
         [SerializeField] 
         protected NdiResources resources = null;
         private int frameCount = 0;
-        public MeshRenderer ndiSenderVisualizer = null;
+        public Image ndiSenderVisualizer = null;
         protected NdiSender ndiSender = null;
         protected RenderTexture renderTexture;
         protected CommandBuffer commandBuffer;
         protected string ndiSenderName = "CustomNdiSender";
         public event EventHandler OnInitNdi;
-
-        // private void Awake()
-        // {
-        //     if (Application.isEditor)
-        //     {
-        //         Destroy(gameObject);
-        //         Debug.LogError("cannot use CustomNdiSender in Editor.");
-        //         return;
-        //     }
-        // }
 
         protected virtual void Start()
         {
@@ -109,11 +100,6 @@ namespace XRRemote
         {
             OnCameraFrameReceived();
         } 
-
-        protected void OnCameraFrameReceived(Camera camera)
-        {
-            OnCameraFrameReceived();
-        }
 
         private void InitNdi(int width, int height)
         {

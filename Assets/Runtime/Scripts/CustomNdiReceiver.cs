@@ -23,25 +23,23 @@
 //-------------------------------------------------------------------------------------------------------
 using System;
 using System.Linq;
-using System.Collections;
 using UnityEngine;
 using Klak.Ndi;
-using UnityEngine.SpatialTracking;
 using UnityEngine.UI;
-using UnityEngine.XR;
-using XRRemote;
+using UnityEngine.Rendering;
 
 namespace XRRemote
 {
     public abstract class CustomNdiReceiver : MonoBehaviour
     {
-        [SerializeField] 
-        private NdiResources resources = null;
+        [SerializeField] private NdiResources resources = null;
         protected NdiReceiver ndiReceiver = null;
         public CustomRawImage rawImage = null;
         protected string targetNdiSenderName = "CustomNdiSender";
-        
 
+        [SerializeField] protected Text receiverNameText;
+        [SerializeField] protected Text debugText;   
+        
         
         [Tooltip("Aspect Ratio or Pixel Count of the Mobile Device (Width/Height)")]
         public float aspectRatio;
@@ -50,39 +48,21 @@ namespace XRRemote
         {
             ndiReceiver = gameObject.AddComponent<NdiReceiver>();
             ndiReceiver.SetResources(resources);
-            var ndiName = FindNdiName();
-            if (!string.IsNullOrWhiteSpace(ndiName))
-            {
-                ndiReceiver.ndiName = ndiName;
-            } else {
-                if (DebugFlags.displayXRRemoteConnectionStats) {
-                    Debug.LogError($"Can't connect to " + targetNdiSenderName);
-                }                
-            }
+            ConnectToNdi();
         }
-
-      
+        
 
         private void Update()
         {
-            var rt = ndiReceiver.texture;
+
+            RenderTexture rt = ndiReceiver.texture;
             if (rt == null)
             {
-                var ndiName = FindNdiName();
-                if (!string.IsNullOrWhiteSpace(ndiName) && ndiReceiver.ndiName != ndiName)
-                {
-                    ndiReceiver.ndiName = ndiName;
-                } else {
-                if (DebugFlags.displayXRRemoteConnectionStats) {
-                    Debug.LogError($"Can't connect to " + targetNdiSenderName);
-                } 
-                }
+                ConnectToNdi();
             }
             else
             {
-                //add texture to rawImage
-                rawImage.texture = rt;
-
+                ReceiveTexture(rt);
                 if (!MetadataNullCheck())
                 {
                     ProcessPacketData(DeserializePacket());
@@ -91,7 +71,9 @@ namespace XRRemote
             }
         }
 
+        protected abstract void ReceiveTexture(RenderTexture texture);
         protected abstract void ProcessPacketData(byte[] data);
+
 
         private bool MetadataNullCheck()
         {
@@ -107,15 +89,32 @@ namespace XRRemote
         {
             string base64 = ndiReceiver.metadata.Substring(9, ndiReceiver.metadata.Length - 9 - 3);
             byte[] data = Convert.FromBase64String(base64); 
-            
             return data;
         }
         
         private string FindNdiName()
         {
             string returnedName = NdiFinder.sourceNames.FirstOrDefault(s => s.Contains(targetNdiSenderName));
-            
             return returnedName;
         }
+
+        private void ConnectToNdi()
+        {
+            string ndiName = FindNdiName();
+            
+            if (!string.IsNullOrWhiteSpace(ndiName) && ndiReceiver.ndiName != ndiName)
+            {
+                ndiReceiver.ndiName = ndiName;
+                receiverNameText.text = ndiName;
+            } 
+            else 
+            {
+                if (DebugFlags.displayXRRemoteConnectionStats) 
+                {
+                    Debug.LogError($"Can't connect to " + targetNdiSenderName);
+                } 
+            }
+        }
+
     }
 }

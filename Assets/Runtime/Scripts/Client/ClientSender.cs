@@ -28,6 +28,7 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
 using XRRemote.Serializables;
+using System.Collections;
 
 namespace XRRemote
 {   
@@ -39,6 +40,8 @@ namespace XRRemote
         [SerializeField] 
         public Camera uiCamera = null;
         public static ClientSender Instance { get; private set; }
+
+        //exists just for testing UI image
         public Material renderMaterial;
 
         private void Awake()
@@ -65,7 +68,7 @@ namespace XRRemote
         {
             base.Start();
             ClientSender.Instance.OnInitNdi += ClientSender_OnNdiInitialized;
-            Camera.onPostRender += OnCameraFrameReceived;
+            StartCoroutine(SendData());
            
         }
 
@@ -73,7 +76,7 @@ namespace XRRemote
         {
             base.OnDestroy();
             ClientSender.Instance.OnInitNdi -= ClientSender_OnNdiInitialized;
-            Camera.onPostRender -= OnCameraFrameReceived;
+            StopCoroutine(SendData());
         }
 
 
@@ -101,10 +104,19 @@ namespace XRRemote
         protected override RemotePacket GetPacketData()
         {
             ClientRemotePacket packet = new ClientRemotePacket();
-
-            //test metadata transmission
-            packet.testNumber = 555;
+            packet.debugMode = UIRenderer.Instance.debugMode;
             return packet;
+        }
+
+
+        //[review] slow update on server side.... something to do with this??
+        private IEnumerator SendData()
+        {
+            while (true)
+            {
+                OnCameraFrameReceived();
+                yield return new WaitForSeconds(0.1f);        
+            }
         }
         
 

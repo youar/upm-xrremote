@@ -27,6 +27,8 @@ using System.Collections;
 using UnityEngine;
 using Klak.Ndi;
 using UnityEngine.SpatialTracking;
+using UnityEngine.UI;
+using UnityEngine.Rendering;
 
 namespace XRRemote
 {
@@ -34,9 +36,14 @@ namespace XRRemote
     {
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
-
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
+
+        [Tooltip("Camera that will render the NDI video")]
+        [SerializeField] private Camera receivingCamera;
+        private CommandBuffer videoCommandBuffer;
+        private bool videoCommandBufferInitialized = false;
+        private Material commandBufferMaterial;
 
         private void Awake()
         {
@@ -61,7 +68,22 @@ namespace XRRemote
         protected override void Start()
         {
             base.Start();
+            InitializeCommandBuffer();
             TrySetupTrackedPoseDriver();
+        }
+
+        private void OnDestroy()
+        {
+            if (videoCommandBuffer != null)
+            {
+                receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
+            }
+            videoCommandBufferInitialized = false;
+        }
+
+        protected override void ReceiveTexture(RenderTexture texture)
+        {
+            commandBufferMaterial.SetTexture("_MainTex", texture);                
         }
 
 
@@ -88,7 +110,18 @@ namespace XRRemote
         {
             Instance = null;
         }
+
+        private void InitializeCommandBuffer()
+        {
+            if (videoCommandBufferInitialized) return;
+            videoCommandBuffer = new CommandBuffer();
+            commandBufferMaterial = new Material(Shader.Find("Unlit/Texture"));
+            videoCommandBuffer.Blit(null, BuiltinRenderTextureType.CurrentActive, commandBufferMaterial);
+            receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
+            videoCommandBufferInitialized = true;
+        }
         
+
         private bool TrySetupTrackedPoseDriver()
         {
             TrackedPoseDriver trackedPoseDriver = FindObjectOfType<TrackedPoseDriver>();
@@ -110,5 +143,6 @@ namespace XRRemote
             }
             return false;
         }
+
     }
 }

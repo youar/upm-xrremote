@@ -35,12 +35,9 @@ namespace XRRemote
 {
     public class ServerReceiver : CustomNdiReceiver
     {
-        [SerializeField] 
-        public ClientRemotePacket remotePacket {get; private set;} = null;
         public static ServerReceiver Instance {get; private set;} = null;
-        public Text testText;
-        public Text receiverNameText;
 
+        [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
      
         private void Awake()
         {
@@ -51,7 +48,7 @@ namespace XRRemote
                 return;
             }
 
-            ServerReceiver.Instance = this;
+            Instance = this;
 
             targetNdiSenderName = "ClientSender";
         }
@@ -59,25 +56,33 @@ namespace XRRemote
         protected override void Start()
         {
             base.Start();
-            Debug.Log("ServerReceiver Start");
-            //Add subscriptions hereee??!?
         }
 
         private void OnDisable()
         {
             Instance = null;
-            //Remove subscriptions hereee??!?
         }
 
         protected override void ProcessPacketData(byte[] bytes) 
         {
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
-            //Do other things with packet data here, UI Display method
-            receiverNameText.text = ndiReceiver.ndiName;
-            testText.text = remotePacket.testNumber.ToString();
+            DebugStatusCheck(remotePacket);
         }
 
+        protected override void ReceiveTexture(RenderTexture texture)
+        {
+            //eventually, add received UI Overlay Texture actions here
+            return;
+        }
+
+        private void DebugStatusCheck(ClientRemotePacket remotePacket)
+        {
+            if (UIRenderer.Instance.debugMode != remotePacket.debugMode)
+            {
+                UIRenderer.Instance.debugMode = remotePacket.debugMode;
+            }
+        }
 
     }
 }
