@@ -29,21 +29,26 @@ using Klak.Ndi;
 using UnityEngine.SpatialTracking;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
+using UnityEngine.XR.ARFoundation;
+using System.Collections.Generic;
 
 namespace XRRemote
 {
     public class ClientReceiver : CustomNdiReceiver
+    
     {
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
 
-        [Tooltip("Camera that will render the NDI video")]
-        [SerializeField] private Camera receivingCamera;
+        private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;
         private Material commandBufferMaterial;
+
+        [Tooltip("List of AR Cameras that will render the NDI video")]
+        [SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
 
         private void Awake()
         {
@@ -68,17 +73,18 @@ namespace XRRemote
         protected override void Start()
         {
             base.Start();
-            InitializeCommandBuffer();
+            StartCoroutine(SetReceivingCamera());
             TrySetupTrackedPoseDriver();
         }
 
         private void OnDestroy()
         {
-            if (videoCommandBuffer != null)
+            if (videoCommandBuffer != null && receivingCamera != null)
             {
-                receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
+                receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             }
             videoCommandBufferInitialized = false;
+            StopCoroutine(SetReceivingCamera());
         }
 
         protected override void ReceiveTexture(RenderTexture texture)
@@ -112,13 +118,49 @@ namespace XRRemote
         }
 
         private void InitializeCommandBuffer()
-        {
+        {   
             if (videoCommandBufferInitialized) return;
             videoCommandBuffer = new CommandBuffer();
             commandBufferMaterial = new Material(Shader.Find("Unlit/Texture"));
             videoCommandBuffer.Blit(null, BuiltinRenderTextureType.CurrentActive, commandBufferMaterial);
             receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             videoCommandBufferInitialized = true;
+        }
+
+        private IEnumerator SetReceivingCamera()
+        {
+            while(true)
+            {
+                if (cameraManagerList.Count == 0)
+                {
+                    Debug.Log("XRRemote: Empty camera manager list");
+                    yield return new WaitForSeconds(0.5f);
+                }
+
+                for(int i =0; i<cameraManagerList.Count; i++)
+                {
+                    GameObject cameraObject = cameraManagerList[i].gameObject;
+                    Camera camera = cameraObject.GetComponent<Camera>();
+
+                    if (cameraObject.activeSelf && camera.enabled)
+                    {
+                        if (receivingCamera == null)
+                        {
+                            receivingCamera = camera;
+                            InitializeCommandBuffer();
+                        }
+                        else if (receivingCamera!=camera)
+                        {
+                            receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
+                            receivingCamera = camera;
+                            InitializeCommandBuffer();
+                        }
+                        
+                        break;
+                    }
+                }
+                yield return new WaitForSeconds(0.5f);
+            }
         }
         
 
@@ -143,6 +185,11 @@ namespace XRRemote
             }
             return false;
         }
+
+        // public void AddCameraManager()
+        // {
+        //     cameraManagers.Add(null);
+        // }
 
     }
 }
