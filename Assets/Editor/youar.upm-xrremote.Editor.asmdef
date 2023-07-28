@@ -1,3 +1,17 @@
 {
-	"name": "youar.upm-xrremote.Editor"
+    "name": "youar.upm-xrremote.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a9420e37d7990b54abdef6688edbe313",
+        "GUID:2197d240ece9a454e8233a0838180b2c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
