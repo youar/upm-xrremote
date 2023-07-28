@@ -34,6 +34,7 @@ using System.Collections.Generic;
 
 namespace XRRemote
 {
+    [SerializeField]
     public class ClientReceiver : CustomNdiReceiver
     
     {
@@ -48,7 +49,7 @@ namespace XRRemote
         private Material commandBufferMaterial;
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
-        [SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
+        [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
 
         private void Awake()
         {
@@ -70,14 +71,18 @@ namespace XRRemote
             targetNdiSenderName = "ServerSender";
         }
 
-        protected override void Start()
+        private void OnEnable()
         {
-            base.Start();
             StartCoroutine(SetReceivingCamera());
             TrySetupTrackedPoseDriver();
         }
 
         private void OnDestroy()
+        {
+            Instance = null;
+        }
+
+        private void OnDisable()
         {
             if (videoCommandBuffer != null && receivingCamera != null)
             {
@@ -91,7 +96,6 @@ namespace XRRemote
         {
             commandBufferMaterial.SetTexture("_MainTex", texture);                
         }
-
 
         protected override void ProcessPacketData(byte[] bytes)
         {
@@ -112,11 +116,6 @@ namespace XRRemote
             } 
         }
 
-        private void OnDisable()
-        {
-            Instance = null;
-        }
-
         private void InitializeCommandBuffer()
         {   
             if (videoCommandBufferInitialized) return;
@@ -134,35 +133,39 @@ namespace XRRemote
                 if (cameraManagerList.Count == 0)
                 {
                     Debug.Log("XRRemote: Empty camera manager list");
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(5f);
                 }
 
-                for(int i =0; i<cameraManagerList.Count; i++)
+                int activeCameraCount = 0;
+                cameraManagerList
+                    .Where(manager => manager != null).ToList()
+                    .ForEach(manager => {
+                        var camera = manager.gameObject.GetComponent<Camera>();
+                        if(camera.isActiveAndEnabled) 
+                        {
+                            activeCameraCount++;
+                            if (receivingCamera == null)
+                            {
+                                receivingCamera = camera;
+                                InitializeCommandBuffer();
+                            }
+                            else if (receivingCamera!=camera)
+                            {
+                                receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
+                                receivingCamera = camera;
+                                InitializeCommandBuffer();
+                            }
+                        }
+                    });
+
+                if (activeCameraCount > 1)
                 {
-                    GameObject cameraObject = cameraManagerList[i].gameObject;
-                    Camera camera = cameraObject.GetComponent<Camera>();
-
-                    if (cameraObject.activeSelf && camera.enabled)
-                    {
-                        if (receivingCamera == null)
-                        {
-                            receivingCamera = camera;
-                            InitializeCommandBuffer();
-                        }
-                        else if (receivingCamera!=camera)
-                        {
-                            receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
-                            receivingCamera = camera;
-                            InitializeCommandBuffer();
-                        }
-                        
-                        break;
-                    }
+                    Debug.LogError("XRRemote: Multiple active receiving cameras found");
                 }
-                yield return new WaitForSeconds(0.5f);
+
+                yield return new WaitForSeconds(5f);
             }
         }
-        
 
         private bool TrySetupTrackedPoseDriver()
         {
@@ -186,10 +189,10 @@ namespace XRRemote
             return false;
         }
 
-        // public void AddCameraManager()
-        // {
-        //     cameraManagers.Add(null);
-        // }
-
+        //required for editor script
+        public void AddCameraManager()
+        {
+            cameraManagerList.Add(null);
+        }
     }
 }
