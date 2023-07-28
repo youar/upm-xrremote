@@ -31,11 +31,14 @@ using UnityEngine.UI;
 using UnityEngine.Rendering;
 using XRRemote.Serializables;
 using UnityEngine.XR.ARSubsystems;
-
+using UnityEngine.XR.ARFoundation;
+using System.Collections.Generic;
 
 namespace XRRemote
 {
+    [SerializeField]
     public class ClientReceiver : CustomNdiReceiver
+    
     {
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
@@ -43,13 +46,15 @@ namespace XRRemote
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
 
-        [Tooltip("Camera that will render the NDI video")]
-        [SerializeField] private Camera receivingCamera;
+        private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;
         
         // [SerializeField] 
         private Material commandBufferMaterial;
+
+        [Tooltip("List of AR Cameras that will render the NDI video")]
+        [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
 
         private void Awake()
         {
@@ -71,27 +76,31 @@ namespace XRRemote
             targetNdiSenderName = "ServerSender";
         }
 
-        protected override void Start()
+        private void OnEnable()
         {
-            base.Start();
-            InitializeCommandBuffer();
+            StartCoroutine(SetReceivingCamera());
             TrySetupTrackedPoseDriver();
         }
 
         private void OnDestroy()
         {
-            if (videoCommandBuffer != null)
+            Instance = null;
+        }
+
+        private void OnDisable()
+        {
+            if (videoCommandBuffer != null && receivingCamera != null)
             {
-                receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
+                receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             }
             videoCommandBufferInitialized = false;
+            StopCoroutine(SetReceivingCamera());
         }
 
         protected override void ReceiveTexture(RenderTexture texture)
         {
             commandBufferMaterial.SetTexture("_MainTex", texture);                
         }
-
 
         protected override void ProcessPacketData(byte[] bytes)
         {
@@ -117,13 +126,8 @@ namespace XRRemote
             } 
         }
 
-        private void OnDisable()
-        {
-            Instance = null;
-        }
-
         private void InitializeCommandBuffer()
-        {
+        {   
             if (videoCommandBufferInitialized) return;
             videoCommandBuffer = new CommandBuffer();
             commandBufferMaterial = Resources.Load("XRVideoMaterial") as Material;
@@ -132,7 +136,47 @@ namespace XRRemote
             receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             videoCommandBufferInitialized = true;
         }
-        
+
+        private IEnumerator SetReceivingCamera()
+        {
+            while(true)
+            {
+                if (cameraManagerList.Count == 0)
+                {
+                    Debug.Log("XRRemote: Empty camera manager list");
+                    yield return new WaitForSeconds(5f);
+                }
+
+                int activeCameraCount = 0;
+                cameraManagerList
+                    .Where(manager => manager != null).ToList()
+                    .ForEach(manager => {
+                        var camera = manager.gameObject.GetComponent<Camera>();
+                        if(camera.isActiveAndEnabled) 
+                        {
+                            activeCameraCount++;
+                            if (receivingCamera == null)
+                            {
+                                receivingCamera = camera;
+                                InitializeCommandBuffer();
+                            }
+                            else if (receivingCamera!=camera)
+                            {
+                                receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
+                                receivingCamera = camera;
+                                InitializeCommandBuffer();
+                            }
+                        }
+                    });
+
+                if (activeCameraCount > 1)
+                {
+                    Debug.LogError("XRRemote: Multiple active receiving cameras found");
+                }
+
+                yield return new WaitForSeconds(5f);
+            }
+        }
 
         private bool TrySetupTrackedPoseDriver()
         {
@@ -156,5 +200,10 @@ namespace XRRemote
             return false;
         }
 
+        //required for editor script
+        public void AddCameraManager()
+        {
+            cameraManagerList.Add(null);
+        }
     }
 }

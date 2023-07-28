@@ -38,7 +38,6 @@ namespace XRRemote
         protected string targetNdiSenderName = "CustomNdiSender";
 
         [SerializeField] protected Text receiverNameText;
-        [SerializeField] protected Text debugText;   
         
         
         [Tooltip("Aspect Ratio or Pixel Count of the Mobile Device (Width/Height)")]
