@@ -43,7 +43,7 @@ namespace XRRemote
         [SerializeField] private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;
-        private Material commandBufferMaterial;
+        [SerializeField] private Material commandBufferMaterial;
 
         private void Awake()
         {
@@ -115,7 +115,7 @@ namespace XRRemote
         {
             if (videoCommandBufferInitialized) return;
             videoCommandBuffer = new CommandBuffer();
-            commandBufferMaterial = new Material(Shader.Find("Unlit/Texture"));
+            // commandBufferMaterial = new Material(Shader.Find("Unlit/Texture"));
             videoCommandBuffer.Blit(null, BuiltinRenderTextureType.CurrentActive, commandBufferMaterial);
             receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             videoCommandBufferInitialized = true;
