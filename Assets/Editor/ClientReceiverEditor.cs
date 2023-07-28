@@ -1,8 +1,5 @@
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.XR.ARFoundation;
-using System.Collections.Generic;
-
 
 namespace XRRemote
 {
