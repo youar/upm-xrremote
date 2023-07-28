@@ -47,6 +47,16 @@ namespace XRRemote.Serializables
             this.y = v.y;
         }
 
+        public (float, float) ToSerializable()
+        {
+            return (x, y);
+        }
+
+        public Vector2 ConvertFromSerializableFloat2ToVector2()
+        {
+            return new Vector2(x, y);
+        }
+
         public bool Equals(SerializableFloat2 rhs) { return x == rhs.x && y == rhs.y; }
 
         public string ToString(string format, IFormatProvider formatProvider)
