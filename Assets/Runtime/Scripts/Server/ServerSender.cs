@@ -82,6 +82,8 @@ namespace XRRemote
             ServerRemotePacket packet = new ServerRemotePacket();
 
             packet.cameraPose = arPoseDriver;
+            
+            packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
             if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
                 packet.planesInfo = planesInfo;

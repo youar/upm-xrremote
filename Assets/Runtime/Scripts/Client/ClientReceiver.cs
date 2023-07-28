@@ -29,6 +29,9 @@ using Klak.Ndi;
 using UnityEngine.SpatialTracking;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
+using XRRemote.Serializables;
+using UnityEngine.XR.ARSubsystems;
+
 
 namespace XRRemote
 {
@@ -36,6 +39,7 @@ namespace XRRemote
     {
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
+        public XRCameraIntrinsics cameraIntrinsics {get; private set;}
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
 
@@ -91,8 +95,13 @@ namespace XRRemote
 
         protected override void ProcessPacketData(byte[] bytes)
         {
+            
             ServerRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(bytes);
+            
             this.remotePacket = remotePacket;
+            this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
+
+
             PlanesInfoCheck(remotePacket);
 
             if (remotePacket.touchPositionNormalized != null) {
