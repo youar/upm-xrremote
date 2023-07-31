@@ -37,7 +37,7 @@ namespace XRRemote
         public static readonly bool displayXRRemotePacketStats = globalDisplay;
         public static readonly bool displayXRRemoteConnectionStats = globalDisplay;
         public static readonly bool displayXRExtractTextureStats = globalDisplay;
-        public static readonly bool displayXRRemotePlaneStats = false;
+        public static readonly bool displayXRRemotePlaneStats = globalDisplay;
         public static readonly bool displayXRRemoteInputStats = globalDisplay;
     }
 }
