@@ -89,7 +89,6 @@ namespace XRRemote
         private void arPlaneManager_planesChanged(ARPlanesChangedEventArgs arPlanesChangedEventArgs)
         {
             planesInfo = new SerializablePlanesInfo();
-
             planesInfo.added = GetArrayOfXRPlanes(arPlanesChangedEventArgs.added);
             planesInfo.updated = GetArrayOfXRPlanes(arPlanesChangedEventArgs.updated);
             planesInfo.removed = GetArrayOfXRPlanes(arPlanesChangedEventArgs.removed);

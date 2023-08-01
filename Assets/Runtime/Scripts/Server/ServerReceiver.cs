@@ -21,15 +21,7 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.Collections;
 using UnityEngine;
-using Klak.Ndi;
-using UnityEngine.SpatialTracking;
-using UnityEngine.UI;
-using UnityEngine.XR;
-using XRRemote;
 
 namespace XRRemote
 {
@@ -67,7 +59,6 @@ namespace XRRemote
         {
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
-            // DebugStatusCheck(remotePacket);
         }
 
         protected override void ReceiveTexture(RenderTexture texture)
@@ -75,14 +66,5 @@ namespace XRRemote
             //eventually, add received UI Overlay Texture actions here
             return;
         }
-
-        // private void DebugStatusCheck(ClientRemotePacket remotePacket)
-        // {
-        //     if (UIRenderer.Instance.debugMode != remotePacket.debugMode)
-        //     {
-        //         UIRenderer.Instance.debugMode = remotePacket.debugMode;
-        //     }
-        // }
-
     }
 }

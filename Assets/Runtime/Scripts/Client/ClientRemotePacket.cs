@@ -22,7 +22,6 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
-using XRRemote.Serializables;
 
 namespace XRRemote 
 {

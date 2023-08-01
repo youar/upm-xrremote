@@ -24,10 +24,6 @@
 
 using System;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.XR.ARFoundation;
-using Klak.Ndi;
-using XRRemote.Serializables;
 using System.Collections;
 
 namespace XRRemote
@@ -69,7 +65,6 @@ namespace XRRemote
             base.Start();
             ClientSender.Instance.OnInitNdi += ClientSender_OnNdiInitialized;
             StartCoroutine(SendData());
-           
         }
 
         protected override void OnDestroy()
@@ -104,7 +99,6 @@ namespace XRRemote
         protected override RemotePacket GetPacketData()
         {
             ClientRemotePacket packet = new ClientRemotePacket();
-            // packet.debugMode = UIRenderer.Instance.debugMode;
             return packet;
         }
 
