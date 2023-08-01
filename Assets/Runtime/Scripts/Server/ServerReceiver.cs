@@ -67,7 +67,7 @@ namespace XRRemote
         {
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
-            DebugStatusCheck(remotePacket);
+            // DebugStatusCheck(remotePacket);
         }
 
         protected override void ReceiveTexture(RenderTexture texture)
@@ -76,13 +76,13 @@ namespace XRRemote
             return;
         }
 
-        private void DebugStatusCheck(ClientRemotePacket remotePacket)
-        {
-            if (UIRenderer.Instance.debugMode != remotePacket.debugMode)
-            {
-                UIRenderer.Instance.debugMode = remotePacket.debugMode;
-            }
-        }
+        // private void DebugStatusCheck(ClientRemotePacket remotePacket)
+        // {
+        //     if (UIRenderer.Instance.debugMode != remotePacket.debugMode)
+        //     {
+        //         UIRenderer.Instance.debugMode = remotePacket.debugMode;
+        //     }
+        // }
 
     }
 }

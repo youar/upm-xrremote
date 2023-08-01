@@ -104,7 +104,7 @@ namespace XRRemote
         protected override RemotePacket GetPacketData()
         {
             ClientRemotePacket packet = new ClientRemotePacket();
-            packet.debugMode = UIRenderer.Instance.debugMode;
+            // packet.debugMode = UIRenderer.Instance.debugMode;
             return packet;
         }
 
