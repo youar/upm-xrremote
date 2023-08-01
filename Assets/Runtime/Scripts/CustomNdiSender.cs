@@ -27,7 +27,6 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
 using UnityEngine.UI;
-// using XRRemote.Serializables;
 
 namespace XRRemote
 {   
