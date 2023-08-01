@@ -89,9 +89,7 @@ namespace XRRemote
         {
             Material material = GetCameraFrameMaterial();
             SetTexture(material.mainTexture.width, material.mainTexture.height);
-   
             ndiSender.metadata = SerializeMetadata(GetPacketData());
-
             CommandBufferActions(material);
             frameCount++;
         } 

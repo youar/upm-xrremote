@@ -188,7 +188,7 @@ namespace XRRemote
                 trackedPoseDriver.poseProviderComponent = remotePoseProvider;
                 return true;
             }
-
+            
             if (DebugFlags.displayEditorConnectionStats) {
                 Debug.LogError("TrySetupTrackedPoseDriver Event: null XRRemotePoseProvider on Ndi receiver");
             }
