@@ -1,131 +1,113 @@
-# XR Remote Preview
+# upm-xrremote
 
-## Who is this project for?
+## About
 
-This project is for augmented reality developers who are looking for a convenient way to debug their AR applications, without the length build time required for Unity projects like AR Foundation. Unfortunately, AR Foundation from Unity did not ship with a "remote system", i.e. a way to pass AR session information from a device, to the editor.
+upm-xrremote allows users to stream AR Foundation directly to their Unity Editor. 
 
-If you would like to learn more about Unity's current option for a similar system, take a look at some of these links:
-* https://assetstore.unity.com/packages/tools/utilities/ar-foundation-remote-168773
-* https://assetstore.unity.com/packages/tools/utilities/ar-foundation-remote-2-0-201106
+![demo.gif](createdemovideobeforerelease)
 
-## What are the limitations of this project? 
+This project is for augmented reality developers who are looking for a convenient way to debug their AR applications, without the lengthy build times required for Unity projects, like AR Foundation. 
 
-Currently, this application is only for piping **video** and **Tracked Pose Driver** information from a remote device (a server), to the editor (a client). There are more features in the [ARKit Streamer](https://github.com/asus4/ARKitStreamer) package. However, this project is difficult to set-up. To be clear, this project currently does not support:
+AR Foundation did not ship with a "remote system", i.e. a way to pass AR session information from a device, to the editor. Other systems like MARS are about recreating scenes virtually, and simulating augmented reality, but that only goes so far, especially for applications that require real world interactions. 
 
-* Hand Tracking
-* Image Tracking
-* Face Tracking
-* Human Pose Tracking
-* Plane Detection
+## Supported XR APIs
 
-Though it is not impossible to have these features implemented in the near future
+* [x] Plane Detection
+  * You will need to add a user layer named **Planes** in order to view the planes. (Project Settings -> Tags and Layers)
 
-We hope the community can use some of the boiler plate in this project to make these other types possible. Click on each feature to look at its feature request on GitHub.
+We're currently working on support for the following APIs: 
 
-## How do I get started? 
+* [ ] [Image Tracking](https://github.com/youar/upm-xrremote/issues/24)
+* [ ] Hand Tracking
+* [ ] Face Tracking
+* [ ] Human Pose Tracking
 
-The steps differ slightly between Android and iOS. If you are on Android, the project has a pre-built .apk in it for you to try. If you are on iOS, you will need to build the Xcode project, and install it on your device. Also, once in Play mode, you will need to connect your device. The following graphic shows where to connect your device to:
+## Getting started
 
-You can find a more detailed explanation [here](https://docs.unity3d.com/Manual/Console.html).
+There are 3 steps to using the XRRemote. 
+1. Dependencies
+2. Server application install
+3. Client setup
 
-##### - Android -
+#### Dependencies 
 
-Before using a device **Please, make sure that you have Developer Mode enabled, and USB Debugging enabled**!
+To get started using this Unity package, either include the following dependencies to your `/Packages/manifest.json` file, 
 
-Here is the quick start method: 
+```json
+{
+ "dependencies": {
+  //
+  // some other deps
+  //
+  "com.youar.upm-xrremote": "ssh://git@github.com/youar/upm-xrremote.git?path=/Assets/#<releasenumber>",
+ },
+ "scopedRegistries": [
+    {
+      "name": "Keijiro",
+      "url": "https://registry.npmjs.com",
+      "scopes": [
+        "jp.keijiro"
+    }
+      ]
+  ]
+}
+```
 
-### Android Device
-* Make sure you are at least `Android Version 12` (can be found here "Settings/About phone/Software information/Android version")
-* Install `upm-xrremote.apk` from https://github.com/youar/upm-xrremote/releases
+or setup the same [Scoped Regisry](https://docs.unity3d.com/Manual/upm-scoped.html) and dependency via the Unity Package Manager. 
 
-### Unity Editor
-* Make sure you are on build platform Android
-* Install `XR Remote` as a `UPM Package`
-	* Open Package Manager window at "Window/Package Manager"
-	* Select "Add package from git URL..." from the drop-down menu
-	* Install from `ssh://git@github.com/youar/upm-xrremote.git?path=/Assets/` ([More Info](https://docs.unity3d.com/Manual/upm-git.html#syntax))
+##### Server application install
 
-<p align="left">
-        <img src="https://user-images.githubusercontent.com/8175726/202574695-af00b094-efee-44f6-84e4-d41e344fe28f.png">
-</p>
-<p align="left">
-        <img src="https://user-images.githubusercontent.com/8175726/202574718-0f370959-d60c-4904-8bd9-6f949ca7824f.png">
-</p>
+Either build the include sample scene, [`Server`](/Assets/Samples/Scenes/Server), or install the associated app for your [release and platform](https://github.com/youar/upm-xrremote/releases). See the section on [Building the 'Server' scene](#building-the-server-scene), for manual building. 
 
-* Make sure you have "ARFoundation ver 4.1.12" installed in your project
-* Make sure you have "AR Session" and "AR Session Origin" in your scene
-* Make sure `Tracked Pose Driver` is attached as a component on the AR Camera ("AR Session Origin > AR Camera")
-* Drag the `XR Remote Connection` prefab into your scene, (`Packages/upm-xrremote/Runtime/Prefabs`)
-* Open your `upm-xrremote` application on your device
-* Enter your mobile device's IP address in `XR Editor Client` component attached to the `XR Remote Connection` GameObject
-* Hit Play in Unity Editor
-* Press GUI button "Start XR Remote Session" to connect
+##### Client setup
 
-You can get the `upm-xrremote` apk by either:
-* manually build your own `XR Remote` APK by importing the Sample scenes into the Asset folder and build the `AR Remote Server` scene
-* downloading and installing the pre-built apk at found in the [release](https://github.com/youar/upm-xrremote/releases)
+An example scene setup that uses upm-xrremote can be found in the (Client)[/Assets/Samples/Scenes/Client] scene. The prefabs and references in this scene show the general setup.
 
-##### - iOS -
+#### Building the `Server` scene
 
-iOS will require you to build out the Xcode projects for the scene `Assets/XR Remote/Scenes/AR Remote Server`, with _Developer Mode_ enabled, and "Run In Xcode" as Debug set via Player Settings. Go to the section on [building XR Remote](#building_xrremote) for more information.
+> Before reading this section, please make sure you're familiar with building AR applications for iOS and Android, via Unity. 
 
-After the application is installed on your iOS device, follow these steps: 
+##### Device Requirements
+* Enable Developer mode
+* Enable USB Debugging
 
-* Make sure you are on build platform iOS
-* Install `XR Remote` as a `UPM Package`
-	* Open Package Manager window at "Window/Package Manager"
-	* Select "Add package from git URL..." from the drop-down menu
-	* Install from `ssh://git@github.com/youar/upm-xrremote.git?path=/Assets/` ([More Info](https://docs.unity3d.com/Manual/upm-git.html#syntax))
+##### Server Scene Build Setting Requirements
+* Ensure correct device target platform
+* Enable 'Development Build'
+* Ensure `Server` scene is open and added to build
+* (Android) 
+  * Enable ARCore
+  * Target minimum API level 30
+* (iOS)
+  * Enable ARKit
+  * iOS11 is an appropriate minimum
+  * iOS support is lacking. Builds will be possible, but may require additional steps on your end.
 
-<p align="left">
-        <img src="https://user-images.githubusercontent.com/8175726/202574695-af00b094-efee-44f6-84e4-d41e344fe28f.png">
-</p>
-<p align="left">
-        <img src="https://user-images.githubusercontent.com/8175726/202574718-0f370959-d60c-4904-8bd9-6f949ca7824f.png">
-</p>
+<details><summary>⚠️ Warning ⚠️</summary>
+It is critical that your server scene and client scene come from the same commit tree; if not, there can be issues with serializing and deserializing data. 
+</details>
 
-* Make sure you have "ARFoundation ver 4.1.12" installed in your project
-* Make sure you have "AR Session" and "AR Session Origin" in your scene
-* Make sure "AR Pose Driver" is attached as a component on the AR Camera ("AR Session Origin > AR Camera")
-* Drag the `XR Remote Connection` prefab into your scene, (`Packages/upm-xrremote/Runtime/Prefabs`)
-* Open your `upm-xrremote` application on your device
-* Enter your mobile device's IP address in `XR Editor Client` Script on the `XR Remote Connection` GameObject
-* Hit Play in Unity Editor
-* Press GUI button "Start XR Remote Session" to connect
+## Contributing 
 
-<a name="building_xrremote"></a>
-## Building XR Remote
+> For a list of issues and features to work on, please check out our [issues page](https://github.com/youar/upm-xrremote/issues). If you'd like to maintain, please reach out to [@gblikas](https://github.com/gblikas). Keep reading for more information on lifecycle, and dependencies.
 
-Building XR Remote should be fairly easy, but there are a couple things to keep in mind, at a high-level:
+## Developer Info
 
-#### Logging
+The upm-xrremote project consists of two applications: a "server" and a "client". The server is what is running on your AR device, i.e. an AR-capable. The server scene pipes information to (and reads info from) the client scene, i.e. your Unity Editor.
 
-There is an over all logging system that operates on the premise of "VERBOSE", "MINIMAL", and "QUITE" amounts of logging. This is due to the fact that an attached device will cause 2 streams of data to come into the Unity editor window, and this can sometimes be unruly to deal with. 
+The upm-xrremote package relies primarily on AR Foundation and [KlakNDI](https://github.com/keijiro/KlakNDI) to send and receive data from device to device. Outside of the setup for this, each sample scene should consist of a "Receiver" and a "Sender" to allow for bi-directional communication. 
 
-#### Features
+The sender packs data using the [Klak metadata property](linktometadataproperty) and the receiver uses a custom package to deserialize, conversely for the receiver package. 
 
-A feature which uses the AR Foundation SDK will need to be built into the XR Remote application that lives on the device (server). That means that any feature change will need to be built into the application which is providing the information to the Editor (client). The process for doing that sounds lengthy, but doing it on editor first, can save a lot of time. 
+You can find the official dependencies in [manifest.json](Packages/manifest.json), and in [package.json](Asstes/package.json). 
 
-In order to add a feature, please expand the `Assets/Runtime/Scripts/XRRemotePacket.cs` class with additional data types that can be appropriately deserialized. 
+## FAQ
 
-### How to Build
+- Q: I've built and installed the server scene on my AR device, and set up the Client scene, but don't see a video stream. 
+    - A: Typically, this means that your devices aren't on the same network. Double check that both your AR device and your PC are on the same network (physical or WiFi). If the issue persists, please check our [issues page](https://github.com/youar/upm-xrremote/issues).
 
-* Select your desired platform
-* import the Sample scenes from the `upm-xrremote` package into the Asset folder
-* Build the base scene `AR Remote Server` from `Assets/Samples/upm-xrremte/[upm version]/AR Remote Server`
-* Select the following options in Build Settings: 
-	* Development Build
-	* (iOS) Run in Xcode as "Debug"
-	* (Android) Target API Level at least 30
-	* (Android) 64 bit architecture `Project Settings/Player/Other Settings/Configuration/Scripting backend` -> IL2CPP
-* Hit Build
-* Sign the application with your personal key/team (if applicable)
+## License
 
-## FAQ:
-
-* This project uses git lfs for every major type of binary file.
-
-## License: 
 > For the full-license, please see https://github.com/youar/upm-xrremote/blob/master/LICENSE
 
 This file (and repository) is part of XR REMOTE.
@@ -147,24 +129,3 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http://www.gnu.org/licenses/>.
-
-## Bugs: 
-
-* GitHub issues #6 
-
-## Change Log:
-11/15/2022
-* Upgrade to AR Foundation 4.1.12
-* Upgrade to ARKit XR Plugin 4.1.12
-* Upgrade to ARCore XR Plugin 4.1.12
-* Upgrade to Unity 2020.3.36f1
-* Converted from use of PlayerConnection to TCP connection
-
-4/19/2020
-* Fixed Texture destroy issue causing a memory leak.
-
-1/22/2020
-* Upgrade to AR Foundation 3.0.1
-* Upgrade to ARKit XR Plugin 3.0.1
-* Upgrade to ARCore XR Plugin 3.0.1
-* Upgrade to Unity 2019.2.18f1

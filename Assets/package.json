@@ -1,8 +1,9 @@
 {
 	"name": "com.youar.upm-xrremote",
 	"displayName": "upm-xrremote",
-	"version": "0.1.2",
-	"unity": "2020.3",
+	"version": "0.1.3",
+	"license": "LICENSE.md",
+	"unity": "2021.3",
 	"description": "Allows you to use data from mobile device to help build and test AR applications with Unity.",
 	"samples": [{
 		"displayName": "Example Scenes",
@@ -14,6 +15,7 @@
 		"com.unity.textmeshpro": "3.0.6",
 		"com.unity.xr.arfoundation": "4.1.12",
 		"com.unity.xr.arcore": "4.1.12",
-		"com.unity.xr.arkit": "4.1.12"
+		"com.unity.xr.arkit": "4.1.12",
+		"jp.keijiro.klak.ndi": "2.0.3"
 	}
 }

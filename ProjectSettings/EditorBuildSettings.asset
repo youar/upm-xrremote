@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Samples/Scenes/AR Remote Client.unity
     guid: f814301dd565948a6ac4b95e606e9cb3
-  - enabled: 1
+  - enabled: 0
     path: Assets/Samples/Scenes/AR Remote Server.unity
     guid: b79a3b73cef284b2996b92b1c496f3b3
   - enabled: 0
@@ -17,7 +17,13 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Samples/Scenes/NDI Sender.unity
+    guid: 5fc990492e6e60c49926297410489ac4
+  - enabled: 0
+    path: Assets/Samples/Scenes/NDI Receiver.unity
+    guid: 9eca745677f3b9945a652c8056272fb6
   m_configObjects:
-    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: b2d5dd22697969d40920587654170aa1, type: 2}
-    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 700473e4728a4494ab1c3a95fddb2284, type: 2}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 3fd51d32e076fc14a8f22fa5999e58dc, type: 2}
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 42b52585c5f23914ab350463ffc7ab13, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: e09164c7c92e86b4bb8f21be5dabd497, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: ad4f8d46fbe45bb458b6cd2e5b9ee9a3, type: 2}
