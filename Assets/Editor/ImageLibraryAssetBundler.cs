@@ -12,10 +12,10 @@ namespace XRRemote
     public static class ImageLibraryAssetBundler
     { 
 
-        //needs to be refined to not include the given name of library to enable more generic reconstruction
+        //[review] needs to be refined to not include the given name of library to enable more generic reconstruction
+        //[review] will this have issues if the user has other asset bundles qued to be built
         public static void BuildAssetBundle(this XRReferenceImageLibrary imageLibrary)
         {
-            // Create the array of bundle build details.
             AssetBundleBuild[] buildMap = new AssetBundleBuild[1];
 
             buildMap[0].assetBundleName = "imagelibrarybundle";
@@ -27,13 +27,13 @@ namespace XRRemote
 
             string outputDirectory = "Assets/StreamingAssets/AssetBundles/";
 
-            //This is a directory path used frequently.......refine this before shipping or risk ANGRY USERS with deleted bundlesssss >=0
+            //[review] This is a directory path used frequently.......refine this before shipping or risk ANGRY USERS with deleted bundlesssss >=0
             if (!Directory.Exists(outputDirectory))
             {
                 Directory.CreateDirectory(outputDirectory);
             }
 
-            //should this be done differently? need to remove previous bundle if it exists, and different files may be included, depending on target build platform
+            //[review] should this be done differently? need to remove previous bundle if it exists, and different files may be included, depending on target build platform
             System.IO.DirectoryInfo di = new DirectoryInfo(outputDirectory);
             foreach(FileInfo file in di.GetFiles())
             {   

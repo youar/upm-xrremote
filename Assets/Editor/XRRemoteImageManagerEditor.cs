@@ -33,7 +33,7 @@ namespace XRRemote
 
             if (!isPlayMode)
             {
-                if (GUILayout.Button("Send Library To Device"))
+                if (GUILayout.Button("Bundle Image Library"))
                 {                    
                     if (manager.OnClickTrySend())
                     {
@@ -44,7 +44,7 @@ namespace XRRemote
             else
             {
                 GUI.enabled = false;
-                EditorGUILayout.LabelField("Send Library To Device", "Disabled in play mode");
+                EditorGUILayout.LabelField("Bundle Image Library", "Disabled in play mode");
                 GUI.enabled = true;
             }
             serializedObject.ApplyModifiedProperties();
@@ -52,7 +52,7 @@ namespace XRRemote
     }
 }
 
-//move from button press to create asset bundle to something like:
+//[review] move from button press to create asset bundle to something like:
 // private void OnPlayModeStateChanged(PlayModeStateChange state)
 // {
 //     isPlayMode = EditorApplication.isPlaying;

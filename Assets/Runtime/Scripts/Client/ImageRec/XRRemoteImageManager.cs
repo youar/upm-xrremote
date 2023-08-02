@@ -12,21 +12,31 @@ namespace XRRemote
     public class XRRemoteImageManager : MonoBehaviour
     {     
         [Tooltip("The native AR Tracked Image Manager component attached to AR Session Origin.")]
-        [SerializeField]
-        private ARTrackedImageManager manager;
+        [SerializeField] private ARTrackedImageManager manager;
         public ARTrackedImageManager Manager => manager;
 
-        [HideInInspector]
-        public XRReferenceImageLibrary imageLibrary {get; private set;}
+        [HideInInspector] public XRReferenceImageLibrary imageLibrary {get; private set;}
+        [HideInInspector] private bool readyToSend = true;
+        [HideInInspector] public byte[] bundleByteArray {get; private set;} = null;
+        public static XRRemoteImageManager Instance { get; private set; }
 
-        [HideInInspector]
-        private bool readyToSend = true;
+        private void Awake()
+        {
+            //[review] switch to  new instancing method
+            if (Instance != null)
+            {
+                Debug.LogError("CustomNdiReceiver must be only one in the scene.");
+                return;
+            }
 
-        [HideInInspector]
-        public byte[] bundleByteArray {get; private set;} = null;
+            Instance = this;
+        }
 
         public void Start()
         {
+            //[review] dropping this in start is sloppy, but working for now. refine later
+            // if BuildPipeline.BuildAssetBundles is synchronous, could call convertbundletobytearray directly after building it...... could even delete the bundle immediately after converting to bundle as well to not waste space
+            //actually.... can't do that as it would be outside play mode.....or can i if it instances on awake??
             ConvertBundleToByteArray();
         }
 
@@ -103,6 +113,7 @@ namespace XRRemote
         private void ConvertBundleToByteArray()
         {
             string filePath = Path.Combine(Application.streamingAssetsPath, "AssetBundles/imagelibrarybundle");
+            bool conversionSuccessful = true;
  
             try 
             {
@@ -112,7 +123,9 @@ namespace XRRemote
             {
                 Debug.LogWarning("Failed to Convert AssetBundle!");
                 Debug.LogWarning(e.Message);
+                conversionSuccessful = false;
             }
+            if (conversionSuccessful) Debug.Log("Converted AssetBundle to byte array.");
         }
 
         private void ReconstructLibraryFromBundle()
@@ -127,7 +140,7 @@ namespace XRRemote
                 return;
             }            
             
-            //this can be refined after changing bundling method to not include the user given name for the reference library
+            //[review]this can be refined after changing bundling method to not include the user given name for the reference library
             XRReferenceImageLibrary loadedLibrary = reconstructedBundle.LoadAsset(reconstructedBundle.GetAllAssetNames()[0]) as XRReferenceImageLibrary;
             if (loadedLibrary != null) manager.referenceLibrary = loadedLibrary;
             else Debug.LogError("Failed to load asset");
