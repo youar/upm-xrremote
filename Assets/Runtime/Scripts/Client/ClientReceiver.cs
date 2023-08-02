@@ -116,6 +116,10 @@ namespace XRRemote
             if (remotePacket.touchPositionNormalized != null) {
                 OnInputDataReceived?.Invoke(this, EventArgs.Empty);
             }
+
+            if (remotePacket.isHandshake) {
+                Debug.Log($"Handshake recieved! {remotePacket.planesInfo}");
+            }
         }
 
         private void PlanesInfoCheck(ServerRemotePacket remotePacket)

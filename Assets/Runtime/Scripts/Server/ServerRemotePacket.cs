@@ -22,6 +22,7 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
+using UnityEngine.UIElements;
 using XRRemote.Serializables;
 
 namespace XRRemote 
@@ -33,5 +34,7 @@ namespace XRRemote
         public SerializablePlanesInfo planesInfo;
         public SerializableFloat2 touchPositionNormalized = null;
         public SerializableXRCameraIntrinsics cameraIntrinsics = null;
+
+        public bool isHandshake = false;
     }
 }

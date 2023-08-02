@@ -30,5 +30,6 @@ namespace XRRemote
     public partial class ClientRemotePacket : RemotePacket
     {
         public bool debugMode;
+        public bool requestHandshakePacket = false;
     }
 }

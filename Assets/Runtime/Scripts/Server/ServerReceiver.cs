@@ -37,6 +37,8 @@ namespace XRRemote
     {
         public static ServerReceiver Instance {get; private set;} = null;
 
+        private ServerSender sender = null;
+
         [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
      
         private void Awake()
@@ -51,6 +53,8 @@ namespace XRRemote
             Instance = this;
 
             targetNdiSenderName = "ClientSender";
+
+            sender = FindObjectOfType<ServerSender>();
         }
 
         protected override void Start()
@@ -68,6 +72,10 @@ namespace XRRemote
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
             DebugStatusCheck(remotePacket);
+
+            if (sender != null && remotePacket.requestHandshakePacket) {
+                sender.QueueHandshakePacket();
+            }
         }
 
         protected override void ReceiveTexture(RenderTexture texture)

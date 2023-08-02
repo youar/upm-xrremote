@@ -71,6 +71,30 @@ namespace XRRemote
             return true;
         }
 
+        public bool TryGetAllPlanesInfo(out SerializablePlanesInfo allPlanesInfo)
+        {
+            if (arPlaneManager.trackables.count == 0) {
+                allPlanesInfo = null;
+                return false;
+            }
+
+            allPlanesInfo = new SerializablePlanesInfo();
+
+            //Get a list of all existing planes
+            List<ARPlane> existingPlanesList = new List<ARPlane>();
+            foreach (ARPlane plane in arPlaneManager.trackables) {
+                existingPlanesList.Add(plane);
+            }
+
+            Debug.LogWarning($"ArPlaneManager: {arPlaneManager.trackables.count}");
+
+            allPlanesInfo.added = GetArrayOfXRPlanes(existingPlanesList);
+            allPlanesInfo.updated = null;
+            allPlanesInfo.removed = null;
+
+            return true;
+        }
+
         private SerializableARPlane[] GetArrayOfXRPlanes(List<ARPlane> arPlanes)
         {
             if (arPlanes == null || arPlanes.Count == 0) {

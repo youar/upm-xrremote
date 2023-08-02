@@ -40,6 +40,8 @@ namespace XRRemote
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
         [SerializeField] private XRRemoteInputReader inputReader = null;
+
+        private bool handshakeRequested = false;
      
         private void Awake()
         {   
@@ -77,6 +79,11 @@ namespace XRRemote
             }
         }
 
+        public void QueueHandshakePacket()
+        {
+            handshakeRequested = true;
+        }
+
         protected override RemotePacket GetPacketData()
         {
             ServerRemotePacket packet = new ServerRemotePacket();
@@ -85,10 +92,21 @@ namespace XRRemote
             
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
-            if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
-                packet.planesInfo = planesInfo;
+            if (handshakeRequested) {
+                if (planeSender.TryGetAllPlanesInfo(out SerializablePlanesInfo planesInfo)) {
+                    packet.planesInfo = planesInfo;
+                } else {
+                    packet.planesInfo = null;
+                }
+                Debug.LogError($"SENT HANDSHAKE");
+                packet.isHandshake = true;
+                handshakeRequested = false;
             } else {
-                packet.planesInfo = null;
+                if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
+                    packet.planesInfo = planesInfo;
+                } else {
+                    packet.planesInfo = null;
+                }
             }
 
             if (inputReader.TryGetLastInputNormalized(out Vector2 touchPositionNormalized)) {

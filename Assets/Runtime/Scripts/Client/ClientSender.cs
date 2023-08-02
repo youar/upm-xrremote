@@ -44,6 +44,8 @@ namespace XRRemote
         //exists just for testing UI image
         public Material renderMaterial;
 
+        private bool hasReceivedHandshake = false;
+
         private void Awake()
         {
             // It works only in Editor!
@@ -93,6 +95,7 @@ namespace XRRemote
         {
             //set ui camera to render to NDI Init texture
             uiCamera.targetTexture = renderTexture;
+            hasReceivedHandshake = false;
         }
 
         protected override Material GetCameraFrameMaterial()
@@ -105,6 +108,13 @@ namespace XRRemote
         {
             ClientRemotePacket packet = new ClientRemotePacket();
             packet.debugMode = UIRenderer.Instance.debugMode;
+
+            if (!hasReceivedHandshake) {
+                Debug.Log($"ASKED FOR HANDSHAKE");
+                packet.requestHandshakePacket = true;
+                hasReceivedHandshake = true;
+            }
+
             return packet;
         }
 
@@ -118,7 +128,5 @@ namespace XRRemote
                 yield return new WaitForSeconds(0.1f);        
             }
         }
-        
-
     }
 }
