@@ -26,7 +26,6 @@ using XRRemote.Serializables;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
-using XRRemote.Input;
 
 namespace XRRemote
 {   
@@ -39,7 +38,6 @@ namespace XRRemote
         [SerializeField] private ARCameraManager cameraManager = null;
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
-        [SerializeField] private XRRemoteInputReader inputReader = null;
      
         private void Awake()
         {   
@@ -56,8 +54,6 @@ namespace XRRemote
         {
             base.Start();
             cameraManager.frameReceived += OnCameraFrameReceived;
-
-            TrySetUpInputReader();
         }
 
         protected override void OnDestroy()
@@ -91,31 +87,12 @@ namespace XRRemote
                 packet.planesInfo = null;
             }
 
-            if (inputReader.TryGetLastInputNormalized(out Vector2 touchPositionNormalized)) {
-                packet.touchPositionNormalized = new SerializableFloat2(touchPositionNormalized);
-            } else {
-                packet.touchPositionNormalized = null;
-            }
-
             return packet;
         }
 
         protected override Material GetCameraFrameMaterial()
         {
             return cameraBackground.material;
-        }
-
-        private bool TrySetUpInputReader()
-        {
-            if (inputReader != null) return true;
-
-            inputReader = FindObjectOfType<XRRemoteInputReader>();
-            if (inputReader != null) return true;
-
-            if (DebugFlags.displayXRRemoteConnectionStats) {
-               Debug.LogError(string.Format($"{gameObject.name}: XRRemoteInputReader not found"));
-            }
-            return false;
         }
     }
 }

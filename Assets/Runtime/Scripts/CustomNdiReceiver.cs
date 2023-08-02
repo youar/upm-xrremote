@@ -26,7 +26,6 @@ using System.Linq;
 using UnityEngine;
 using Klak.Ndi;
 using UnityEngine.UI;
-using UnityEngine.Rendering;
 
 namespace XRRemote
 {

@@ -1091,5 +1091,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Server Sender
       objectReference: {fileID: 0}
+    - target: {fileID: 7146074137771262827, guid: d820ef8e619efcd469a772c68164b29f, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d820ef8e619efcd469a772c68164b29f, type: 3}

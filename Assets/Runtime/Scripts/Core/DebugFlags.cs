@@ -22,10 +22,6 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace XRRemote
 {
     public static class DebugFlags
@@ -38,6 +34,6 @@ namespace XRRemote
         public static readonly bool displayXRRemoteConnectionStats = globalDisplay;
         public static readonly bool displayXRExtractTextureStats = globalDisplay;
         public static readonly bool displayXRRemotePlaneStats = globalDisplay;
-        public static readonly bool displayXRRemoteInputStats = globalDisplay;
+
     }
 }

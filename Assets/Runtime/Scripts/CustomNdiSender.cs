@@ -27,7 +27,6 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
 using Klak.Ndi;
 using UnityEngine.UI;
-// using XRRemote.Serializables;
 
 namespace XRRemote
 {   
@@ -89,9 +88,7 @@ namespace XRRemote
         {
             Material material = GetCameraFrameMaterial();
             SetTexture(material.mainTexture.width, material.mainTexture.height);
-   
             ndiSender.metadata = SerializeMetadata(GetPacketData());
-
             CommandBufferActions(material);
             frameCount++;
         } 

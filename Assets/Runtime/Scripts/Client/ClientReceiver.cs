@@ -25,11 +25,8 @@ using System;
 using System.Linq;
 using System.Collections;
 using UnityEngine;
-using Klak.Ndi;
 using UnityEngine.SpatialTracking;
-using UnityEngine.UI;
 using UnityEngine.Rendering;
-using XRRemote.Serializables;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 using System.Collections.Generic;
@@ -104,12 +101,10 @@ namespace XRRemote
 
         protected override void ProcessPacketData(byte[] bytes)
         {
-            
             ServerRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(bytes);
             
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
-
 
             PlanesInfoCheck(remotePacket);
 
@@ -193,7 +188,7 @@ namespace XRRemote
                 trackedPoseDriver.poseProviderComponent = remotePoseProvider;
                 return true;
             }
-
+            
             if (DebugFlags.displayEditorConnectionStats) {
                 Debug.LogError("TrySetupTrackedPoseDriver Event: null XRRemotePoseProvider on Ndi receiver");
             }

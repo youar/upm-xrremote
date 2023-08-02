@@ -24,10 +24,6 @@
 
 using System;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.XR.ARFoundation;
-using Klak.Ndi;
-using XRRemote.Serializables;
 using System.Collections;
 
 namespace XRRemote
@@ -35,12 +31,11 @@ namespace XRRemote
     [DisallowMultipleComponent]
     [Serializable]
 
-    public sealed class ClientSender : CustomNdiSender
+    public class ClientSender : CustomNdiSender
     {    
         [SerializeField] 
         public Camera uiCamera = null;
         public static ClientSender Instance { get; private set; }
-
         //exists just for testing UI image
         public Material renderMaterial;
 
@@ -64,21 +59,15 @@ namespace XRRemote
             ndiSenderName = "ClientSender";
         }
 
-        protected override void Start()
+        private void OnEnable()
         {
-            base.Start();
-            ClientSender.Instance.OnInitNdi += ClientSender_OnNdiInitialized;
             StartCoroutine(SendData());
-           
         }
 
-        protected override void OnDestroy()
+        private void OnDisable()
         {
-            base.OnDestroy();
-            ClientSender.Instance.OnInitNdi -= ClientSender_OnNdiInitialized;
             StopCoroutine(SendData());
         }
-
 
         private void OnValidate()
         {
@@ -89,11 +78,11 @@ namespace XRRemote
             }
         } 
 
-        private void ClientSender_OnNdiInitialized(object sender, EventArgs e)
-        {
-            //set ui camera to render to NDI Init texture
-            uiCamera.targetTexture = renderTexture;
-        }
+        // private void ClientSender_OnNdiInitialized(object sender, EventArgs e)
+        // {
+        //     //set ui camera to render to NDI Init texture
+        //     uiCamera.targetTexture = renderTexture;
+        // }
 
         protected override Material GetCameraFrameMaterial()
         {
@@ -104,7 +93,6 @@ namespace XRRemote
         protected override RemotePacket GetPacketData()
         {
             ClientRemotePacket packet = new ClientRemotePacket();
-            packet.debugMode = UIRenderer.Instance.debugMode;
             return packet;
         }
 
