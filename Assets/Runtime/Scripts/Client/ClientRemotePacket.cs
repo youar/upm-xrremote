@@ -28,6 +28,7 @@ namespace XRRemote
     [Serializable]
     public partial class ClientRemotePacket : RemotePacket
     {
+        public byte[] referenceImageLibrary = null;
         public bool debugMode;
     }
 }

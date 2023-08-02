@@ -720,6 +720,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Client Sender
       objectReference: {fileID: 0}
+    - target: {fileID: 3745883731167663159, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
 --- !u!1001 &6726635402377585196

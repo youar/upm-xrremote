@@ -2,7 +2,8 @@
     "name": "youar.upm-xrremote.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:2197d240ece9a454e8233a0838180b2c"
+        "GUID:2197d240ece9a454e8233a0838180b2c",
+        "GUID:92703082f92b41ba80f0d6912de66115"
     ],
     "includePlatforms": [
         "Editor"
