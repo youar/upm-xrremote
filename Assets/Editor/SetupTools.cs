@@ -3,7 +3,7 @@ using UnityEngine;
  
 public static class SetupTools
 {
-    [MenuItem("Tools/Setup Layers")]
+    [MenuItem("XRRemote/Setup Layers")]
     [InitializeOnLoadMethod]
     public static void SetupLayers()
     {
@@ -74,7 +74,6 @@ public static class SetupTools
            }
        }
    }
- 
 }
  
 
