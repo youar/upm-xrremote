@@ -22,6 +22,9 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using UnityEngine;
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
+using System;
 
 namespace XRRemote
 {
@@ -30,6 +33,8 @@ namespace XRRemote
         public static ServerReceiver Instance {get; private set;} = null;
 
         [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
+        public byte[] referenceImageLibrary {get; private set;} = null;
+        public event EventHandler OnNewImageLibraryReceived;
      
         private void Awake()
         {
@@ -55,10 +60,25 @@ namespace XRRemote
             Instance = null;
         }
 
+        private void ImageLibraryCheck(ClientRemotePacket remotePacket)
+        {
+            if (remotePacket.referenceImageLibrary != null)
+            {
+                if (remotePacket.referenceImageLibrary != referenceImageLibrary)
+                {
+                    referenceImageLibrary = remotePacket.referenceImageLibrary;
+                    OnNewImageLibraryReceived?.Invoke(this, EventArgs.Empty);
+                    // reconstruct bundle
+                    // assign bundle to tracked image manager
+                }
+            }
+        } 
+
         protected override void ProcessPacketData(byte[] bytes) 
         {
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
+            ImageLibraryCheck(remotePacket);
         }
 
         protected override void ReceiveTexture(RenderTexture texture)

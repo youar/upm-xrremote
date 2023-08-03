@@ -714,6 +714,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3745883731167663156, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
+      propertyPath: renderMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: ad69ea426bc934c55bb682a30a8fa97d, type: 2}
+    - target: {fileID: 3745883731167663156, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
+      propertyPath: uiRenderTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: 9e33616511ac04637af9ebbf92d67edf, type: 2}
+    - target: {fileID: 3745883731167663156, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
       propertyPath: ndiSenderVisualizer
       value: 
       objectReference: {fileID: 2076867509}
