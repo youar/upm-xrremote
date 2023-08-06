@@ -1,16 +1,18 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.XR;
+
  
 public static class SetupTools
 {
-    [MenuItem("XRRemote/Setup Layers")]
+    [MenuItem("XRRemote/Layer Utilities/Create Layers")]
     [InitializeOnLoadMethod]
     public static void SetupLayers()
     {
+        
         Debug.Log("Adding Layers.");
- 
         Object[] asset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
- 
+
         if (asset != null && asset.Length > 0)
         {
             SerializedObject serializedObject = new SerializedObject(asset[0]);
@@ -22,6 +24,19 @@ public static class SetupTools
  
             serializedObject.ApplyModifiedProperties();
             serializedObject.Update();
+        }
+        SetCameraCullingMask();
+    }
+
+    [MenuItem("XRRemote/Layer Utilities/Setup Camera Culling Mask")]
+    static void SetCameraCullingMask()
+    {
+        Camera mainCamera = Camera.main;
+
+        if (mainCamera != null)
+        {
+            mainCamera.cullingMask = mainCamera.cullingMask | (1 << LayerMask.NameToLayer("Planes"));
+            mainCamera.cullingMask = mainCamera.cullingMask | (1 << LayerMask.NameToLayer("XRRemote-Debug"));
         }
     }
  
