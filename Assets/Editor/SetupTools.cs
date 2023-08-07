@@ -32,12 +32,10 @@ public static class SetupTools
     [MenuItem("XRRemote/Layer Utilities/Setup Camera Culling Mask")]
     static void SetCameraCullingMask()
     {
-        Debug.Log("we're inside set camera culling mask.");
         Camera mainCamera = Camera.main;
  
         if (mainCamera != null)  
         {
-            Debug.Log("we're inside set camera culling mask and main camera is not null.");
             mainCamera.cullingMask = mainCamera.cullingMask | (1 << LayerMask.NameToLayer("Planes"));
             mainCamera.cullingMask = mainCamera.cullingMask | (1 << LayerMask.NameToLayer("XRRemote-Debug"));
         }
