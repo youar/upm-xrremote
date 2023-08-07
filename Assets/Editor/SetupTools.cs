@@ -2,7 +2,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR;
 
- 
 public static class SetupTools
 {
     [MenuItem("XRRemote/Layer Utilities/Create Layers")]
@@ -25,20 +24,24 @@ public static class SetupTools
             serializedObject.ApplyModifiedProperties();
             serializedObject.Update();
         }
-        SetCameraCullingMask();
+        Debug.Log("end of setup layers.");
+        // Defer setting the camera culling mask by using a coroutine
+        EditorApplication.delayCall += SetCameraCullingMask;
     }
 
     [MenuItem("XRRemote/Layer Utilities/Setup Camera Culling Mask")]
     static void SetCameraCullingMask()
     {
+        Debug.Log("we're inside set camera culling mask.");
         Camera mainCamera = Camera.main;
-
-        if (mainCamera != null)
+ 
+        if (mainCamera != null)  
         {
+            Debug.Log("we're inside set camera culling mask and main camera is not null.");
             mainCamera.cullingMask = mainCamera.cullingMask | (1 << LayerMask.NameToLayer("Planes"));
             mainCamera.cullingMask = mainCamera.cullingMask | (1 << LayerMask.NameToLayer("XRRemote-Debug"));
         }
-    }
+    } 
  
     static void AddLayerAt(SerializedProperty layers, int index, string layerName, bool tryOtherIndex = true)
    {
@@ -90,5 +93,6 @@ public static class SetupTools
        }
    }
 }
+
  
 
