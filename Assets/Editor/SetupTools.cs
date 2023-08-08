@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.CompilerServices;
 //-------------------------------------------------------------------------------------------------------
 // <copyright file="SetupTools.cs" createdby="Razieleron">
 // 
@@ -24,18 +26,19 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEngine.XR.ARFoundation;
 
-    //Extension class to provide serialize / deserialize methods to object.
-    //src: https://forum.unity.com/threads/adding-layer-by-script.41970
+    //Class to create Planes/XRRemote Debug layers / set those layers to active in all AR cameras.
+    //partial src: https://forum.unity.com/threads/adding-layer-by-script.41970
 public static class SetupTools
 {
-    [MenuItem("XRRemote/Create Layers")]
+    [MenuItem("XRRemote/Layer Utilities/Create Layers and Setup Camera Culling Mask")]
     // [InitializeOnLoadMethod]
     public static void SetupLayers()
     {
         
         Debug.Log("Adding Layers.");
-        Object[] asset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
+        UnityEngine.Object[] asset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
 
         if (asset != null && asset.Length > 0)
         {
@@ -50,19 +53,20 @@ public static class SetupTools
             serializedObject.Update();
         }
         Debug.Log("end of setup layers.");
-        // Defer setting the camera culling mask by using a coroutine
-        EditorApplication.delayCall += SetCameraCullingMask;
+        SetCameraCullingMask();
     }
 
-    // [MenuItem("XRRemote/Layer Utilities/Setup Camera Culling Mask")]
     static void SetCameraCullingMask()
     {
-        Camera mainCamera = Camera.main;
- 
-        if (mainCamera != null)  
+        Camera[] cameras = UnityEngine.Object.FindObjectsOfType<Camera>();
+
+        foreach (Camera camera in cameras)
         {
-            mainCamera.cullingMask |= 1 << LayerMask.NameToLayer("Planes");
-            mainCamera.cullingMask |= 1 << LayerMask.NameToLayer("XRRemote-Debug");
+            if (camera.TryGetComponent<ARCameraManager>(out ARCameraManager cameraManager))
+            {
+                camera.cullingMask |= 1 << LayerMask.NameToLayer("Planes");
+                camera.cullingMask |= 1 << LayerMask.NameToLayer("XRRemote-Debug");
+            }
         }
     }
  
@@ -110,7 +114,6 @@ public static class SetupTools
                        return;
                    }
                }
- 
                Debug.LogError("Could not add layer " + layerName + " because there is no space left in the layers array.");
            }
        }
