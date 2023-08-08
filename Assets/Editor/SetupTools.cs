@@ -1,11 +1,36 @@
+//-------------------------------------------------------------------------------------------------------
+// <copyright file="SetupTools.cs" createdby="Razieleron">
+// 
+// XR Remote
+// Copyright(C) 2020  YOUAR, INC.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// https://www.gnu.org/licenses/agpl-3.0.html
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+// GNU Affero General Public License for more details.
+// You should have received a copy of the GNU Affero General Public License
+// along with this program. If not, see
+// <http://www.gnu.org/licenses/>.
+//
+// </copyright>
+//-------------------------------------------------------------------------------------------------------
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR;
 
+    //Extension class to provide serialize / deserialize methods to object.
+    //src: https://forum.unity.com/threads/adding-layer-by-script.41970
 public static class SetupTools
 {
-    [MenuItem("XRRemote/Layer Utilities/Create Layers")]
-    [InitializeOnLoadMethod]
+    [MenuItem("XRRemote/Create Layers")]
+    // [InitializeOnLoadMethod]
     public static void SetupLayers()
     {
         
@@ -29,17 +54,17 @@ public static class SetupTools
         EditorApplication.delayCall += SetCameraCullingMask;
     }
 
-    [MenuItem("XRRemote/Layer Utilities/Setup Camera Culling Mask")]
+    // [MenuItem("XRRemote/Layer Utilities/Setup Camera Culling Mask")]
     static void SetCameraCullingMask()
     {
         Camera mainCamera = Camera.main;
  
         if (mainCamera != null)  
         {
-            mainCamera.cullingMask = mainCamera.cullingMask | (1 << LayerMask.NameToLayer("Planes"));
-            mainCamera.cullingMask = mainCamera.cullingMask | (1 << LayerMask.NameToLayer("XRRemote-Debug"));
+            mainCamera.cullingMask |= 1 << LayerMask.NameToLayer("Planes");
+            mainCamera.cullingMask |= 1 << LayerMask.NameToLayer("XRRemote-Debug");
         }
-    } 
+    }
  
     static void AddLayerAt(SerializedProperty layers, int index, string layerName, bool tryOtherIndex = true)
    {
