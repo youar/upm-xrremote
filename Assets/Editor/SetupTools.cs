@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 //-------------------------------------------------------------------------------------------------------
 // <copyright file="SetupTools.cs" createdby="Razieleron">
 // 
@@ -23,6 +21,8 @@ using System.Runtime.CompilerServices;
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
+using System;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR;
