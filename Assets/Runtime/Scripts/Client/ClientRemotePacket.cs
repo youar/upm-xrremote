@@ -22,13 +22,15 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
+using XRRemote.Serializables;
+using System.Collections.Generic;
 
 namespace XRRemote 
 {
     [Serializable]
     public partial class ClientRemotePacket : RemotePacket
     {
-        public byte[] referenceImageLibrary = null;
+        public List<SerializableTexture2D> referenceImageLibraryTextures = null;
         public bool debugMode;
     }
 }

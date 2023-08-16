@@ -35,49 +35,50 @@ namespace XRRemote
 
         [SerializeField] private ARTrackedImageManager arTrackedImageManager;
 
-        private void OnEnable()
-        {
-            ServerReceiver.Instance.OnNewImageLibraryReceived += XRRemoteTrackedImageSender_OnNewImageLibraryReceived;
-        }
+        // private void OnEnable()
+        // {
+        //     ServerReceiver.Instance.OnNewImageLibraryReceived += XRRemoteTrackedImageSender_OnNewImageLibraryReceived;
+        // }
 
-        private void OnDisable()
-        {
-            ServerReceiver.Instance.OnNewImageLibraryReceived -= XRRemoteTrackedImageSender_OnNewImageLibraryReceived;
-        }
+        // private void OnDisable()
+        // {
+        //     ServerReceiver.Instance.OnNewImageLibraryReceived -= XRRemoteTrackedImageSender_OnNewImageLibraryReceived;
+        // }
 
-        private void XRRemoteTrackedImageSender_OnNewImageLibraryReceived(object sender, EventArgs e)
-        {
-            if (ReconstructLibraryFromBytes(ServerReceiver.Instance.referenceImageLibrary, out XRReferenceImageLibrary loadedLibrary))
-            {
-                arTrackedImageManager.enabled = false;
-                arTrackedImageManager.referenceLibrary = loadedLibrary;
-                arTrackedImageManager.enabled = true;
-                Debug.Log("Successfully changed reference image library!");
-            }
-            else
-            {
-                Debug.LogError("Failed to reconstruct reference image library from bytes!");
-            }
-        }
+        // private void XRRemoteTrackedImageSender_OnNewImageLibraryReceived(object sender, EventArgs e)
+        // {
+        //     if (ReconstructLibraryFromBytes(ServerReceiver.Instance.referenceImageLibrary, out XRReferenceImageLibrary loadedLibrary))
+        //     {
+        //         arTrackedImageManager.enabled = false;
+        //         arTrackedImageManager.referenceLibrary = loadedLibrary;
+        //         arTrackedImageManager.enabled = true;
+        //         Debug.Log("Successfully changed reference image library!");
+        //     }
+        //     else
+        //     {
+        //         Debug.LogError("Failed to reconstruct reference image library from bytes!");
+        //     }
+        // }
 
-        private bool ReconstructLibraryFromBytes (byte[] bytes, out XRReferenceImageLibrary loadedLibrary)
-        {
-            AssetBundle reconstructedBundle = AssetBundle.LoadFromMemory(bytes);
+        // private bool ReconstructLibraryFromBytes (byte[] bytes, out XRReferenceImageLibrary loadedLibrary)
+        // {
+        //     AssetBundle reconstructedBundle = AssetBundle.LoadFromMemory(bytes);
 
-            if (reconstructedBundle == null)
-            {
-                Debug.LogError("Failed to load AssetBundle!");
-                loadedLibrary = null;
-                return false;
-            }            
+        //     if (reconstructedBundle == null)
+        //     {
+        //         Debug.LogError("Failed to load AssetBundle!");
+        //         loadedLibrary = null;
+        //         return false;
+        //     }            
             
-            //[review]this can be refined after changing bundling method to not include the user given name for the reference library
-            loadedLibrary = reconstructedBundle.LoadAsset(reconstructedBundle.GetAllAssetNames()[0]) as XRReferenceImageLibrary;
-            reconstructedBundle.Unload(false);
+        //     //[review]this can be refined after changing bundling method to not include the user given name for the reference library
+        //     loadedLibrary = reconstructedBundle.LoadAsset(reconstructedBundle.GetAllAssetNames()[0]) as XRReferenceImageLibrary;
+        //     // var lib = arTrackedImageManager.CreateRuntimeLibrary(reconstructedBundle.LoadAsset(reconstructedBundle.GetAllAssetNames()[0])as MutableRuntimeReferenceImageLibrary);
+        //     reconstructedBundle.Unload(false);
 
-            if (loadedLibrary != null) return true;
-            else return false;
-        }
+        //     if (loadedLibrary != null) return true;
+        //     else return false;
+        // }
         
     }
 }

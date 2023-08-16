@@ -80,7 +80,11 @@ namespace XRRemote
         protected override RemotePacket GetPacketData()
         {
             ClientRemotePacket packet = new ClientRemotePacket();
-            if (XRRemoteImageManager.Instance != null) packet.referenceImageLibrary = XRRemoteImageManager.Instance.bundleByteArray;
+            if (XRRemoteImageManager.Instance.serializedLibrary != null)
+            {
+                Debug.Log("Sending image library...");
+                packet.referenceImageLibraryTextures = XRRemoteImageManager.Instance.serializedLibrary;
+            } 
             if (UIRenderer.Instance != null) packet.debugMode = UIRenderer.Instance.debugMode;
             return packet;
         }

@@ -30,20 +30,20 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using System.IO;
 using System.Xml;
+using System.Collections.Generic;
+using XRRemote.Serializables;
 
 namespace XRRemote
 {   
-    [AddComponentMenu("XR/XRRemote/Runtime ARTrackedImageManager")]
     public class XRRemoteImageManager : MonoBehaviour
-    {     
+    {
         [Tooltip("The native AR Tracked Image Manager component attached to AR Session Origin.")]
         [SerializeField] private ARTrackedImageManager manager;
         public ARTrackedImageManager Manager => manager;
-
         [HideInInspector] public XRReferenceImageLibrary imageLibrary {get; private set;}
-        [HideInInspector] private bool readyToSend = true;
-        [HideInInspector] public byte[] bundleByteArray {get; private set;} = null;
         public static XRRemoteImageManager Instance { get; private set; }
+        private bool readyToSend = false;
+        public List<SerializableTexture2D> serializedLibrary {get; private set;}
 
         private void Awake()
         {
@@ -51,6 +51,7 @@ namespace XRRemote
             if (Instance != null)
             {
                 Debug.LogError("CustomNdiReceiver must be only one in the scene.");
+            
                 return;
             }
 
@@ -59,32 +60,25 @@ namespace XRRemote
 
         public void Start()
         {
-            //[review] dropping this in start is sloppy, but working for now. refine later
-            // if BuildPipeline.BuildAssetBundles is synchronous, could call convertbundletobytearray directly after building it...... could even delete the bundle immediately after converting to bundle as well to not waste space
-            //actually.... can't do that as it would be outside play mode.....or can i if it instances on awake??
-            ConvertBundleToByteArray();
+            StartCoroutine(UpdateLibrary());
         }
 
-    #if UNITY_EDITOR
-        public bool OnClickTrySend()
+        public void OnDisable()
         {
-            UpdateLibrary();
-            return readyToSend;
+            StopCoroutine(UpdateLibrary());
         }
-    #endif
 
-        private void UpdateLibrary()
+
+        private IEnumerator UpdateLibrary()
         {
             if (manager != null)
             {
-                
                 if (manager.referenceLibrary != null)
                 {
-                    XRReferenceImageLibrary newLibrary = manager.referenceLibrary as XRReferenceImageLibrary;
-                    if (CheckLibraryValidity(newLibrary))
+                    XRReferenceImageLibrary imageLibrary = manager.referenceLibrary as XRReferenceImageLibrary;
+                    if (CheckLibraryValidity(imageLibrary))
                     {
-                        // imageLibrary = manager.referenceLibrary as XRReferenceImageLibrary;
-                        imageLibrary = newLibrary;
+                       SerializeImageLibrary(imageLibrary);
                     }
                 }
                 else
@@ -95,26 +89,28 @@ namespace XRRemote
                         Debug.LogWarning("XRRemoteImageManager: No reference library found on ARTrackedImageManager.");
                     // }
                 }
-                return;
             } 
-            readyToSend = false;
-
-
+            else
+            {
+                readyToSend = false;
             // if (DebugFlags.displayXRRemoteImageManagerStats)
             // {
                 Debug.LogWarning("XRRemoteImageManager: ARTrackedImageManager not found.");
             // }
+            }
+            
+            yield return new WaitForSeconds(1f);
         }
 
-        private bool CheckLibraryValidity(XRReferenceImageLibrary newLibrary)
+        private bool CheckLibraryValidity(XRReferenceImageLibrary imageLibrary)
         {
             readyToSend = true;
 
-            for (int i = 0; i < newLibrary.count; i++)
+            for (int i = 0; i < imageLibrary.count; i++)
             {
                 //check for issues with library entry that would cause errors on server
-                bool emptyTextureError = newLibrary[i].textureGuid.Equals(Guid.Empty);
-                bool sizeError = newLibrary[i].specifySize && newLibrary[i].size.ToString() == "(0.00, 0.00)";
+                bool emptyTextureError = imageLibrary[i].textureGuid.Equals(Guid.Empty);
+                bool sizeError = imageLibrary[i].specifySize && imageLibrary[i].size.ToString() == "(0.00, 0.00)";
                 if (emptyTextureError || sizeError)
                 {
                     readyToSend = false;
@@ -135,40 +131,25 @@ namespace XRRemote
             return readyToSend;
         }
 
-        private void ConvertBundleToByteArray()
+        private void SerializeImageLibrary(XRReferenceImageLibrary library)
         {
-            string filePath = Path.Combine(Application.streamingAssetsPath, "AssetBundles/imagelibrarybundle");
-            bool conversionSuccessful = true;
- 
-            try 
+            List<SerializableTexture2D> serializedLibrary = new List<SerializableTexture2D>();
+            for (int i = 0; i < library.count; i++)
             {
-                bundleByteArray = File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, filePath));
+                Texture2D texture = library[i].texture;
+                SerializableTexture2D serializedTexture = new SerializableTexture2D(library[i]);
+                if (serializedTexture.texData == null) Debug.Log("null tex data whyyyy");
+                if (serializedTexture.texData != null) serializedLibrary.Add(serializedTexture);
             }
-            catch (System.Exception e)
+
+            this.serializedLibrary = serializedLibrary;
+            // StopCoroutine(UpdateLibrary());
+
+            if (serializedLibrary.Count != library.count)
             {
-                Debug.LogWarning("Failed to Convert AssetBundle!");
-                Debug.LogWarning(e.Message);
-                conversionSuccessful = false;
+                Debug.LogWarning("XRRemoteImageManager: Some images not sent to device. See individual Errors for further details.");
             }
-            if (conversionSuccessful) Debug.Log("Converted AssetBundle to byte array.");
         }
 
-        // private void ReconstructLibraryFromBundle()
-        // {
-        //     AssetBundle reconstructedBundle = AssetBundle.LoadFromMemory(bundleByteArray);
-
-        //     if (reconstructedBundle == null)
-        //     {
-        //         Debug.LogError("Failed to load AssetBundle!");
-        //         return;
-        //     }            
-            
-        //     //[review]this can be refined after changing bundling method to not include the user given name for the reference library
-        //     XRReferenceImageLibrary loadedLibrary = reconstructedBundle.LoadAsset(reconstructedBundle.GetAllAssetNames()[0]) as XRReferenceImageLibrary;
-        //     if (loadedLibrary != null) manager.referenceLibrary = loadedLibrary;
-        //     else Debug.LogError("Failed to load asset");
-
-        //     reconstructedBundle.Unload(false);
-        // }
     }
 }
