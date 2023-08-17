@@ -26,6 +26,8 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using System;
 using UnityEngine.UI;
+using XRRemote.Serializables;
+using System.Collections.Generic;
 
 
 namespace XRRemote
@@ -33,10 +35,10 @@ namespace XRRemote
     public class ServerReceiver : CustomNdiReceiver
     {
         public static ServerReceiver Instance {get; private set;} = null;
-
         [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
-        public event EventHandler OnNewImageLibraryReceived;
-        [SerializeField] private Text debugText;
+        public List<SerializableTexture2D> serializedTextures {get; private set;}
+        public event EventHandler OnImageLibraryReceived;
+        public Text debugText;
      
         private void Awake()
         {
@@ -64,24 +66,30 @@ namespace XRRemote
 
         private void ImageLibraryCheck(ClientRemotePacket remotePacket)
         {
-
-            // if (remotePacket.referenceImageLibrary != null)
-            // {
-            //     if (remotePacket.referenceImageLibrary != referenceImageLibrary)
-            //     {
-            //         referenceImageLibrary = remotePacket.referenceImageLibrary;
-            //         OnNewImageLibraryReceived?.Invoke(this, EventArgs.Empty);
-            //         // reconstruct bundle
-            //         // assign bundle to tracked image manager
-            //     }
-            // }
+            if (remotePacket.referenceImageLibraryTextures != null)
+            {
+                if (serializedTextures == null) 
+                {
+                    serializedTextures = remotePacket.referenceImageLibraryTextures;
+                    OnImageLibraryReceived?.Invoke(this, EventArgs.Empty);  
+                }
+                // if (remotePacket.referenceImageLibrary != referenceImageLibrary)
+                // {
+                //     referenceImageLibrary = remotePacket.referenceImageLibrary;
+                //     OnNewImageLibraryReceived?.Invoke(this, EventArgs.Empty);
+                //     // reconstruct bundle
+                //     // assign bundle to tracked image manager
+                // }
+            }
+            
         } 
 
         protected override void ProcessPacketData(byte[] bytes) 
         {
+            Debug.Log("ServerReceiver: Processing packet data.");
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
-            debugText.text = remotePacket.referenceImageLibraryTextures.Count.ToString();
             this.remotePacket = remotePacket;
+            debugText.text = $"Library received count: {remotePacket.referenceImageLibraryTextures?.Count}.";
             ImageLibraryCheck(remotePacket);
         }
 

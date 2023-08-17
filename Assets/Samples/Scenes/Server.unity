@@ -718,6 +718,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arTrackedImageManager: {fileID: 2068114036}
+  imageNameText: {fileID: 881942177}
+  libraryCountText: {fileID: 730533640}
 --- !u!1 &1059935044
 GameObject:
   m_ObjectHideFlags: 0

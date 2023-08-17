@@ -107,7 +107,10 @@ namespace XRRemote.Serializables
         public Texture2D ConvertFromSerializableTexture2DToTexture2D(out XRInfo xrInfo)
         {
             //[Review] true here indicates texture should be made in linear color space. is this appropriate?
+            Debug.Log("Reconstructing texture from serializable texture.");
             Texture2D tex = new Texture2D((int)texSize.x, (int)texSize.y, (TextureFormat)Enum.Parse(typeof(TextureFormat), texFormat), true);
+            // Texture2D tex = new Texture2D((int)texSize.x, (int)texSize.y, TextureFormat.RGB24, true);
+
             tex.LoadRawTextureData(texData);
             tex.Apply();
 
@@ -119,6 +122,7 @@ namespace XRRemote.Serializables
             {
                 xrInfo.size = realSize;
             }
+
 
             return tex;
         }

@@ -65,41 +65,45 @@ namespace XRRemote
 
         public void OnDisable()
         {
-            StopCoroutine(UpdateLibrary());
+            StopAllCoroutines();
         }
 
 
         private IEnumerator UpdateLibrary()
         {
-            if (manager != null)
+            while (true)
             {
-                if (manager.referenceLibrary != null)
+                Debug.Log("UpdateLibrary");
+                if (manager != null)
                 {
-                    XRReferenceImageLibrary imageLibrary = manager.referenceLibrary as XRReferenceImageLibrary;
-                    if (CheckLibraryValidity(imageLibrary))
+                    if (manager.referenceLibrary != null)
                     {
-                       SerializeImageLibrary(imageLibrary);
+                        XRReferenceImageLibrary imageLibrary = manager.referenceLibrary as XRReferenceImageLibrary;
+                        if (CheckLibraryValidity(imageLibrary))
+                        {
+                            SerializeImageLibrary(imageLibrary);
+                        }
                     }
-                }
+                    else
+                    {
+                        readyToSend = false;
+                        // if (DebugFlags.displayXRRemoteImageManagerStats)
+                        // {
+                            Debug.LogWarning("XRRemoteImageManager: No reference library found on ARTrackedImageManager.");
+                        // }
+                    }
+                } 
                 else
                 {
                     readyToSend = false;
-                    // if (DebugFlags.displayXRRemoteImageManagerStats)
-                    // {
-                        Debug.LogWarning("XRRemoteImageManager: No reference library found on ARTrackedImageManager.");
-                    // }
+                // if (DebugFlags.displayXRRemoteImageManagerStats)
+                // {
+                    Debug.LogWarning("XRRemoteImageManager: ARTrackedImageManager not found.");
+                // }
                 }
-            } 
-            else
-            {
-                readyToSend = false;
-            // if (DebugFlags.displayXRRemoteImageManagerStats)
-            // {
-                Debug.LogWarning("XRRemoteImageManager: ARTrackedImageManager not found.");
-            // }
+                
+                yield return new WaitForSeconds(1f);
             }
-            
-            yield return new WaitForSeconds(1f);
         }
 
         private bool CheckLibraryValidity(XRReferenceImageLibrary imageLibrary)
@@ -143,12 +147,13 @@ namespace XRRemote
             }
 
             this.serializedLibrary = serializedLibrary;
-            // StopCoroutine(UpdateLibrary());
+            StopAllCoroutines();
 
             if (serializedLibrary.Count != library.count)
             {
                 Debug.LogWarning("XRRemoteImageManager: Some images not sent to device. See individual Errors for further details.");
             }
+            Debug.Log($"SerializedLibrary.Count: {serializedLibrary.Count}");
         }
 
     }
