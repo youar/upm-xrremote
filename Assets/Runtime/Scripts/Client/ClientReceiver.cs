@@ -30,6 +30,7 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace XRRemote
 {
@@ -46,6 +47,11 @@ namespace XRRemote
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;
+
+        public Texture2D depthImage { get; private set; }
+        public Image depthRenderer = null;
+
+
         
         // [SerializeField] 
         private Material commandBufferMaterial;
@@ -105,6 +111,14 @@ namespace XRRemote
             
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
+            Debug.Log($"texData Length: {remotePacket.depthImage.texData?.Count()}");
+            Debug.Log($"TexFormat: {remotePacket.depthImage.texFormat}");
+            // this.depthImage = remotePacket.depthImage.ReconstructFromSerializableTexture2D();
+            // depthRenderer.material.mainTexture = depthImage;
+            //[review]
+            
+            // Debug.Log($"Serialized Depth Texture Exists? {remotePacket.depthImage.texFormat}");
+            
 
             PlanesInfoCheck(remotePacket);
 

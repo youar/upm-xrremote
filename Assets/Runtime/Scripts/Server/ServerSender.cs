@@ -38,6 +38,7 @@ namespace XRRemote
         [SerializeField] private ARCameraManager cameraManager = null;
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
+        [SerializeField] private AROcclusionManager occlusionManager = null;
      
         private void Awake()
         {   
@@ -78,9 +79,15 @@ namespace XRRemote
             ServerRemotePacket packet = new ServerRemotePacket();
 
             packet.cameraPose = arPoseDriver;
-            
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
+            // SerializableTextureDescriptor depthImage = new SerializableTextureDescriptor(occlusionManager.environmentDepthTexture);
+            SerializableTexture2D depthImage = new SerializableTexture2D(occlusionManager.environmentDepthTexture);
+            packet.depthImage = depthImage;
+            //[review]
+            Debug.Log("serialized depthImage: " + depthImage.texData.Length);
+            Debug.Log("IN THE PACKET - serialized depthImage: " + packet.depthImage);
+            
             if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
                 packet.planesInfo = planesInfo;
             } else {

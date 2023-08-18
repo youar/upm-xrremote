@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="ServerRemotePacket.cs" createdby="gblikas">
+// <copyright file="SerializableFloat2.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -21,18 +21,39 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-using System;
-using XRRemote.Serializables;
 
-namespace XRRemote 
+using System;
+using UnityEngine;
+
+namespace XRRemote.Serializables 
 {
     [Serializable]
-    public partial class ServerRemotePacket : RemotePacket
+    public class SerializableTexture2D
     {
-        public SerializablePose cameraPose = null;
-        public SerializablePlanesInfo planesInfo;
-        public SerializableFloat2 touchPositionNormalized = null;
-        public SerializableXRCameraIntrinsics cameraIntrinsics = null;
-        public SerializableTexture2D depthImage;
+        public byte[] texData;
+        public string texFormat;
+        public int width;
+        public int height;
+    
+
+        public SerializableTexture2D(Texture2D tex)
+        {
+            texData = tex.GetRawTextureData();
+            texFormat = tex.format.ToString();
+            width = tex.width;
+            height = tex.height;
+        }
+
+        public Texture2D ReconstructFromSerializableTexture2D()
+        {
+            Texture2D tex = new Texture2D(width, height, TextureFormat.RHalf, false);
+            tex.LoadRawTextureData(texData);
+            tex.Apply();
+            return tex;
+        }
+
+        // SerializableTexture2D sTex = new SerializableTexture2D(depthImage);
+        // Texture2D tex = sTex.ReconstructFromSerializableTexture2D();
+        
     }
 }

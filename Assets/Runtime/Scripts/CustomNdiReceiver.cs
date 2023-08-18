@@ -34,6 +34,7 @@ namespace XRRemote
         [SerializeField] private NdiResources resources = null;
         protected NdiReceiver ndiReceiver = null;
         public CustomRawImage rawImage = null;
+
         protected string targetNdiSenderName = "CustomNdiSender";
 
         [SerializeField] protected Text receiverNameText;
