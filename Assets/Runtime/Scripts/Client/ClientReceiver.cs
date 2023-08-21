@@ -111,8 +111,8 @@ namespace XRRemote
             
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
-            Debug.Log($"texData Length: {remotePacket.depthImage.texData?.Count()}");
-            Debug.Log($"TexFormat: {remotePacket.depthImage.texFormat}");
+            // Debug.Log($"texData Length: {remotePacket.depthImage.texData?.Count()}");
+            // Debug.Log($"TexFormat: {remotePacket.depthImage.texFormat}");
             // this.depthImage = remotePacket.depthImage.ReconstructFromSerializableTexture2D();
             // depthRenderer.material.mainTexture = depthImage;
             //[review]

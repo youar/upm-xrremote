@@ -24,36 +24,93 @@
 
 using System;
 using UnityEngine;
+using Unity.Collections;
 
 namespace XRRemote.Serializables 
 {
     [Serializable]
-    public class SerializableTexture2D
+    public class SerializableDepthImage
     {
-        public byte[] texData;
-        public string texFormat;
+        public float[] pixelData;
         public int width;
         public int height;
     
 
-        public SerializableTexture2D(Texture2D tex)
+        public SerializableDepthImage(Texture2D tex)
         {
-            texData = tex.GetRawTextureData();
-            texFormat = tex.format.ToString();
+            pixelData = new float[tex.width * tex.height];
+            for (int y = 0; y < height; y++) 
+            {
+                for (int x = 0; x < width; x++) 
+                {
+                    Color pixelColor = tex.GetPixel(x, y);
+                    // Convert the RHalf value to a float or another suitable format.
+                    float convertedValue = pixelColor.r; // Assuming RHalf is stored in the red channel.
+                    Debug.Log($"Individual Pixel Value: {convertedValue}");
+                    int index = x + y * width;
+                    pixelData[index] = convertedValue;
+                }
+            }
             width = tex.width;
             height = tex.height;
         }
 
-        public Texture2D ReconstructFromSerializableTexture2D()
+        public Texture2D ReconstructDepthImageFromSerializableDepthImage()
         {
-            Texture2D tex = new Texture2D(width, height, TextureFormat.RHalf, false);
-            tex.LoadRawTextureData(texData);
-            tex.Apply();
-            return tex;
-        }
+            TextureFormat texFormat = TextureFormat.RHalf; 
+            Texture2D reconstructedTexture = new Texture2D(width, height, texFormat, false);
 
-        // SerializableTexture2D sTex = new SerializableTexture2D(depthImage);
-        // Texture2D tex = sTex.ReconstructFromSerializableTexture2D();
-        
+            // Set the pixel data
+            Color[] colors = new Color[pixelData.Length];
+
+            for (int i = 0; i < pixelData.Length; i++) {
+                colors[i] = new Color(pixelData[i], 0f, 0f, 1f); // Assuming RHalf data, set red channel
+            }
+
+            reconstructedTexture.SetPixels(colors);
+
+            // Apply the changes to the texture
+            reconstructedTexture.Apply();
+            return reconstructedTexture;
+        }        
     }
 }
+
+// // Assuming you have raw data in the format you want to reconstruct the texture from
+// float[] pixelData; // Replace with your actual raw data
+// int width = /* Width of your texture */;
+// int height = /* Height of your texture */;
+// TextureFormat format = TextureFormat.RHalf; // Replace with the appropriate format
+
+// // Create a new Texture2D
+// Texture2D reconstructedTexture = new Texture2D(width, height, format, false);
+
+// // Set the pixel data
+// Color[] colors = new Color[pixelData.Length];
+
+// for (int i = 0; i < pixelData.Length; i++) {
+//     colors[i] = new Color(pixelData[i], 0f, 0f, 1f); // Assuming RHalf data, set red channel
+// }
+
+// reconstructedTexture.SetPixels(colors);
+
+// // Apply the changes to the texture
+// reconstructedTexture.Apply();
+
+// // Now, 'reconstructedTexture' contains your texture with the data from 'pixelData'.
+
+// // Assuming you have an RHalf texture
+// Texture2D rHalfTexture; // Replace with your actual RHalf texture
+// int width = rHalfTexture.width;
+// int height = rHalfTexture.height;
+
+// // Create a new Texture2D with a common format (e.g., RGBA32)
+// Texture2D convertedTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+
+// // Set the pixels of the converted texture to match the RHalf texture
+// convertedTexture.SetPixels(rHalfTexture.GetPixels());
+
+// // Apply the changes to the converted texture
+// convertedTexture.Apply();
+
+// // Now, 'convertedTexture' contains the visual representation of your texture

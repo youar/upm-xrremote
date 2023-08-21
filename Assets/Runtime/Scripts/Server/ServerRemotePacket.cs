@@ -33,6 +33,6 @@ namespace XRRemote
         public SerializablePlanesInfo planesInfo;
         public SerializableFloat2 touchPositionNormalized = null;
         public SerializableXRCameraIntrinsics cameraIntrinsics = null;
-        public SerializableTexture2D depthImage;
+        public SerializableDepthImage depthImage;
     }
 }

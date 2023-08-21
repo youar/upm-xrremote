@@ -326,7 +326,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1106253833}
-  - component: {fileID: 1106253832}
   m_Layer: 0
   m_Name: CameraImage
   m_TagString: Untagged
@@ -334,26 +333,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1106253832
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1106253831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db52d258c4d5aff48bf49b288c063722, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OcclusionManager: {fileID: 2068114036}
-  m_CameraManager: {fileID: 586251446}
-  m_RawImage: {fileID: 65874648}
-  m_ImageInfo: {fileID: 0}
-  m_DepthMaterial: {fileID: 2100000, guid: 5304ecbaab1b0d34e8987cb883ea010b, type: 2}
-  m_StencilMaterial: {fileID: 2100000, guid: f53293ab7fd2b1048a2e7b8e6d8afd0c, type: 2}
-  m_MaxEnvironmentDistance: 8
-  m_MaxHumanDistance: 3
 --- !u!4 &1106253833
 Transform:
   m_ObjectHideFlags: 0
@@ -732,6 +711,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4846495722108673735, guid: 517f6704c053ae949aea733f67930bed, type: 3}
+      propertyPath: rawImage
+      value: 
+      objectReference: {fileID: 65874648}
     - target: {fileID: 4846495722108673735, guid: 517f6704c053ae949aea733f67930bed, type: 3}
       propertyPath: arPoseDriver
       value: 

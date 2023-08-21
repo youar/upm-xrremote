@@ -24,6 +24,7 @@
 using System;
 using XRRemote.Serializables;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
@@ -39,6 +40,7 @@ namespace XRRemote
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
         [SerializeField] private AROcclusionManager occlusionManager = null;
+        [SerializeField] private RawImage rawImage = null;
      
         private void Awake()
         {   
@@ -81,12 +83,29 @@ namespace XRRemote
             packet.cameraPose = arPoseDriver;
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
+            Texture2D depTex = occlusionManager.environmentDepthTexture;
             // SerializableTextureDescriptor depthImage = new SerializableTextureDescriptor(occlusionManager.environmentDepthTexture);
-            SerializableTexture2D depthImage = new SerializableTexture2D(occlusionManager.environmentDepthTexture);
-            packet.depthImage = depthImage;
-            //[review]
-            Debug.Log("serialized depthImage: " + depthImage.texData.Length);
-            Debug.Log("IN THE PACKET - serialized depthImage: " + packet.depthImage);
+            if (depTex != null)
+            {
+                SerializableDepthImage depthImage = new SerializableDepthImage(depTex);
+                Texture2D reconstructedImage = depthImage.ReconstructDepthImageFromSerializableDepthImage();
+                rawImage.texture = reconstructedImage;
+
+                // rawImage.texture = depTex;
+                // Debug.Log("Occlusion Manager environment depth texture length: " + depTex.GetRawTextureData().Length);
+                
+                packet.depthImage = depthImage;
+                //[review]
+                Debug.Log("serialized depthImage texData Length: " + depthImage.pixelData[depthImage.pixelData.Length -100]);
+                Debug.Log("serialized depthImage Width: " + depthImage.width);
+                Debug.Log("serialized depthImage height: " + depthImage.height);
+                
+                // Debug.Log("IN THE PACKET - serialized depthImage: " + packet.depthImage);
+            }
+            else
+            {
+                packet.depthImage = null;
+            }
             
             if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
                 packet.planesInfo = planesInfo;
