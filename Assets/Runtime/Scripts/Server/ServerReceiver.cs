@@ -73,13 +73,6 @@ namespace XRRemote
                     serializedTextures = remotePacket.referenceImageLibraryTextures;
                     OnImageLibraryReceived?.Invoke(this, EventArgs.Empty);  
                 }
-                // if (remotePacket.referenceImageLibrary != referenceImageLibrary)
-                // {
-                //     referenceImageLibrary = remotePacket.referenceImageLibrary;
-                //     OnNewImageLibraryReceived?.Invoke(this, EventArgs.Empty);
-                //     // reconstruct bundle
-                //     // assign bundle to tracked image manager
-                // }
             }
             
         } 
@@ -89,7 +82,7 @@ namespace XRRemote
             Debug.Log("ServerReceiver: Processing packet data.");
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
-            debugText.text = $"Library received count: {remotePacket.referenceImageLibraryTextures?.Count}.";
+            debugText.text = $"Library received count: {remotePacket.referenceImageLibraryTextures?.Count}."; //[delete]
             ImageLibraryCheck(remotePacket);
         }
 

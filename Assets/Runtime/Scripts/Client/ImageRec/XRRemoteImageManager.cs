@@ -40,7 +40,6 @@ namespace XRRemote
         [Tooltip("The native AR Tracked Image Manager component attached to AR Session Origin.")]
         [SerializeField] private ARTrackedImageManager manager;
         public ARTrackedImageManager Manager => manager;
-        [HideInInspector] public XRReferenceImageLibrary imageLibrary {get; private set;}
         public static XRRemoteImageManager Instance { get; private set; }
         private bool readyToSend = false;
         public List<SerializableTexture2D> serializedLibrary {get; private set;}
@@ -73,7 +72,6 @@ namespace XRRemote
         {
             while (true)
             {
-                Debug.Log("UpdateLibrary");
                 if (manager != null)
                 {
                     if (manager.referenceLibrary != null)
@@ -140,10 +138,10 @@ namespace XRRemote
             List<SerializableTexture2D> serializedLibrary = new List<SerializableTexture2D>();
             for (int i = 0; i < library.count; i++)
             {
-                Texture2D texture = library[i].texture;
                 SerializableTexture2D serializedTexture = new SerializableTexture2D(library[i]);
+                //[delete]
                 if (serializedTexture.texData == null) Debug.Log("null tex data whyyyy");
-                if (serializedTexture.texData != null) serializedLibrary.Add(serializedTexture);
+                else serializedLibrary.Add(serializedTexture);
             }
 
             this.serializedLibrary = serializedLibrary;
@@ -153,6 +151,8 @@ namespace XRRemote
             {
                 Debug.LogWarning("XRRemoteImageManager: Some images not sent to device. See individual Errors for further details.");
             }
+
+            //[delete]
             Debug.Log($"SerializedLibrary.Count: {serializedLibrary.Count}");
         }
 

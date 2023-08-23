@@ -38,24 +38,21 @@ namespace XRRemote
         [SerializeField] private ARTrackedImageManager arTrackedImageManager;
         [SerializeField] private Text imageNameText;
         [SerializeField] private Text libraryCountText;
-
         private bool supportsMutableLibraries => arTrackedImageManager.descriptor.supportsMutableLibrary;
-
-
 
         private void OnEnable()
         {
             ServerReceiver.Instance.OnImageLibraryReceived += XRRemoteTrackedImageSender_OnImageLibraryReceived;
-            arTrackedImageManager.trackedImagesChanged += OnTrackedImagesChanged;
+            // arTrackedImageManager.trackedImagesChanged += OnTrackedImagesChanged;
         }
 
         private void OnDisable()
         {
             ServerReceiver.Instance.OnImageLibraryReceived -= XRRemoteTrackedImageSender_OnImageLibraryReceived;
-            arTrackedImageManager.trackedImagesChanged -= OnTrackedImagesChanged;
+            // arTrackedImageManager.trackedImagesChanged -= OnTrackedImagesChanged;
         }
 
-        private void Update()
+        private void Update() //[delete]
         {
             if (arTrackedImageManager.enabled == true && arTrackedImageManager.referenceLibrary != null)
             {
@@ -78,6 +75,7 @@ namespace XRRemote
             {
                 Debug.Log("XRRemoteImageManager: This XRImageTrackingSubsystem supports mutable libraries.");
                 var mutableLibrary = arTrackedImageManager.CreateRuntimeLibrary() as MutableRuntimeReferenceImageLibrary;
+                // [delete]
                 // int supportedFormatCount = mutableLibrary.supportedTextureFormatCount;
                 // Debug.Log($"XRRemoteImageManager: Mutable library supports {supportedFormatCount} texture formats.");
                 // for (int i = 0; i < supportedFormatCount; i++)
@@ -157,25 +155,28 @@ namespace XRRemote
         private void InitializeNativeImageManager(MutableRuntimeReferenceImageLibrary mutableLibrary)
         {
             //Do i need to do things with the subsystem here??
-            Debug.Log("XRRemoteImageManager: Initializing native image manager.");
+            Debug.Log("XRRemoteImageManager: Initializing native image manager."); //[delete]
             arTrackedImageManager.enabled = false;
             arTrackedImageManager.referenceLibrary = mutableLibrary;
             arTrackedImageManager.enabled = true;
+            // arTrackedImageManager.trackedImagesChanged += OnTrackedImagesChanged;
         }
 
-        private void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
-        {
-            foreach (ARTrackedImage trackedImage in eventArgs.added)
-            {
-                string imageName = trackedImage.referenceImage.name;
-                imageNameText.text = $"{imageName} Detected";
-            }
-            foreach (ARTrackedImage trackedImage in eventArgs.updated)
-            {
-                string imageName = trackedImage.referenceImage.name;
-                imageNameText.text = $"{imageName} Detected";
-            }
-        }
+        // private void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
+        // {
+        //     Debug.Log("XRRemoteImageManager: Tracked images changed.");
+            
+        //     foreach (ARTrackedImage trackedImage in eventArgs.added)
+        //     {
+        //         string imageName = trackedImage.referenceImage.name;
+        //         imageNameText.text = $"{imageName} Detected";
+        //     }
+        //     foreach (ARTrackedImage trackedImage in eventArgs.updated)
+        //     {
+        //         string imageName = trackedImage.referenceImage.name;
+        //         imageNameText.text = $"{imageName} Detected";
+        //     }
+        // }
 
     }
 }

@@ -39,8 +39,7 @@ namespace XRRemote.Serializables
     }
 
     [Serializable]
-    // [StructLayout(LayoutKind.Sequential)]
-    public struct SerializableTexture2D
+    public class SerializableTexture2D
     {
         public string texName;
         public string guid;
@@ -59,18 +58,18 @@ namespace XRRemote.Serializables
             guid = image.textureGuid.ToString().Replace("-", "");;
 
             Texture2D tex = null;
-            if (image.texture != null) tex = image.texture;
 
+            if (image.texture != null) tex = image.texture;
             else 
             {
-                try 
-                {
+                // try 
+                // {
                     tex = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guid));
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
+                // }
+                // catch (Exception e)
+                // {
+                //     throw e;
+                // }
             }
 
             if (tex == null)
@@ -82,9 +81,12 @@ namespace XRRemote.Serializables
             }
             else
             {
+                // texData = ImageConversion.EncodeToPNG(tex);
                 texData = tex.GetRawTextureData();
                 texSize = new SerializableFloat2(tex.width, tex.height);
                 texFormat = tex.format.ToString();
+
+                //[delete]
                 Debug.Log($"texformat: {texFormat}");
             }
 
@@ -109,7 +111,6 @@ namespace XRRemote.Serializables
             //[Review] true here indicates texture should be made in linear color space. is this appropriate?
             Debug.Log("Reconstructing texture from serializable texture.");
             Texture2D tex = new Texture2D((int)texSize.x, (int)texSize.y, (TextureFormat)Enum.Parse(typeof(TextureFormat), texFormat), true);
-            // Texture2D tex = new Texture2D((int)texSize.x, (int)texSize.y, TextureFormat.RGB24, true);
 
             tex.LoadRawTextureData(texData);
             tex.Apply();
@@ -122,6 +123,7 @@ namespace XRRemote.Serializables
             {
                 xrInfo.size = realSize;
             }
+            else xrInfo.size = null;
 
 
             return tex;
