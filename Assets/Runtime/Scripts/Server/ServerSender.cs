@@ -83,24 +83,37 @@ namespace XRRemote
             packet.cameraPose = arPoseDriver;
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
-            Texture2D depTex = occlusionManager.environmentDepthTexture;
-            // SerializableTextureDescriptor depthImage = new SerializableTextureDescriptor(occlusionManager.environmentDepthTexture);
-            if (depTex != null)
+            occlusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage xrCpuImage);
+            
+            SerializableDepthImage xrDepthImage = new SerializableDepthImage(xrCpuImage);
+            // XRCpuImage depTex = occlusionManager.environmentDepthTexture;
+            // Debug.Log("deptex is readable: " + depTex.isReadable);
+            if (xrDepthImage != null)
             {
-                SerializableDepthImage depthImage = new SerializableDepthImage(depTex);
-                Texture2D reconstructedImage = depthImage.ReconstructDepthImageFromSerializableDepthImage();
-                rawImage.texture = reconstructedImage;
+                Debug.Log("depth image  width = " + xrDepthImage.width);
+                Debug.Log("depTex height = " + xrDepthImage.height);
+                Debug.Log("depTex planeCount = " + xrDepthImage.planeCount);
+                Debug.Log("depTex length = " + xrDepthImage.texData.Length);
+                Debug.Log("depTex format = " + xrDepthImage.format.ToString());
+                rawImage.texture = occlusionManager.environmentDepthTexture;
+                packet.depthImage = xrDepthImage;
+                Debug.Log("texData length = " + packet.depthImage.texData.Length);
 
-                // rawImage.texture = depTex;
+
+                // SerializableDepthImage depthImage = new SerializableDepthImage(depTex);
+                // Texture2D reconstructedImage = depthImage.ReconstructDepthImageFromSerializableDepthImage();
+                // rawImage.texture = reconstructedImage;
+
+                // rawImage.texture = depTex;`
                 // Debug.Log("Occlusion Manager environment depth texture length: " + depTex.GetRawTextureData().Length);
                 
-                packet.depthImage = depthImage;
-                //[review]
-                Debug.Log("serialized depthImage texData Length: " + depthImage.pixelData[depthImage.pixelData.Length -100]);
-                Debug.Log("serialized depthImage Width: " + depthImage.width);
-                Debug.Log("serialized depthImage height: " + depthImage.height);
+                // packet.depthImage = depthImage;
+                // //[review]
+                // // Debug.Log("serialized depthImage texData Length: " + depthImage.texData[depthImage.texData.Length -100]);
+                // Debug.Log("serialized depthImage Width: " + depthImage.width);
+                // Debug.Log("serialized depthImage height: " + depthImage.height);
                 
-                // Debug.Log("IN THE PACKET - serialized depthImage: " + packet.depthImage);
+                // // Debug.Log("IN THE PACKET - serialized depthImage: " + packet.depthImage);
             }
             else
             {

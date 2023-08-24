@@ -31,6 +31,7 @@ using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using XRRemote.Serializables;
 
 namespace XRRemote
 {
@@ -48,8 +49,7 @@ namespace XRRemote
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;
 
-        public Texture2D depthImage { get; private set; }
-        public Image depthRenderer = null;
+        public RawImage depthImage;
 
 
         
@@ -111,14 +111,25 @@ namespace XRRemote
             
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
-            // Debug.Log($"texData Length: {remotePacket.depthImage.texData?.Count()}");
-            // Debug.Log($"TexFormat: {remotePacket.depthImage.texFormat}");
-            // this.depthImage = remotePacket.depthImage.ReconstructFromSerializableTexture2D();
-            // depthRenderer.material.mainTexture = depthImage;
-            //[review]
-            
-            // Debug.Log($"Serialized Depth Texture Exists? {remotePacket.depthImage.texFormat}");
-            
+
+
+
+
+            Debug.Log($"texData Length: {remotePacket.depthImage.texData?.Count()}");
+            Debug.Log($"texFormat: {remotePacket.depthImage.format}");
+
+            if (remotePacket.depthImage.texData == null)
+            {
+                Debug.Log("texData is null");
+            }
+            else
+            {
+                Debug.Log("texData is not null");
+                Texture2D newDepthImage  = remotePacket.depthImage.ReconstructTexture2DFromSerializableDepthImage(remotePacket.depthImage);
+                Debug.Log("newDepthImage width = " + newDepthImage.width + "newDepthImage.height = " + newDepthImage.height + "newDepthImage.format = " + newDepthImage.format);
+                
+                depthImage.texture = newDepthImage;
+            }
 
             PlanesInfoCheck(remotePacket);
 
