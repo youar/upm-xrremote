@@ -395,7 +395,7 @@ MonoBehaviour:
   rawImage: {fileID: 5359961724659332669}
   receiverNameText: {fileID: 0}
   aspectRatio: 0
-  DepthImage: {fileID: 0}
+  RawImage: {fileID: 0}
   cameraManagerList:
   - {fileID: 0}
 --- !u!114 &5359961724493276719

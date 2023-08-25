@@ -27,6 +27,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using System.Linq;
 
 namespace XRRemote
 {   
@@ -41,6 +42,8 @@ namespace XRRemote
         [SerializeField] private ARCameraBackground cameraBackground = null;
         [SerializeField] private AROcclusionManager occlusionManager = null;
         [SerializeField] private RawImage rawImage = null;
+
+        Texture2D texture = null;
      
         private void Awake()
         {   
@@ -76,6 +79,30 @@ namespace XRRemote
             }
         }
 
+        public Texture2D UpdateToXRCpuImage(XRCpuImage xRCpuImage){
+            if(texture == null || texture.width != xRCpuImage.width || texture.height != xRCpuImage.height){
+                if(texture != null) Destroy(texture); 
+                texture = new Texture2D(xRCpuImage.width, xRCpuImage.height, xRCpuImage.format.AsTextureFormat(), false);
+            }
+
+            Debug.Log($"[UpdateToXRCpuImage] xRCpuImage.format.AsTextureFormat(): {xRCpuImage.format.AsTextureFormat()}");
+            
+            var conversionParams = new XRCpuImage.ConversionParams(xRCpuImage, xRCpuImage.format.AsTextureFormat(),XRCpuImage.Transformation.MirrorX);
+            
+            var textureData = texture.GetRawTextureData<byte>(); 
+            var convertedDataSize = xRCpuImage.GetConvertedDataSize(conversionParams);
+            if( textureData.Length != convertedDataSize){
+                Debug.LogError($"failed to convert: size-mismatch: convertedDataSize {convertedDataSize}, textureData.Length {textureData.Length}");
+                Destroy(texture);
+                return null;
+            }
+
+            xRCpuImage.Convert(conversionParams, textureData);
+            texture.Apply();
+            return texture; 
+        }
+
+
         protected override RemotePacket GetPacketData()
         {
             ServerRemotePacket packet = new ServerRemotePacket();
@@ -83,37 +110,13 @@ namespace XRRemote
             packet.cameraPose = arPoseDriver;
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
-            occlusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage xrCpuImage);
-            
-            SerializableDepthImage xrDepthImage = new SerializableDepthImage(xrCpuImage);
-            // XRCpuImage depTex = occlusionManager.environmentDepthTexture;
-            // Debug.Log("deptex is readable: " + depTex.isReadable);
-            if (xrDepthImage != null)
+            if (occlusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage xrCpuImage))
             {
-                Debug.Log("depth image  width = " + xrDepthImage.width);
-                Debug.Log("depTex height = " + xrDepthImage.height);
-                Debug.Log("depTex planeCount = " + xrDepthImage.planeCount);
-                Debug.Log("depTex length = " + xrDepthImage.texData.Length);
-                Debug.Log("depTex format = " + xrDepthImage.format.ToString());
+                var byteArray = UpdateToXRCpuImage(xrCpuImage).GetRawTextureData();
+                SerializableDepthImage xrDepthImage = new SerializableDepthImage(xrCpuImage, byteArray);
+                
                 rawImage.texture = occlusionManager.environmentDepthTexture;
                 packet.depthImage = xrDepthImage;
-                Debug.Log("texData length = " + packet.depthImage.texData.Length);
-
-
-                // SerializableDepthImage depthImage = new SerializableDepthImage(depTex);
-                // Texture2D reconstructedImage = depthImage.ReconstructDepthImageFromSerializableDepthImage();
-                // rawImage.texture = reconstructedImage;
-
-                // rawImage.texture = depTex;`
-                // Debug.Log("Occlusion Manager environment depth texture length: " + depTex.GetRawTextureData().Length);
-                
-                // packet.depthImage = depthImage;
-                // //[review]
-                // // Debug.Log("serialized depthImage texData Length: " + depthImage.texData[depthImage.texData.Length -100]);
-                // Debug.Log("serialized depthImage Width: " + depthImage.width);
-                // Debug.Log("serialized depthImage height: " + depthImage.height);
-                
-                // // Debug.Log("IN THE PACKET - serialized depthImage: " + packet.depthImage);
             }
             else
             {
