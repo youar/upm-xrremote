@@ -50,6 +50,7 @@ namespace XRRemote
         {
             ServerReceiver.Instance.OnImageLibraryReceived -= XRRemoteTrackedImageSender_OnImageLibraryReceived;
             arTrackedImageManager.trackedImagesChanged -= OnTrackedImagesChanged;
+            
         }
 
         private void Update()
