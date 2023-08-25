@@ -82,7 +82,6 @@ namespace XRRemote
             ClientRemotePacket packet = new ClientRemotePacket();
             if (XRRemoteImageManager.Instance.serializedLibrary != null)
             {
-                Debug.Log("Sending image library..."); //[delete]
                 packet.referenceImageLibraryTextures = XRRemoteImageManager.Instance.serializedLibrary;
             } 
             if (UIRenderer.Instance != null) packet.debugMode = UIRenderer.Instance.debugMode;
@@ -93,9 +92,7 @@ namespace XRRemote
         {
             while (true)
             {           
-                    
                 yield return new WaitForSeconds(0.1f);     
-                Debug.Log("Sending data...");    
                 OnCameraFrameReceived();
             }
         }

@@ -54,23 +54,12 @@ namespace XRRemote.Serializables
 #if UNITY_EDITOR
 
             texName = image.name;
-            //[Review] textureGuid.ToString() gives a hyphenated guid, but unable to load texture with hypens. Will I need the hyphenated version also later, when it comes to associated the tracked image again on client side? 
             guid = image.textureGuid.ToString().Replace("-", "");;
 
             Texture2D tex = null;
 
             if (image.texture != null) tex = image.texture;
-            else 
-            {
-                // try 
-                // {
-                    tex = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guid));
-                // }
-                // catch (Exception e)
-                // {
-                //     throw e;
-                // }
-            }
+            else tex = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(guid));
 
             if (tex == null)
             {
@@ -81,13 +70,9 @@ namespace XRRemote.Serializables
             }
             else
             {
-                // texData = ImageConversion.EncodeToPNG(tex);
                 texData = tex.GetRawTextureData();
                 texSize = new SerializableFloat2(tex.width, tex.height);
                 texFormat = tex.format.ToString();
-
-                //[delete]
-                Debug.Log($"texformat: {texFormat}");
             }
 
             sizeSpecified = image.specifySize;

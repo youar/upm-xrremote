@@ -139,9 +139,7 @@ namespace XRRemote
             for (int i = 0; i < library.count; i++)
             {
                 SerializableTexture2D serializedTexture = new SerializableTexture2D(library[i]);
-                //[delete]
-                if (serializedTexture.texData == null) Debug.Log("null tex data whyyyy");
-                else serializedLibrary.Add(serializedTexture);
+                if (serializedTexture.texData != null) serializedLibrary.Add(serializedTexture);
             }
 
             this.serializedLibrary = serializedLibrary;
@@ -151,9 +149,6 @@ namespace XRRemote
             {
                 Debug.LogWarning("XRRemoteImageManager: Some images not sent to device. See individual Errors for further details.");
             }
-
-            //[delete]
-            Debug.Log($"SerializedLibrary.Count: {serializedLibrary.Count}");
         }
 
     }

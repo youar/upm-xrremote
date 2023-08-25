@@ -43,16 +43,16 @@ namespace XRRemote
         private void OnEnable()
         {
             ServerReceiver.Instance.OnImageLibraryReceived += XRRemoteTrackedImageSender_OnImageLibraryReceived;
-            // arTrackedImageManager.trackedImagesChanged += OnTrackedImagesChanged;
+            arTrackedImageManager.trackedImagesChanged += OnTrackedImagesChanged;
         }
 
         private void OnDisable()
         {
             ServerReceiver.Instance.OnImageLibraryReceived -= XRRemoteTrackedImageSender_OnImageLibraryReceived;
-            // arTrackedImageManager.trackedImagesChanged -= OnTrackedImagesChanged;
+            arTrackedImageManager.trackedImagesChanged -= OnTrackedImagesChanged;
         }
 
-        private void Update() //[delete]
+        private void Update()
         {
             if (arTrackedImageManager.enabled == true && arTrackedImageManager.referenceLibrary != null)
             {
@@ -73,7 +73,6 @@ namespace XRRemote
 
             if (supportsMutableLibraries)
             {
-                Debug.Log("XRRemoteImageManager: This XRImageTrackingSubsystem supports mutable libraries.");
                 var mutableLibrary = arTrackedImageManager.CreateRuntimeLibrary() as MutableRuntimeReferenceImageLibrary;
                 // [delete]
                 // int supportedFormatCount = mutableLibrary.supportedTextureFormatCount;
@@ -92,12 +91,10 @@ namespace XRRemote
                 Debug.LogError("This XRImageTrackingSubsystem does not support mutable libraries");
                 return;
             }
-            
         }
 
         private Dictionary<Texture2D, XRInfo> ReconstructLibrary(List<SerializableTexture2D> serializedTextures)
         {
-            Debug.Log("XRRemoteImageManager: Reconstructing library from received images.");
             Dictionary<Texture2D, XRInfo> reconstructedImages = new Dictionary<Texture2D, XRInfo>();
 
             foreach (SerializableTexture2D texture in serializedTextures)
@@ -111,13 +108,9 @@ namespace XRRemote
 
         private void AddImagesToLibrary(MutableRuntimeReferenceImageLibrary mutableLibrary, Dictionary<Texture2D, XRInfo> reconstructedImages)
         {
-            Debug.Log("XRRemoteImageManager: Adding images to library.");
             foreach (KeyValuePair<Texture2D, XRInfo> entry in reconstructedImages)
             {
-
-                //using extension method that accepts texture
-                //https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@4.2/api/UnityEngine.XR.ARFoundation.MutableRuntimeReferenceImageLibraryExtensions.html
-                //no memory management necessary with this method
+                // Debug.Log($"{entry.Key.format} is supported: {mutableLibrary.IsTextureFormatSupported(entry.Key.format)}");
                 try
                 {
 
@@ -131,7 +124,6 @@ namespace XRRemote
                         newImageWidthInMeters
                     );
 
-                    //[review] is this necessary, or unhelpful/undesirable?
                     JobHandle jobHandle = jobState.jobHandle;
                     jobHandle.Complete();
 
@@ -141,7 +133,6 @@ namespace XRRemote
                     }
                     else
                     {
-                        //should report status "ErrorInvalidImage" if arcore rejects image
                         Debug.LogWarning($"XRRemoteImageManager: Failed to add image {newImageName} to library. {jobState.status}");
                     }
                 }
@@ -152,31 +143,28 @@ namespace XRRemote
             }
         }
 
+
         private void InitializeNativeImageManager(MutableRuntimeReferenceImageLibrary mutableLibrary)
         {
-            //Do i need to do things with the subsystem here??
-            Debug.Log("XRRemoteImageManager: Initializing native image manager."); //[delete]
             arTrackedImageManager.enabled = false;
             arTrackedImageManager.referenceLibrary = mutableLibrary;
             arTrackedImageManager.enabled = true;
-            // arTrackedImageManager.trackedImagesChanged += OnTrackedImagesChanged;
         }
 
-        // private void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
-        // {
-        //     Debug.Log("XRRemoteImageManager: Tracked images changed.");
+        private void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
+        {
             
-        //     foreach (ARTrackedImage trackedImage in eventArgs.added)
-        //     {
-        //         string imageName = trackedImage.referenceImage.name;
-        //         imageNameText.text = $"{imageName} Detected";
-        //     }
-        //     foreach (ARTrackedImage trackedImage in eventArgs.updated)
-        //     {
-        //         string imageName = trackedImage.referenceImage.name;
-        //         imageNameText.text = $"{imageName} Detected";
-        //     }
-        // }
+            foreach (ARTrackedImage trackedImage in eventArgs.added)
+            {
+                string imageName = trackedImage.referenceImage.name;
+                imageNameText.text = $"{imageName} Detected";
+            }
+            foreach (ARTrackedImage trackedImage in eventArgs.updated)
+            {
+                string imageName = trackedImage.referenceImage.name;
+                imageNameText.text = $"{imageName} Detected";
+            }
+        }
 
     }
 }
