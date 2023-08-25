@@ -258,79 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e098e42005610b42a68777a449ec110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1577486203
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1577486206}
-  - component: {fileID: 1577486205}
-  - component: {fileID: 1577486204}
-  m_Layer: 0
-  m_Name: DepthImage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1577486204
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1577486203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Texture: {fileID: 0}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
---- !u!222 &1577486205
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1577486203}
-  m_CullTransparentMesh: 1
---- !u!224 &1577486206
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1577486203}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1897334084}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 320, y: 180}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1632843890
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,11 +405,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdfeb72ade5fd6345bc0a24632b6fe55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &1897334084 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5359961723666342182, guid: f5b27054fd74ca448a746950646959b9, type: 3}
-  m_PrefabInstance: {fileID: 5359961723943716832}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5359961723943716832
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -514,6 +436,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4389557966067727047, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389557966067727047, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389557966067727047, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389557966067727047, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389557966067727047, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5359961723666342186, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: m_Camera
       value: 
@@ -529,7 +471,7 @@ PrefabInstance:
     - target: {fileID: 5359961724493276720, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: depthImage
       value: 
-      objectReference: {fileID: 1577486204}
+      objectReference: {fileID: 0}
     - target: {fileID: 5359961724493276720, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: depthRenderer
       value: 
@@ -537,7 +479,11 @@ PrefabInstance:
     - target: {fileID: 5359961724493276720, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: depthImageDisplay
       value: 
-      objectReference: {fileID: 1577486204}
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359961724493276720, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: depthGradientMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 5304ecbaab1b0d34e8987cb883ea010b, type: 2}
     - target: {fileID: 5359961724493276720, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: cameraManagerList.Array.data[0]
       value: 

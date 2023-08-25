@@ -47,10 +47,8 @@ namespace XRRemote
 
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
-        private bool videoCommandBufferInitialized = false;
-
-        public RawImage depthImage;
-
+        private bool videoCommandBufferInitialized = false;       
+        public RawImage DepthImage;
 
         
         // [SerializeField] 
@@ -112,9 +110,6 @@ namespace XRRemote
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
 
-
-
-
             Debug.Log($"texData Length: {remotePacket.depthImage.texData?.Count()}");
             Debug.Log($"texFormat: {remotePacket.depthImage.format}");
 
@@ -125,12 +120,48 @@ namespace XRRemote
             else
             {
                 Debug.Log("texData is not null");
-                Texture2D newDepthImage  = remotePacket.depthImage.ReconstructTexture2DFromSerializableDepthImage(remotePacket.depthImage);
-                Debug.Log("newDepthImage width = " + newDepthImage.width + "newDepthImage.height = " + newDepthImage.height + "newDepthImage.format = " + newDepthImage.format);
                 
-                depthImage.texture = newDepthImage;
-            }
+                // Texture2D newDepthImage = remotePacket.depthImage.ReconstructTexture2DFromSerializableDepthImage(remotePacket.depthImage);
+                // Debug.Log("serialized depthImage texData byte value: " + remotePacket.depthImage.texData[remotePacket.depthImage.texData.Length -100]);
+                // Debug.Log("newDepthImage width = " + newDepthImage.width + "newDepthImage.height = " + newDepthImage.height + "newDepthImage.format = " + newDepthImage.format);
 
+                //texture2d stuff
+
+                bool isSupported = SystemInfo.SupportsTextureFormat(TextureFormat.R16);
+                Debug.Log("Is R16 supported: " + isSupported);
+                //
+
+                byte[] byteArray = remotePacket.depthImage.texData;
+                
+                ushort[] ushortArray = new ushort[byteArray.Length / 2];
+
+                for (int i = 0; i < byteArray.Length; i += 2)
+                {
+                    ushortArray[i / 2] = BitConverter.ToUInt16(byteArray, i);
+                }
+                
+                Texture2D texture = new Texture2D(remotePacket.depthImage.width, remotePacket.depthImage.height, TextureFormat.R16, false);
+
+                byte[] textureBytes = new byte[ushortArray.Length * 2];
+                Buffer.BlockCopy(ushortArray, 0, textureBytes, 0, textureBytes.Length);
+                texture.LoadRawTextureData(textureBytes);
+                texture.Apply();
+                
+                GameObject depthImageGO = GameObject.Find("Quad");
+                
+                    Material rawImageMaterial = depthImageGO.GetComponent<Renderer>().material;
+
+                    if (rawImageMaterial != null)
+                    {
+                        Debug.Log("RawImage component found on the DepthImage GameObject.");
+                        rawImageMaterial.mainTexture = texture;
+                    }
+                    else
+                    {
+                        Debug.LogError("No RawImage component found on the DepthImage GameObject.");
+                    }               
+            }
+        
             PlanesInfoCheck(remotePacket);
 
             if (remotePacket.touchPositionNormalized != null) {
