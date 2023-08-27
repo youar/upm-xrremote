@@ -92,6 +92,8 @@ namespace XRRemote
             allPlanesInfo.updated = null;
             allPlanesInfo.removed = null;
 
+            allPlanesInfo.isHandshake = true;
+
             return true;
         }
 

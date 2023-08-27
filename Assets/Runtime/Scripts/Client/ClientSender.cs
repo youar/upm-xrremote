@@ -44,7 +44,7 @@ namespace XRRemote
         //exists just for testing UI image
         public Material renderMaterial;
 
-        private bool hasReceivedHandshake = false;
+        private XRRemotePlaneManager planeManager = null;
 
         private void Awake()
         {
@@ -72,6 +72,7 @@ namespace XRRemote
             ClientSender.Instance.OnInitNdi += ClientSender_OnNdiInitialized;
             StartCoroutine(SendData());
            
+           TrySetupPlaneManager();
         }
 
         protected override void OnDestroy()
@@ -95,7 +96,6 @@ namespace XRRemote
         {
             //set ui camera to render to NDI Init texture
             uiCamera.targetTexture = renderTexture;
-            hasReceivedHandshake = false;
         }
 
         protected override Material GetCameraFrameMaterial()
@@ -109,13 +109,26 @@ namespace XRRemote
             ClientRemotePacket packet = new ClientRemotePacket();
             packet.debugMode = UIRenderer.Instance.debugMode;
 
-            if (!hasReceivedHandshake) {
-                Debug.Log($"ASKED FOR HANDSHAKE");
-                packet.requestHandshakePacket = true;
-                hasReceivedHandshake = true;
-            }
+            if (planeManager != null) {
+                packet.planeManagerState = planeManager.State;
+            } 
 
             return packet;
+        }
+
+        private bool TrySetupPlaneManager()
+        {
+            if (planeManager != null) return true;
+
+            planeManager = FindAnyObjectByType<XRRemotePlaneManager>();
+            if (planeManager == null) {
+                if (DebugFlags.displayXRRemotePlaneStats) {
+                    Debug.LogWarning($"ClientSend: Unable to find XRRemotePlaneManager. Please make sure there is one in the scene if you want planes info.");
+                }
+                return false;
+            }
+
+            return true;
         }
 
 

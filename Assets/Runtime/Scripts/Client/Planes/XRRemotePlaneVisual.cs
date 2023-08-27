@@ -26,7 +26,6 @@ using UnityEngine;
 using XRRemote.Serializables;
 using UnityEngine.XR.ARFoundation;
 
-#if UNITY_EDITOR
 namespace XRRemote
 {
     /// <summary>
@@ -72,4 +71,3 @@ namespace XRRemote
         }
     }
 }
-#endif

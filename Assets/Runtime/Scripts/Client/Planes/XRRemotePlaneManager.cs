@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using XRRemote.Serializables;
 
-#if UNITY_EDITOR
 namespace XRRemote
 {
     /// <summary>
@@ -34,10 +33,16 @@ namespace XRRemote
     /// </summary>
     public class XRRemotePlaneManager : MonoBehaviour
     {
+        public PlaneManagerState State { get; private set; }
+
         [SerializeField] private Transform XRRemotePlaneVisualPrefab;
 
         [SerializeField] private List<XRRemotePlaneVisual> xrPlaneVisualList = new List<XRRemotePlaneVisual>();
 
+        private void Awake()
+        {
+            State = PlaneManagerState.WaitingForHandshake;
+        }
 
         private void OnEnable()
         {
@@ -127,6 +132,11 @@ namespace XRRemote
                 AddVisuals(ClientReceiver.Instance.remotePacket.planesInfo.added);
             }
 
+            if (ClientReceiver.Instance.remotePacket.planesInfo.isHandshake) {
+                State = PlaneManagerState.ReadyToReceivePlanes;
+                return;
+            }
+
             if (ClientReceiver.Instance.remotePacket.planesInfo.updated != null) {
                 UpdateVisuals(ClientReceiver.Instance.remotePacket.planesInfo.updated);
             }
@@ -137,4 +147,3 @@ namespace XRRemote
         }
     }
 }
-#endif

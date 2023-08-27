@@ -72,10 +72,6 @@ namespace XRRemote
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
             DebugStatusCheck(remotePacket);
-
-            if (sender != null && remotePacket.requestHandshakePacket) {
-                sender.QueueHandshakePacket();
-            }
         }
 
         protected override void ReceiveTexture(RenderTexture texture)

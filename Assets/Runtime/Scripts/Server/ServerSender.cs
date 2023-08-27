@@ -41,7 +41,7 @@ namespace XRRemote
         [SerializeField] private ARCameraBackground cameraBackground = null;
         [SerializeField] private XRRemoteInputReader inputReader = null;
 
-        private bool handshakeRequested = false;
+        private PlaneManagerState clientPlaneManagerState = PlaneManagerState.InActive;
      
         private void Awake()
         {   
@@ -79,11 +79,6 @@ namespace XRRemote
             }
         }
 
-        public void QueueHandshakePacket()
-        {
-            handshakeRequested = true;
-        }
-
         protected override RemotePacket GetPacketData()
         {
             ServerRemotePacket packet = new ServerRemotePacket();
@@ -92,22 +87,7 @@ namespace XRRemote
             
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
-            if (handshakeRequested) {
-                if (planeSender.TryGetAllPlanesInfo(out SerializablePlanesInfo planesInfo)) {
-                    packet.planesInfo = planesInfo;
-                } else {
-                    packet.planesInfo = null;
-                }
-                Debug.LogError($"SENT HANDSHAKE");
-                packet.isHandshake = true;
-                handshakeRequested = false;
-            } else {
-                if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
-                    packet.planesInfo = planesInfo;
-                } else {
-                    packet.planesInfo = null;
-                }
-            }
+            packet.planesInfo = GetPlanesInfoFromSender();
 
             if (inputReader.TryGetLastInputNormalized(out Vector2 touchPositionNormalized)) {
                 packet.touchPositionNormalized = new SerializableFloat2(touchPositionNormalized);
@@ -123,6 +103,11 @@ namespace XRRemote
             return cameraBackground.material;
         }
 
+        public void SetPlaneManagerState(PlaneManagerState state)
+        {
+            clientPlaneManagerState = state;
+        }
+
         private bool TrySetUpInputReader()
         {
             if (inputReader != null) return true;
@@ -134,6 +119,21 @@ namespace XRRemote
                Debug.LogError(string.Format($"{gameObject.name}: XRRemoteInputReader not found"));
             }
             return false;
+        }
+
+        private SerializablePlanesInfo GetPlanesInfoFromSender()
+        {
+            if (clientPlaneManagerState == PlaneManagerState.WaitingForHandshake) {
+                if (planeSender.TryGetAllPlanesInfo(out SerializablePlanesInfo planesInfo)) {
+                    return planesInfo;
+                }
+            } else if (clientPlaneManagerState == PlaneManagerState.ReadyToReceivePlanes) {
+                if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
+                    return planesInfo;
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="ClientRemotePacket.cs" createdby="gblikas">
+// <copyright file="PlaneManagerState.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -21,15 +21,13 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-using System;
-using XRRemote.Serializables;
 
-namespace XRRemote 
+namespace XRRemote
 {
-    [Serializable]
-    public partial class ClientRemotePacket : RemotePacket
+    public enum PlaneManagerState
     {
-        public bool debugMode;
-        public PlaneManagerState planeManagerState = PlaneManagerState.InActive;
+        InActive,
+        WaitingForHandshake,
+        ReadyToReceivePlanes
     }
 }

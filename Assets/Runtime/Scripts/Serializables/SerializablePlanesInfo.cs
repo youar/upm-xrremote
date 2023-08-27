@@ -28,6 +28,8 @@ namespace XRRemote.Serializables
     [Serializable]
     public class SerializablePlanesInfo
     {
+        public bool isHandshake = false;
+
         public SerializableARPlane[] added;
         public SerializableARPlane[] updated;
         public SerializableARPlane[] removed;
