@@ -120,31 +120,40 @@ namespace XRRemote
             return texture;
         }
 
-        /**
-        * 
-        */
-        Texture2D FromByteRFloatToTextureRFloat(int width, int height, byte[] array){
-            if(array.Length != 4*width*height){
+
+        Texture2D FromByteRFloatToTextureRFloat(int width, int height, byte[] array)
+        {
+            if (array.Length != 4 * width * height)
+            {
                 Debug.LogError($"array is most-likely not RFloat: array.Length != 4*{width}*{height}");
                 return null;
             }
 
-            if(depthTexture == null){
-                depthTexture = new Texture2D(width, height, TextureFormat.RFloat, false);
+            if (depthTexture == null)
+            {
+                // Note: The dimensions are switched because the image is being rotated
+                depthTexture = new Texture2D(height, width, TextureFormat.RFloat, false);
             }
 
-            for(int y = 0; y < height; y++){
-                for(int x = 0; x < width; x++){
-                    int index = (y*width + x)*4;
-                    byte[] reversedBytes = new byte[4];
-                    float depthValue = 0.0f;
-                    depthValue = BitConverter.ToSingle(array, index);
-                    depthTexture.SetPixel(x,y, new Color(depthValue, depthValue, depthValue, 1.0f)); 
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int index = (y * width + x) * 4;
+                    float depthValue = BitConverter.ToSingle(array, index);
+
+                    // Rotate 90 degrees clockwise
+                    int newY = width - x - 1;
+                    int newX = y;
+
+                    depthTexture.SetPixel(newX, newY, new Color(depthValue, depthValue, depthValue, 1.0f));
                 }
             }
-            depthTexture.Apply(); 
+            depthTexture.Apply();
             return depthTexture;
         }
+
+
 
         protected override void ProcessPacketData(byte[] bytes)
         {
