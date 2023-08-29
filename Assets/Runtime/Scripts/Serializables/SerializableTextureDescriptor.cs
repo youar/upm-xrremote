@@ -32,6 +32,7 @@ namespace XRRemote.Serializables
     /// HACK: Neet the unsafe struct cast
     /// since XRTextureDescriptor is private struct!
     /// </summary>
+    [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public struct SerializableTextureDescriptor : IEquatable<SerializableTextureDescriptor>
     {
@@ -50,6 +51,16 @@ namespace XRRemote.Serializables
             mipmapCount = tex.mipmapCount;
             format = tex.format;
             this.propertyNameId = propertyNameId;
+        }
+
+        public SerializableTextureDescriptor(Texture2D tex)
+        {
+            nativeTexture = tex.GetNativeTexturePtr();
+            width = tex.width;
+            height = tex.height;
+            mipmapCount = tex.mipmapCount;
+            format = tex.format;
+            this.propertyNameId = 0;
         }
 
         public bool Equals(SerializableTextureDescriptor other)

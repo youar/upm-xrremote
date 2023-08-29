@@ -24,8 +24,10 @@
 using System;
 using XRRemote.Serializables;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using System.Linq;
 
 namespace XRRemote
 {   
@@ -35,9 +37,13 @@ namespace XRRemote
     public class ServerSender : CustomNdiSender
     {    
         [SerializeField] private XRRemotePlaneSender planeSender = null;
+        [SerializeField] private XRRemoteDepthImageSender depthImageSender = null;
         [SerializeField] private ARCameraManager cameraManager = null;
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
+        [SerializeField] private AROcclusionManager occlusionManager = null;
+
+        
      
         private void Awake()
         {   
@@ -73,14 +79,22 @@ namespace XRRemote
             }
         }
 
+
+
+
         protected override RemotePacket GetPacketData()
         {
             ServerRemotePacket packet = new ServerRemotePacket();
 
             packet.cameraPose = arPoseDriver;
-            
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
+            if (depthImageSender.TryGetDepthImage(out SerializableDepthImage xrDepthImage)) {
+                packet.depthImage = xrDepthImage;
+            } else {
+                packet.depthImage = null;
+            }
+            
             if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
                 packet.planesInfo = planesInfo;
             } else {

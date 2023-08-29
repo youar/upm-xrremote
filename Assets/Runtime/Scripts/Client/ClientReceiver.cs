@@ -1,4 +1,4 @@
-//-------------------------------------------------------------------------------------------------------
+ //-------------------------------------------------------------------------------------------------------
 // <copyright file="ClientReceiver.cs" createdby="gblikas">
 // 
 // XR Remote
@@ -30,6 +30,8 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using XRRemote.Serializables;
 
 namespace XRRemote
 {
@@ -42,13 +44,16 @@ namespace XRRemote
         public XRCameraIntrinsics cameraIntrinsics {get; private set;}
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
-
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
-        private bool videoCommandBufferInitialized = false;
+        private bool videoCommandBufferInitialized = false;       
+
+        private CommandBuffer depthImageCommandBuffer;
+        private Texture2D depthTexture;
         
         // [SerializeField] 
         private Material commandBufferMaterial;
+
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
@@ -96,8 +101,61 @@ namespace XRRemote
 
         protected override void ReceiveTexture(RenderTexture texture)
         {
-            commandBufferMaterial.SetTexture("_MainTex", texture);                
+            commandBufferMaterial.SetTexture("_MainTex", texture);
         }
+
+        Texture2D RandomAlpha8(int width, int height)
+        {
+            Texture2D texture = new Texture2D(width, height, TextureFormat.Alpha8, false);
+
+            for (int y = 0; y < texture.height; y++)
+            {
+                for (int x = 0; x < texture.width; x++)
+                {
+                    float gray = UnityEngine.Random.Range(0, 9) / 8f;
+                    Color color = new Color(gray, gray, gray, gray);
+                    texture.SetPixel(x, y, color);
+                }
+            }
+
+            texture.Apply();
+            return texture;
+        }
+
+
+        Texture2D FromByteRFloatToTextureRFloat(int width, int height, byte[] array)
+        {
+            if (array.Length != 4 * width * height)
+            {
+                Debug.LogError($"array is most-likely not RFloat: array.Length != 4*{width}*{height}");
+                return null;
+            }
+
+            if (depthTexture == null)
+            {
+                // Note: The dimensions are switched because the image is being rotated
+                depthTexture = new Texture2D(height, width, TextureFormat.RFloat, false);
+            }
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int index = (y * width + x) * 4;
+                    float depthValue = BitConverter.ToSingle(array, index);
+
+                    // Rotate 90 degrees clockwise
+                    int newY = width - x - 1;
+                    int newX = y;
+
+                    depthTexture.SetPixel(newX, newY, new Color(depthValue, depthValue, depthValue, 1.0f));
+                }
+            }
+            depthTexture.Apply();
+            return depthTexture;
+        }
+
+
 
         protected override void ProcessPacketData(byte[] bytes)
         {
@@ -106,6 +164,22 @@ namespace XRRemote
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
 
+            if (remotePacket.depthImage.texData == null)
+            {
+                Debug.Log("texData is null");
+            }
+            else
+            {
+                Debug.Log("texData is not null");
+
+                byte[] byteArray = remotePacket.depthImage.texData;
+
+                this.rawImage.texture = FromByteRFloatToTextureRFloat(
+                    remotePacket.depthImage.width, 
+                    remotePacket.depthImage.height, 
+                    byteArray);
+            }
+         
             PlanesInfoCheck(remotePacket);
 
             if (remotePacket.touchPositionNormalized != null) {
@@ -125,6 +199,9 @@ namespace XRRemote
         {   
             if (videoCommandBufferInitialized) return;
             videoCommandBuffer = new CommandBuffer();
+
+
+
             commandBufferMaterial = Resources.Load("XRVideoMaterial") as Material;
             // commandBufferMaterial = new Material(Shader.Find("Unlit/XRRemoteVideo"));
             videoCommandBuffer.Blit(null, BuiltinRenderTextureType.CurrentActive, commandBufferMaterial);

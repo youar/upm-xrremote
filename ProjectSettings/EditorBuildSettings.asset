@@ -24,6 +24,6 @@ EditorBuildSettings:
     path: Assets/Samples/Scenes/NDI Receiver.unity
     guid: 9eca745677f3b9945a652c8056272fb6
   m_configObjects:
-    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: ec186ab49ef14ec408274a01e629ea4c, type: 2}
-    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 560c396e9b7c0f64e925c1cc6369eb02, type: 2}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 821d7ca36e3989c4a8407dbbe590a464, type: 2}
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 933718385e70f134a825bfada81c465b, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: eb7902f6479d84347aa357f0401f2366, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 281ed59d6dc52f247987deffb42b2c81, type: 2}
