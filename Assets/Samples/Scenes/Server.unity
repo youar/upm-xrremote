@@ -1265,6 +1265,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 586251445}
     - target: {fileID: 5587092121833666916, guid: d820ef8e619efcd469a772c68164b29f, type: 3}
+      propertyPath: trackedImageSender
+      value: 
+      objectReference: {fileID: 885308024}
+    - target: {fileID: 5587092121833666916, guid: d820ef8e619efcd469a772c68164b29f, type: 3}
       propertyPath: ndiSenderVisualizer
       value: 
       objectReference: {fileID: 1966469541}

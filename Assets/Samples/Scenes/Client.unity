@@ -790,6 +790,10 @@ PrefabInstance:
       propertyPath: manager
       value: 
       objectReference: {fileID: 1697977417}
+    - target: {fileID: 8183709673390036232, guid: 6c7ea7b596f85854791bf3a5ef395762, type: 3}
+      propertyPath: trackedImagePrefab
+      value: 
+      objectReference: {fileID: 3312728602301253215, guid: 0da3475b7e3d949e8a8a87a03495c5ed, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c7ea7b596f85854791bf3a5ef395762, type: 3}
 --- !u!1001 &3745883730783663454
@@ -978,7 +982,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6726635402123743951, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6726635402711981508, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
       propertyPath: m_IsActive

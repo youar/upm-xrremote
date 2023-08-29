@@ -40,6 +40,7 @@ namespace XRRemote
     {
         [Tooltip("The native AR Tracked Image Manager component attached to AR Session Origin.")]
         [SerializeField] private ARTrackedImageManager manager;
+        [SerializeField] private GameObject trackedImagePrefab;
         public ARTrackedImageManager Manager => manager;
         public static XRRemoteImageManager Instance { get; private set; }
         private bool readyToSend = false;
