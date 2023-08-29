@@ -39,7 +39,7 @@ namespace XRRemote.Serializables
     }
 
     [Serializable]
-    public class SerializableTexture2D
+    public class SerializableXRReferenceImage
     {
         public string texName;
         public string guid;
@@ -49,7 +49,7 @@ namespace XRRemote.Serializables
         public SerializableFloat2 realSize;
         public string texFormat;
 
-        public SerializableTexture2D(XRReferenceImage image)
+        public SerializableXRReferenceImage(XRReferenceImage image)
         {
 #if UNITY_EDITOR
 
@@ -71,7 +71,7 @@ namespace XRRemote.Serializables
             else
             {
                 texData = tex.GetRawTextureData();
-                texSize = new SerializableFloat2(tex.width, tex.height);
+                texSize = new SerializableFloat2(tex.width, tex.height); 
                 texFormat = tex.format.ToString();
             }
 
@@ -91,7 +91,7 @@ namespace XRRemote.Serializables
         }
 
 
-        public Texture2D ConvertFromSerializableTexture2DToTexture2D(out XRInfo xrInfo)
+        public Texture2D ConvertFromSerializableXRReferenceImageToTexture2D(out XRInfo xrInfo)
         {
             //[Review] true here indicates texture should be made in linear color space. is this appropriate?
             Debug.Log("Reconstructing texture from serializable texture.");

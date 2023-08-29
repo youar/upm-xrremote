@@ -64,7 +64,7 @@ namespace XRRemote
         private void XRRemoteTrackedImageSender_OnImageLibraryReceived(object sender, EventArgs e)
         {   
             
-            List<SerializableTexture2D> serializedTextures = ServerReceiver.Instance.serializedTextures;
+            List<SerializableXRReferenceImage> serializedTextures = ServerReceiver.Instance.serializedTextures;
 
             if (serializedTextures == null || serializedTextures.Count == 0)
             {
@@ -94,13 +94,13 @@ namespace XRRemote
             }
         }
 
-        private Dictionary<Texture2D, XRInfo> ReconstructLibrary(List<SerializableTexture2D> serializedTextures)
+        private Dictionary<Texture2D, XRInfo> ReconstructLibrary(List<SerializableXRReferenceImage> serializedTextures)
         {
             Dictionary<Texture2D, XRInfo> reconstructedImages = new Dictionary<Texture2D, XRInfo>();
 
-            foreach (SerializableTexture2D texture in serializedTextures)
+            foreach (SerializableXRReferenceImage texture in serializedTextures)
             {
-                Texture2D tex = texture.ConvertFromSerializableTexture2DToTexture2D(out XRInfo xrInfo);
+                Texture2D tex = texture.ConvertFromSerializableXRReferenceImageToTexture2D(out XRInfo xrInfo);
                 reconstructedImages.Add(tex, xrInfo);
             }
 
@@ -144,7 +144,6 @@ namespace XRRemote
             }
         }
 
-
         private void InitializeNativeImageManager(MutableRuntimeReferenceImageLibrary mutableLibrary)
         {
             arTrackedImageManager.enabled = false;
@@ -166,6 +165,24 @@ namespace XRRemote
                 imageNameText.text = $"{imageName} Detected";
             }
         }
+
+        private bool TryGetTrackables(out List<SerializableARTrackedImage> trackables)
+        {
+            TrackableCollection<ARTrackedImage> currentlyTracking = arTrackedImageManager.trackables;
+            if (currentlyTracking.count == 0)
+            {
+                trackables = null;
+                return false;
+            }
+            trackables = new List<SerializableARTrackedImage>();
+            foreach (ARTrackedImage image in currentlyTracking)
+            {
+                //[review] should tracking state 'none' be included here??
+                if (image.trackingState != TrackingState.None) trackables.Add(new SerializableARTrackedImage(image));
+            }
+            return true;
+        }
+        
 
     }
 }

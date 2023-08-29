@@ -36,7 +36,7 @@ namespace XRRemote
     {
         public static ServerReceiver Instance {get; private set;} = null;
         [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
-        public List<SerializableTexture2D> serializedTextures {get; private set;}
+        public List<SerializableXRReferenceImage> serializedTextures {get; private set;}
         public event EventHandler OnImageLibraryReceived;
         public Text debugText;
      

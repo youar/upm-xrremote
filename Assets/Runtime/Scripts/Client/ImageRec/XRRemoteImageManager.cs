@@ -42,7 +42,7 @@ namespace XRRemote
         public ARTrackedImageManager Manager => manager;
         public static XRRemoteImageManager Instance { get; private set; }
         private bool readyToSend = false;
-        public List<SerializableTexture2D> serializedLibrary {get; private set;}
+        public List<SerializableXRReferenceImage> serializedLibrary {get; private set;}
 
         private void Awake()
         {
@@ -59,7 +59,7 @@ namespace XRRemote
 
         public void Start()
         {
-            StartCoroutine(UpdateLibrary());
+            if (CheckDependencies()) {StartCoroutine(UpdateLibrary());} 
         }
 
         public void OnDisable()
@@ -67,39 +67,36 @@ namespace XRRemote
             StopAllCoroutines();
         }
 
+        private bool CheckDependencies()
+        {
+            if (manager == null)
+            {
+                manager = FindObjectOfType<ARTrackedImageManager>();
+            }
+
+            if (manager == null)
+            {
+                Debug.LogError("XRRemoteImageManager: ARTrackedImageManager not found.");
+                return false;
+            } 
+            if (manager.referenceLibrary == null)
+            {
+                Debug.LogError("XRRemoteImageManager: No reference library found on ARTrackedImageManager.");
+                return false;
+            } 
+            return true;
+        }
+
 
         private IEnumerator UpdateLibrary()
         {
             while (true)
             {
-                if (manager != null)
+                XRReferenceImageLibrary imageLibrary = manager.referenceLibrary as XRReferenceImageLibrary;
+                if (CheckLibraryValidity(imageLibrary))
                 {
-                    if (manager.referenceLibrary != null)
-                    {
-                        XRReferenceImageLibrary imageLibrary = manager.referenceLibrary as XRReferenceImageLibrary;
-                        if (CheckLibraryValidity(imageLibrary))
-                        {
-                            SerializeImageLibrary(imageLibrary);
-                        }
-                    }
-                    else
-                    {
-                        readyToSend = false;
-                        // if (DebugFlags.displayXRRemoteImageManagerStats)
-                        // {
-                            Debug.LogWarning("XRRemoteImageManager: No reference library found on ARTrackedImageManager.");
-                        // }
-                    }
-                } 
-                else
-                {
-                    readyToSend = false;
-                // if (DebugFlags.displayXRRemoteImageManagerStats)
-                // {
-                    Debug.LogWarning("XRRemoteImageManager: ARTrackedImageManager not found.");
-                // }
+                    SerializeImageLibrary(imageLibrary);
                 }
-                
                 yield return new WaitForSeconds(1f);
             }
         }
@@ -135,16 +132,16 @@ namespace XRRemote
 
         private void SerializeImageLibrary(XRReferenceImageLibrary library)
         {
-            List<SerializableTexture2D> serializedLibrary = new List<SerializableTexture2D>();
+            List<SerializableXRReferenceImage> serializedLibrary = new List<SerializableXRReferenceImage>();
             for (int i = 0; i < library.count; i++)
             {
-                SerializableTexture2D serializedTexture = new SerializableTexture2D(library[i]);
+                SerializableXRReferenceImage serializedTexture = new SerializableXRReferenceImage(library[i]);
                 if (serializedTexture.texData != null) serializedLibrary.Add(serializedTexture);
             }
 
             this.serializedLibrary = serializedLibrary;
             StopAllCoroutines();
-
+            
             if (serializedLibrary.Count != library.count)
             {
                 Debug.LogWarning("XRRemoteImageManager: Some images not sent to device. See individual Errors for further details.");

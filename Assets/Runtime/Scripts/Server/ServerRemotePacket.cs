@@ -22,6 +22,7 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using XRRemote.Serializables;
 
 namespace XRRemote 
@@ -33,5 +34,6 @@ namespace XRRemote
         public SerializablePlanesInfo planesInfo;
         public SerializableFloat2 touchPositionNormalized = null;
         public SerializableXRCameraIntrinsics cameraIntrinsics = null;
+        public List<SerializableARTrackedImage> trackedImages;
     }
 }

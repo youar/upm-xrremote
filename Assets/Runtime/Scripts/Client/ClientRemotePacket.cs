@@ -30,7 +30,7 @@ namespace XRRemote
     [Serializable]
     public partial class ClientRemotePacket : RemotePacket
     {
-        public List<SerializableTexture2D> referenceImageLibraryTextures = null;
+        public List<SerializableXRReferenceImage> referenceImageLibraryTextures = null;
         public bool debugMode;
     }
 }
