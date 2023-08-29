@@ -47,11 +47,13 @@ namespace XRRemote
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
+
+        private CommandBuffer depthImageCommandBuffer;
+        private Texture2D depthTexture;
         
         // [SerializeField] 
         private Material commandBufferMaterial;
 
-        private Texture2D depthTexture;
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
@@ -99,7 +101,7 @@ namespace XRRemote
 
         protected override void ReceiveTexture(RenderTexture texture)
         {
-            commandBufferMaterial.SetTexture("_MainTex", texture);                
+            commandBufferMaterial.SetTexture("_MainTex", texture);
         }
 
         Texture2D RandomAlpha8(int width, int height)
@@ -197,6 +199,9 @@ namespace XRRemote
         {   
             if (videoCommandBufferInitialized) return;
             videoCommandBuffer = new CommandBuffer();
+
+
+
             commandBufferMaterial = Resources.Load("XRVideoMaterial") as Material;
             // commandBufferMaterial = new Material(Shader.Find("Unlit/XRRemoteVideo"));
             videoCommandBuffer.Blit(null, BuiltinRenderTextureType.CurrentActive, commandBufferMaterial);

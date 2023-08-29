@@ -37,13 +37,13 @@ namespace XRRemote
     public class ServerSender : CustomNdiSender
     {    
         [SerializeField] private XRRemotePlaneSender planeSender = null;
+        [SerializeField] private XRRemoteDepthImageSender depthImageSender = null;
         [SerializeField] private ARCameraManager cameraManager = null;
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
         [SerializeField] private AROcclusionManager occlusionManager = null;
-        [SerializeField] private RawImage rawImage = null;
 
-        Texture2D texture = null;
+        
      
         private void Awake()
         {   
@@ -79,28 +79,7 @@ namespace XRRemote
             }
         }
 
-        public Texture2D UpdateToXRCpuImage(XRCpuImage xRCpuImage){
-            if(texture == null || texture.width != xRCpuImage.width || texture.height != xRCpuImage.height){
-                if(texture != null) Destroy(texture); 
-                texture = new Texture2D(xRCpuImage.width, xRCpuImage.height, xRCpuImage.format.AsTextureFormat(), false);
-            }
 
-            Debug.Log($"[UpdateToXRCpuImage] xRCpuImage.format.AsTextureFormat(): {xRCpuImage.format.AsTextureFormat()}");
-            
-            var conversionParams = new XRCpuImage.ConversionParams(xRCpuImage, xRCpuImage.format.AsTextureFormat(),XRCpuImage.Transformation.MirrorX);
-            
-            var textureData = texture.GetRawTextureData<byte>(); 
-            var convertedDataSize = xRCpuImage.GetConvertedDataSize(conversionParams);
-            if( textureData.Length != convertedDataSize){
-                Debug.LogError($"failed to convert: size-mismatch: convertedDataSize {convertedDataSize}, textureData.Length {textureData.Length}");
-                Destroy(texture);
-                return null;
-            }
-
-            xRCpuImage.Convert(conversionParams, textureData);
-            texture.Apply();
-            return texture; 
-        }
 
 
         protected override RemotePacket GetPacketData()
@@ -110,16 +89,9 @@ namespace XRRemote
             packet.cameraPose = arPoseDriver;
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
-            if (occlusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage xrCpuImage))
-            {
-                var byteArray = UpdateToXRCpuImage(xrCpuImage).GetRawTextureData();
-                SerializableDepthImage xrDepthImage = new SerializableDepthImage(xrCpuImage, byteArray);
-                
-                rawImage.texture = occlusionManager.environmentDepthTexture;
+            if (depthImageSender.TryGetDepthImage(out SerializableDepthImage xrDepthImage)) {
                 packet.depthImage = xrDepthImage;
-            }
-            else
-            {
+            } else {
                 packet.depthImage = null;
             }
             

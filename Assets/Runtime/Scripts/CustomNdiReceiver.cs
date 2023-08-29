@@ -34,12 +34,9 @@ namespace XRRemote
         [SerializeField] private NdiResources resources = null;
         protected NdiReceiver ndiReceiver = null;
         public CustomRawImage rawImage = null;
-
         protected string targetNdiSenderName = "CustomNdiSender";
-
         [SerializeField] protected Text receiverNameText;
-        
-        
+
         [Tooltip("Aspect Ratio or Pixel Count of the Mobile Device (Width/Height)")]
         public float aspectRatio;
 
@@ -49,11 +46,9 @@ namespace XRRemote
             ndiReceiver.SetResources(resources);
             ConnectToNdi();
         }
-        
 
         private void Update()
         {
-
             RenderTexture rt = ndiReceiver.texture;
             if (rt == null)
             {
@@ -72,7 +67,6 @@ namespace XRRemote
 
         protected abstract void ReceiveTexture(RenderTexture texture);
         protected abstract void ProcessPacketData(byte[] data);
-
 
         private bool MetadataNullCheck()
         {
@@ -114,6 +108,5 @@ namespace XRRemote
                 } 
             }
         }
-
     }
 }
