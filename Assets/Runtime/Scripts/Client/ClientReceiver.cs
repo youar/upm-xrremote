@@ -250,12 +250,14 @@ namespace XRRemote
                             {
                                 receivingCamera = camera;
                                 InitializeCommandBuffer();
+                                InitializeDepthImageCommandBuffer();
                             }
                             else if (receivingCamera!=camera)
                             {
                                 receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
                                 receivingCamera = camera;
                                 InitializeCommandBuffer();
+                                InitializeDepthImageCommandBuffer();
                             }
                         }
                     });
