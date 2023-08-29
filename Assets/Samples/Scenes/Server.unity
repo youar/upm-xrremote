@@ -196,55 +196,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 65874646}
   m_CullTransparentMesh: 1
---- !u!4 &259286921 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4846495722108673732, guid: 517f6704c053ae949aea733f67930bed, type: 3}
-  m_PrefabInstance: {fileID: 4846495720645928109}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &345761267
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 345761268}
-  - component: {fileID: 345761269}
-  m_Layer: 0
-  m_Name: Custom Depth Image Sender
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &345761268
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 345761267}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 259286921}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &345761269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 345761267}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24f6db2c0b87ae943b2ea1ecfe987844, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &586251443
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,6 +693,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4846495721133313058, guid: 517f6704c053ae949aea733f67930bed, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4846495722108673735, guid: 517f6704c053ae949aea733f67930bed, type: 3}
       propertyPath: rawImage
       value: 
@@ -761,10 +716,14 @@ PrefabInstance:
     - target: {fileID: 4846495722108673735, guid: 517f6704c053ae949aea733f67930bed, type: 3}
       propertyPath: depthImageSender
       value: 
-      objectReference: {fileID: 345761269}
+      objectReference: {fileID: 0}
     - target: {fileID: 4846495722108673735, guid: 517f6704c053ae949aea733f67930bed, type: 3}
       propertyPath: occlusionManager
       value: 
       objectReference: {fileID: 2068114036}
+    - target: {fileID: 6060822065895163597, guid: 517f6704c053ae949aea733f67930bed, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 517f6704c053ae949aea733f67930bed, type: 3}

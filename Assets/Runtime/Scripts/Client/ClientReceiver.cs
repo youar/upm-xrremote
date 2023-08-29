@@ -37,7 +37,6 @@ namespace XRRemote
 {
     [SerializeField]
     public class ClientReceiver : CustomNdiReceiver
-    
     {
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
@@ -47,8 +46,9 @@ namespace XRRemote
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
-
         private CommandBuffer depthImageCommandBuffer;
+        private bool depthImageCommandBufferInitialized = false;
+        private Material depthMaterial;
         private Texture2D depthTexture;
         
         // [SerializeField] 
@@ -95,6 +95,13 @@ namespace XRRemote
             {
                 receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             }
+
+            if (depthImageCommandBuffer != null && receivingCamera != null)
+            {
+                receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque, depthImageCommandBuffer);
+            }
+
+            depthImageCommandBufferInitialized = false;
             videoCommandBufferInitialized = false;
             StopCoroutine(SetReceivingCamera());
         }
@@ -121,7 +128,6 @@ namespace XRRemote
             texture.Apply();
             return texture;
         }
-
 
         Texture2D FromByteRFloatToTextureRFloat(int width, int height, byte[] array)
         {
@@ -154,8 +160,6 @@ namespace XRRemote
             depthTexture.Apply();
             return depthTexture;
         }
-
-
 
         protected override void ProcessPacketData(byte[] bytes)
         {
@@ -200,13 +204,28 @@ namespace XRRemote
             if (videoCommandBufferInitialized) return;
             videoCommandBuffer = new CommandBuffer();
 
-
-
             commandBufferMaterial = Resources.Load("XRVideoMaterial") as Material;
             // commandBufferMaterial = new Material(Shader.Find("Unlit/XRRemoteVideo"));
             videoCommandBuffer.Blit(null, BuiltinRenderTextureType.CurrentActive, commandBufferMaterial);
             receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             videoCommandBufferInitialized = true;
+        }
+
+        private void InitializeDepthImageCommandBuffer()
+        {
+            depthImageCommandBuffer = new CommandBuffer();
+            depthImageCommandBuffer.name = "Depth Image Command Buffer";
+
+            // Assuming you have a Material that can handle the depth information
+            Material depthMaterial = Resources.Load("DepthMaterial") as Material;
+
+            depthImageCommandBuffer.SetGlobalTexture("_DepthTex", depthTexture);
+
+            // Insert additional logic here for processing the depth image
+
+            // Add the Command Buffer to the camera
+            receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, depthImageCommandBuffer);
+            depthImageCommandBufferInitialized = true;
         }
 
         private IEnumerator SetReceivingCamera()
