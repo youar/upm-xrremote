@@ -14,7 +14,9 @@ namespace XRRemote
   {
     private SerializableDepthImage xrDepthImage = null;
     private AROcclusionManager occlusionManager;
-    private RawImage rawImage = null;
+
+    // [SerializeField]
+    // private RawImage rawImage = null;
 
     Texture2D texture = null;
 
@@ -39,6 +41,14 @@ namespace XRRemote
         }
         depthImage = null;
         return false;
+    }
+
+    public void RenderDepthImage(RawImage rawImage, AROcclusionManager occlusionManager)
+    {
+        if (occlusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage xrCpuImage))
+        {
+            rawImage.texture = UpdateToXRCpuImage(xrCpuImage);
+        }
     }
 
 

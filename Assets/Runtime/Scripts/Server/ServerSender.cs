@@ -27,7 +27,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
-using System.Linq;
+
 
 namespace XRRemote
 {   
@@ -42,9 +42,8 @@ namespace XRRemote
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
         [SerializeField] private AROcclusionManager occlusionManager = null;
+        [SerializeField] private RawImage rawImage = null;
 
-        
-     
         private void Awake()
         {   
             if (Application.isEditor)
@@ -79,9 +78,6 @@ namespace XRRemote
             }
         }
 
-
-
-
         protected override RemotePacket GetPacketData()
         {
             ServerRemotePacket packet = new ServerRemotePacket();
@@ -100,7 +96,8 @@ namespace XRRemote
             } else {
                 packet.planesInfo = null;
             }
-
+            
+            depthImageSender.RenderDepthImage(rawImage, occlusionManager);
             return packet;
         }
 
