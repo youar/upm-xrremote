@@ -32,6 +32,7 @@ using System.IO;
 using System.Xml;
 using System.Collections.Generic;
 using XRRemote.Serializables;
+using UnityEditor.PackageManager;
 
 namespace XRRemote
 {   
@@ -59,7 +60,11 @@ namespace XRRemote
 
         public void Start()
         {
-            if (CheckDependencies()) {StartCoroutine(UpdateLibrary());} 
+            if (CheckDependencies())
+            {
+                StartCoroutine(UpdateLibrary());
+            } 
+            ClientReceiver.Instance.OnTrackedImagesReceived += ClientReceiver_OnTrackedImagesReceived;
         }
 
         public void OnDisable()
@@ -86,7 +91,6 @@ namespace XRRemote
             } 
             return true;
         }
-
 
         private IEnumerator UpdateLibrary()
         {
@@ -146,6 +150,11 @@ namespace XRRemote
             {
                 Debug.LogWarning("XRRemoteImageManager: Some images not sent to device. See individual Errors for further details.");
             }
+        }
+
+        private void ClientReceiver_OnTrackedImagesReceived(object sender, EventArgs e)
+        {
+            
         }
 
     }

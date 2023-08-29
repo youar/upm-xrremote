@@ -34,7 +34,6 @@ namespace XRRemote
 {
     public class XRRemoteTrackedImageSender : MonoBehaviour
     {
-
         [SerializeField] private ARTrackedImageManager arTrackedImageManager;
         [SerializeField] private Text imageNameText;
         [SerializeField] private Text libraryCountText;
@@ -166,7 +165,7 @@ namespace XRRemote
             }
         }
 
-        private bool TryGetTrackables(out List<SerializableARTrackedImage> trackables)
+        public bool TryGetTrackables(out List<SerializableARTrackedImage> trackables)
         {
             TrackableCollection<ARTrackedImage> currentlyTracking = arTrackedImageManager.trackables;
             if (currentlyTracking.count == 0)
@@ -180,6 +179,8 @@ namespace XRRemote
                 //[review] should tracking state 'none' be included here??
                 if (image.trackingState != TrackingState.None) trackables.Add(new SerializableARTrackedImage(image));
             }
+            if (trackables.Count == 0) return false;
+            
             return true;
         }
         

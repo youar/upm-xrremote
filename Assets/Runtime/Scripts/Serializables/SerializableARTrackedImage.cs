@@ -38,10 +38,13 @@ namespace XRRemote.Serializables
         public SerializablePose pose;
         public SerializableXRReferenceImage referenceImage;
         public int trackingState;
+        public string name;
 
         public SerializableARTrackedImage(ARTrackedImage arImage)
         {
             //constructor bro
+            //guid ?? how to associate with original image on client
+            name = arImage.name;  //maybe arImage.referenceImage.name??
             extents = new SerializableFloat2(arImage.extents);
             size = new SerializableFloat2(arImage.size);
             pose = SerializablePose.FromTransform(arImage.transform);
