@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="XRRemotePlaneSender.cs" createdby="gblikas">
+// <copyright file="XRRemoteTrackedImageSender.cs" createdby="cSustrich">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -126,6 +126,8 @@ namespace XRRemote
 
                     JobHandle jobHandle = jobState.jobHandle;
                     jobHandle.Complete();
+
+                    //[review] collect identifier here for new entry to make join table with
 
                     if (jobState.status == AddReferenceImageJobStatus.Success)
                     {

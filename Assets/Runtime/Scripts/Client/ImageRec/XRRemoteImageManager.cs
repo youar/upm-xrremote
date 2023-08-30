@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="ServerReceiver.cs" createdby="cSustrich">
+// <copyright file="XRRemoteImagemanager.cs" createdby="cSustrich">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -32,34 +32,40 @@ using System.IO;
 using System.Xml;
 using System.Collections.Generic;
 using XRRemote.Serializables;
-using UnityEditor.PackageManager;
+using System.Linq;
 
 namespace XRRemote
 {   
     public class XRRemoteImageManager : MonoBehaviour
     {
         [Tooltip("The native AR Tracked Image Manager component attached to AR Session Origin.")]
-        [SerializeField] private ARTrackedImageManager manager;
-        [SerializeField] private GameObject trackedImagePrefab;
-        public ARTrackedImageManager Manager => manager;
-        public static XRRemoteImageManager Instance { get; private set; }
-        private bool readyToSend = false;
-        public List<SerializableXRReferenceImage> serializedLibrary {get; private set;}
 
-        private void Awake()
+        private static XRRemoteImageManager _instance;
+        public static XRRemoteImageManager Instance 
         {
-            //[review] switch to  new instancing method
-            if (Instance != null)
+            get
             {
-                Debug.LogError("CustomNdiReceiver must be only one in the scene.");
-            
-                return;
+                if (_instance == null)
+                {
+                    _instance = FindObjectOfType<XRRemoteImageManager>();
+                }
+                return _instance;
             }
-
-            Instance = this;
+        
         }
+        
+        [SerializeField] private ARTrackedImageManager manager;
+        public ARTrackedImageManager Manager => manager;
 
-        public void Start()
+        [SerializeField] private Transform trackedImagePrefab;
+        private bool hasUserPrefab => manager.trackedImagePrefab != null;
+
+        public List<SerializableXRReferenceImage> serializedLibrary {get; private set;}
+        private Dictionary<SerializableTrackableId, GameObject> currentlyTracking = new Dictionary<SerializableTrackableId, GameObject>();
+
+        public event EventHandler OnTrackedImagesChanged;
+
+        public void OnEnable()
         {
             if (CheckDependencies())
             {
@@ -71,6 +77,7 @@ namespace XRRemote
         public void OnDisable()
         {
             StopAllCoroutines();
+            ClientReceiver.Instance.OnTrackedImagesReceived -= ClientReceiver_OnTrackedImagesReceived;
         }
 
         private bool CheckDependencies()
@@ -101,6 +108,7 @@ namespace XRRemote
                 if (CheckLibraryValidity(imageLibrary))
                 {
                     SerializeImageLibrary(imageLibrary);
+                    StopAllCoroutines();
                 }
                 yield return new WaitForSeconds(1f);
             }
@@ -108,8 +116,6 @@ namespace XRRemote
 
         private bool CheckLibraryValidity(XRReferenceImageLibrary imageLibrary)
         {
-            readyToSend = true;
-
             for (int i = 0; i < imageLibrary.count; i++)
             {
                 //check for issues with library entry that would cause errors on server
@@ -117,22 +123,18 @@ namespace XRRemote
                 bool sizeError = imageLibrary[i].specifySize && imageLibrary[i].size.ToString() == "(0.00, 0.00)";
                 if (emptyTextureError || sizeError)
                 {
-                    readyToSend = false;
-
-                    // if (DebugFlags.displayXRRemoteImageManagerStats)
-                    // {
-                        if (emptyTextureError)
-                        {
-                            Debug.LogWarning("XRRemoteImageManager: Reference Image with no texture found.");
-                        }
-                        if (sizeError)
-                        {
-                            Debug.LogWarning($"XRRemoteImageManager: Reference Image with specified size (0, 0) found at index {i}.");
-                        }
-                    // }
+                    if (emptyTextureError)
+                    {
+                        Debug.LogWarning("XRRemoteImageManager: Reference Image with no texture found.");
+                    }
+                    if (sizeError)
+                    {
+                        Debug.LogWarning($"XRRemoteImageManager: Reference Image with specified size (0, 0) found at index {i}.");
+                    }
+                    return false;
                 }
             }
-            return readyToSend;
+            return true;
         }
 
         private void SerializeImageLibrary(XRReferenceImageLibrary library)
@@ -145,7 +147,6 @@ namespace XRRemote
             }
 
             this.serializedLibrary = serializedLibrary;
-            StopAllCoroutines();
             
             if (serializedLibrary.Count != library.count)
             {
@@ -155,7 +156,59 @@ namespace XRRemote
 
         private void ClientReceiver_OnTrackedImagesReceived(object sender, EventArgs e)
         {
+            List<SerializableARTrackedImage> receivedList = ClientReceiver.Instance.remotePacket.trackedImages;
+
+            var trackableIds = receivedList.Select(entry => entry.trackableId);
+
+            //delete no longer tracked images
+            var trackedImagesToDelete = currentlyTracking.Keys.Except(trackableIds);
+            foreach (var entry in trackedImagesToDelete)
+            {
+                GameObject trackedImage = currentlyTracking[entry];
+                currentlyTracking.Remove(entry);
+                Destroy(trackedImage);
+            }
+
+            //add new tracked images
+            var trackedImagesToAdd = trackableIds.Except(currentlyTracking.Keys);
+            foreach (var entry in trackedImagesToAdd)
+            {
+                SerializableARTrackedImage trackedImage = receivedList.Find(item => item.trackableId.Equals(entry));
+                if (hasUserPrefab)
+                {
+                    //spawn new user prefab
+                }
+                else
+                {
+                    Transform newTrackedImage = Instantiate(trackedImagePrefab);//spawn new default prefab
+                }
+
+                // GameObject newTrackedImage = Instantiate(trackedImagePrefab, trackedImage.pose.position, trackedImage.pose.rotation);
+                // newTrackedImage.transform.localScale = new Vector3(trackedImage.size.x, trackedImage.size.y, 1f);
+                // newTrackedImage.transform.parent = transform;
+                // currentlyTracking.Add(entry, newTrackedImage);
+                // GameObject go1; // = something;
+                // go1.transform.SetParent(Manager.gameObject.transform);
+                //[review] check if manager moves
+            }
+
+            // trackedimageschanged
+            //     added : 
+            //     updated:
+            //     deleted: 
+
+
+
+
+
+
+            // var  = ClientReceiver.Instance.remotePacket.trackedImages
+            //     .Where(item => currentlyTracking.ContainsKey(item.trackableId));
+
             
+
+            
+                
         }
 
     }

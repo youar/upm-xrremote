@@ -30,6 +30,7 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace XRRemote
 {
@@ -50,6 +51,8 @@ namespace XRRemote
         
         // [SerializeField] 
         private Material commandBufferMaterial;
+
+        [SerializeField] private Text receivedTrackedImagesCount;
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
@@ -127,6 +130,7 @@ namespace XRRemote
         {
             if (remotePacket.trackedImages != null) 
             {
+                receivedTrackedImagesCount.text = $"Received Tracked Images: {remotePacket.trackedImages.Count}";
                 OnTrackedImagesReceived?.Invoke(this, EventArgs.Empty);
             }
 

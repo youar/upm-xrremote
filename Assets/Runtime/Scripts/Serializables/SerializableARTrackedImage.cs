@@ -30,38 +30,28 @@ namespace XRRemote.Serializables
 {
     [Serializable]
     // [StructLayout(LayoutKind.Sequential)]
-    public struct SerializableARTrackedImage : IEquatable<SerializableARTrackedImage>
+    public class SerializableARTrackedImage : IEquatable<SerializableARTrackedImage>
     {
         public SerializableFloat2 extents;
         public SerializableFloat2 size;
         public SerializableTrackableId trackableId;
         public SerializablePose pose;
-        public SerializableXRReferenceImage referenceImage;
         public int trackingState;
         public string name;
 
         public SerializableARTrackedImage(ARTrackedImage arImage)
         {
-            //constructor bro
-            //guid ?? how to associate with original image on client
-            name = arImage.name;  //maybe arImage.referenceImage.name??
+            name = arImage.referenceImage.name;
             extents = new SerializableFloat2(arImage.extents);
             size = new SerializableFloat2(arImage.size);
             pose = SerializablePose.FromTransform(arImage.transform);
             trackableId = arImage.trackableId;
             trackingState = (int)arImage.trackingState;
-            referenceImage = new SerializableXRReferenceImage(arImage.referenceImage);
         }
 
         public bool Equals(SerializableARTrackedImage o)
         {
-            //prob don't need dis either. just compare IDs
             return trackableId.Equals(o.trackableId);
         }
-
-        // public override string ToString()
-        // {
-        //   do I need dis??
-        // }
     }
 }
