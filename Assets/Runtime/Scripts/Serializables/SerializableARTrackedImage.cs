@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="SerializableARTrackedImage.cs" createdby="csustrich">
+// <copyright file="SerializableARTrackedImage.cs" createdby="cSustrich">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -21,9 +21,8 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
+
 using System;
-// using System.Runtime.InteropServices;
-using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
 namespace XRRemote.Serializables 

@@ -28,8 +28,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
-using System.IO;
-using System.Xml;
 using System.Collections.Generic;
 using XRRemote.Serializables;
 using System.Linq;
@@ -212,7 +210,7 @@ namespace XRRemote
 
             var text = go.GetComponentInChildren<Text>();
             text.text = string.Format(
-                "{0}\ntrackingState: {1}\nReference size: {2} cm\nDetected size: {3} cm",
+                "{0}\nTracking State: {1}\nReference size: {2} cm\nDetected size: {3} cm",
                 remoteInstance.name,
                 remoteInstance.trackingState,//get name of state not number
                 foundImage.realSize.x * 100f,
@@ -227,7 +225,7 @@ namespace XRRemote
             var material = go.GetComponentInChildren<MeshRenderer>().material;
             var tex = new Texture2D((int)foundImage.texSize.x, (int)foundImage.texSize.y, (TextureFormat)Enum.Parse(typeof(TextureFormat), foundImage.texFormat), false);
             tex.LoadRawTextureData(foundImage.texData);
-            Debug.Log($"Texture data is null: {foundImage.texData == null}");
+            tex.Apply();
             material.mainTexture = tex;
         }
     }

@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="SerializableTexture2D.cs" createdby="csustrich">
+// <copyright file="SerializableXRReferenceImage.cs" createdby="cSustrich">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.

@@ -133,7 +133,6 @@ namespace XRRemote
                 receivedTrackedImagesCount.text = $"Received {remotePacket.trackedImages[0].name}";
                 OnTrackedImagesReceived?.Invoke(this, EventArgs.Empty);
             }
-
         }
 
         private void InitializeCommandBuffer()

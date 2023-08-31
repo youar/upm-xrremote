@@ -112,7 +112,6 @@ namespace XRRemote
             {
                 if (mutableLibrary.IsTextureFormatSupported(entry.Key.format))
                 {
-                    //[review] does this need a try/catch?
                     try
                     {
                         Texture2D newImageTexture = entry.Key;
@@ -127,8 +126,6 @@ namespace XRRemote
 
                         JobHandle jobHandle = jobState.jobHandle;
                         jobHandle.Complete();
-
-                        //[review] collect identifier here for new entry to make join table with
 
                         if (jobState.status == AddReferenceImageJobStatus.Success)
                         {
@@ -180,7 +177,6 @@ namespace XRRemote
             trackables = new List<SerializableARTrackedImage>();
             foreach (ARTrackedImage image in currentlyTracking)
             {
-                //[review] should tracking state 'none' be included here??
                 if (image.trackingState != TrackingState.None) trackables.Add(new SerializableARTrackedImage(image));
             }
             if (trackables.Count == 0) return false;
