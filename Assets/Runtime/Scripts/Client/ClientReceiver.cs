@@ -55,6 +55,7 @@ namespace XRRemote
         private Material commandBufferMaterial;
 
         public GameObject sphere;
+        public GameObject cube;
 
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
@@ -194,6 +195,9 @@ namespace XRRemote
                 
                 sphere.GetComponent<Renderer>().material.SetTexture("_MainTex", this.rawImage.texture);
                 sphere.GetComponent<Renderer>().material.SetFloat("_MaxDistance", maxValue);
+
+                cube.GetComponent<Renderer>().material.SetTexture("_MainTex", this.rawImage.texture);
+                cube.GetComponent<Renderer>().material.SetFloat("_MaxDistance", maxValue);
             }
          
             PlanesInfoCheck(remotePacket);
@@ -201,6 +205,16 @@ namespace XRRemote
             if (remotePacket.touchPositionNormalized != null) {
                 OnInputDataReceived?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private GameObject AddGameObjectToOcclusionLayer(GameObject gameObject)
+        {
+            
+            if (gameObject.layer != LayerMask.NameToLayer("XRRemote-Occlusion"))
+            {
+                gameObject.layer = LayerMask.NameToLayer("XRRemote-Occlusion");
+            }
+            return gameObject;
         }
 
         private void PlanesInfoCheck(ServerRemotePacket remotePacket)

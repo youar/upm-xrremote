@@ -46,8 +46,9 @@ public static class SetupTools
             SerializedProperty layers = serializedObject.FindProperty("layers");
          
            // Add your layers here, these are just examples. Keep in mind: indices below 6 are the built in layers.
-            AddLayerAt(layers,  6, "Planes");
+            AddLayerAt(layers,  6, "XRRemote-Planes");
             AddLayerAt(layers,  7, "XRRemote-Debug");
+            AddLayerAt(layers,  8, "XRRemote-Occlusion");
  
             serializedObject.ApplyModifiedProperties();
             serializedObject.Update();
@@ -64,8 +65,9 @@ public static class SetupTools
         {
             if (camera.TryGetComponent<ARCameraManager>(out ARCameraManager cameraManager))
             {
-                camera.cullingMask |= 1 << LayerMask.NameToLayer("Planes");
+                camera.cullingMask |= 1 << LayerMask.NameToLayer("XRRemote-Planes");
                 camera.cullingMask |= 1 << LayerMask.NameToLayer("XRRemote-Debug");
+                camera.cullingMask |= 1 << LayerMask.NameToLayer("XRRemote-Occlusion");
             }
         }
     }
