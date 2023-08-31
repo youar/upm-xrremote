@@ -716,14 +716,25 @@ PrefabInstance:
     - target: {fileID: 4846495722108673735, guid: 517f6704c053ae949aea733f67930bed, type: 3}
       propertyPath: depthImageSender
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 4846495720645928110}
     - target: {fileID: 4846495722108673735, guid: 517f6704c053ae949aea733f67930bed, type: 3}
       propertyPath: occlusionManager
       value: 
       objectReference: {fileID: 2068114036}
     - target: {fileID: 6060822065895163597, guid: 517f6704c053ae949aea733f67930bed, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 517f6704c053ae949aea733f67930bed, type: 3}
+--- !u!114 &4846495720645928110 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3400869576873407345, guid: 517f6704c053ae949aea733f67930bed, type: 3}
+  m_PrefabInstance: {fileID: 4846495720645928109}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f6db2c0b87ae943b2ea1ecfe987844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

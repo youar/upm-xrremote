@@ -54,6 +54,8 @@ namespace XRRemote
         // [SerializeField] 
         private Material commandBufferMaterial;
 
+        public GameObject sphere;
+
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
@@ -129,11 +131,12 @@ namespace XRRemote
             return texture;
         }
 
-        Texture2D FromByteRFloatToTextureRFloat(int width, int height, byte[] array)
+        Texture2D FromByteRFloatToTextureRFloat(int width, int height, byte[] array, out float maxValue)
         {
             if (array.Length != 4 * width * height)
             {
                 Debug.LogError($"array is most-likely not RFloat: array.Length != 4*{width}*{height}");
+                maxValue = 0.0f;
                 return null;
             }
 
@@ -143,12 +146,16 @@ namespace XRRemote
                 depthTexture = new Texture2D(height, width, TextureFormat.RFloat, false);
             }
 
+            maxValue = 0.0f;
+
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
                     int index = (y * width + x) * 4;
                     float depthValue = BitConverter.ToSingle(array, index);
+
+                    if(depthValue >= maxValue) maxValue = depthValue; 
 
                     // Rotate 90 degrees clockwise
                     int newY = width - x - 1;
@@ -158,6 +165,7 @@ namespace XRRemote
                 }
             }
             depthTexture.Apply();
+            Debug.Log($"[FromByteRFloatToTextureRFloat]: maxDist {maxValue}");
             return depthTexture;
         }
 
@@ -181,7 +189,11 @@ namespace XRRemote
                 this.rawImage.texture = FromByteRFloatToTextureRFloat(
                     remotePacket.depthImage.width, 
                     remotePacket.depthImage.height, 
-                    byteArray);
+                    byteArray,
+                    out float maxValue);
+                
+                sphere.GetComponent<Renderer>().material.SetTexture("_MainTex", this.rawImage.texture);
+                sphere.GetComponent<Renderer>().material.SetFloat("_MaxDistance", maxValue);
             }
          
             PlanesInfoCheck(remotePacket);
