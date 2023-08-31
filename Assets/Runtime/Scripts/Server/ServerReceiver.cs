@@ -74,7 +74,6 @@ namespace XRRemote
                     OnImageLibraryReceived?.Invoke(this, EventArgs.Empty);  
                 }
             }
-            
         } 
 
         protected override void ProcessPacketData(byte[] bytes) 

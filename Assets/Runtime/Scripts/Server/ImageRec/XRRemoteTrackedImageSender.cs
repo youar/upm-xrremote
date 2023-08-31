@@ -110,37 +110,39 @@ namespace XRRemote
         {
             foreach (KeyValuePair<Texture2D, XRInfo> entry in reconstructedImages)
             {
-                // Debug.Log($"{entry.Key.format} is supported: {mutableLibrary.IsTextureFormatSupported(entry.Key.format)}");
-                try
+                if (mutableLibrary.IsTextureFormatSupported(entry.Key.format))
                 {
-
-                    Texture2D newImageTexture = entry.Key;
-                    string newImageName = entry.Value.name;
-                    float? newImageWidthInMeters = entry.Value.specifySize ? entry.Value.size.x : null;
-
-                    AddReferenceImageJobState jobState = mutableLibrary.ScheduleAddImageWithValidationJob(
-                        newImageTexture, 
-                        newImageName, 
-                        newImageWidthInMeters
-                    );
-
-                    JobHandle jobHandle = jobState.jobHandle;
-                    jobHandle.Complete();
-
-                    //[review] collect identifier here for new entry to make join table with
-
-                    if (jobState.status == AddReferenceImageJobStatus.Success)
+                    //[review] does this need a try/catch?
+                    try
                     {
-                        Debug.Log($"XRRemoteImageManager: Image {newImageName} added to library successfully.");
+                        Texture2D newImageTexture = entry.Key;
+                        string newImageName = entry.Value.name;
+                        float? newImageWidthInMeters = entry.Value.specifySize ? entry.Value.size.x : null;
+
+                        AddReferenceImageJobState jobState = mutableLibrary.ScheduleAddImageWithValidationJob(
+                            newImageTexture, 
+                            newImageName, 
+                            newImageWidthInMeters
+                        );
+
+                        JobHandle jobHandle = jobState.jobHandle;
+                        jobHandle.Complete();
+
+                        //[review] collect identifier here for new entry to make join table with
+
+                        if (jobState.status == AddReferenceImageJobStatus.Success)
+                        {
+                            Debug.Log($"XRRemoteImageManager: Image {newImageName} added to library successfully.");
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"XRRemoteImageManager: Failed to add image {newImageName} to library. {jobState.status}");
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Debug.LogWarning($"XRRemoteImageManager: Failed to add image {newImageName} to library. {jobState.status}");
+                        Debug.LogError($"XRRemoteImageManager: Failed to add image {entry.Value.name} to library. {e}");
                     }
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"XRRemoteImageManager: Failed to add image {entry.Value.name} to library. {e}");
                 }
             }
         }

@@ -33,6 +33,8 @@ using System.Xml;
 using System.Collections.Generic;
 using XRRemote.Serializables;
 using System.Linq;
+using UnityEditor;
+using UnityEngine.UI;
 
 namespace XRRemote
 {   
@@ -161,7 +163,7 @@ namespace XRRemote
             var trackableIds = receivedList.Select(entry => entry.trackableId);
 
             //delete no longer tracked images
-            var trackedImagesToDelete = currentlyTracking.Keys.Except(trackableIds);
+            var trackedImagesToDelete = currentlyTracking.Keys.Except(trackableIds).ToList();
             foreach (var entry in trackedImagesToDelete)
             {
                 GameObject trackedImage = currentlyTracking[entry];
@@ -173,43 +175,60 @@ namespace XRRemote
             var trackedImagesToAdd = trackableIds.Except(currentlyTracking.Keys);
             foreach (var entry in trackedImagesToAdd)
             {
-                SerializableARTrackedImage trackedImage = receivedList.Find(item => item.trackableId.Equals(entry));
-                if (hasUserPrefab)
-                {
-                    //spawn new user prefab
-                }
-                else
-                {
-                    Transform newTrackedImage = Instantiate(trackedImagePrefab);//spawn new default prefab
-                }
+                SerializableARTrackedImage remoteInstance = receivedList.Find(item => item.trackableId.Equals(entry));
+                Transform prefabToSpawn = hasUserPrefab ? manager.trackedImagePrefab.transform : trackedImagePrefab;
 
-                // GameObject newTrackedImage = Instantiate(trackedImagePrefab, trackedImage.pose.position, trackedImage.pose.rotation);
-                // newTrackedImage.transform.localScale = new Vector3(trackedImage.size.x, trackedImage.size.y, 1f);
-                // newTrackedImage.transform.parent = transform;
-                // currentlyTracking.Add(entry, newTrackedImage);
-                // GameObject go1; // = something;
-                // go1.transform.SetParent(Manager.gameObject.transform);
-                //[review] check if manager moves
+                Transform localInstance = Instantiate(prefabToSpawn);
+                localInstance.SetParent(manager.gameObject.transform);
+                SetTexture(localInstance, remoteInstance);
+                currentlyTracking.Add(entry, localInstance.gameObject);
             }
 
-            // trackedimageschanged
-            //     added : 
-            //     updated:
-            //     deleted: 
-
-
-
-
-
-
-            // var  = ClientReceiver.Instance.remotePacket.trackedImages
-            //     .Where(item => currentlyTracking.ContainsKey(item.trackableId));
-
-            
-
-            
-                
+            //update newly added && updated tracked images   
+            foreach (var entry in currentlyTracking)
+            {
+                SerializableARTrackedImage trackedImage = receivedList.Find(item => item.trackableId.Equals(entry.Key));
+                UpdatePose(entry.Value.transform, trackedImage);
+                if (!hasUserPrefab) UpdateText(entry.Value.transform, trackedImage);
+            }
         }
 
+        private void UpdatePose(Transform localInstance, SerializableARTrackedImage remoteInstance)
+        {
+            localInstance.transform.localScale = new Vector3(remoteInstance.size.x, 1f, remoteInstance.size.y); 
+                localInstance.position = remoteInstance.pose.position.ToVector3();
+                localInstance.rotation = new Quaternion(
+                    remoteInstance.pose.rotation.x, 
+                    remoteInstance.pose.rotation.y, 
+                    remoteInstance.pose.rotation.z, 
+                    remoteInstance.pose.rotation.w
+                );   
+        }
+
+        private void UpdateText(Transform localInstance, SerializableARTrackedImage remoteInstance)
+        {
+            GameObject go = localInstance.gameObject;
+            SerializableXRReferenceImage foundImage = serializedLibrary.FirstOrDefault(image => image.texName == remoteInstance.name);
+
+            var text = go.GetComponentInChildren<Text>();
+            text.text = string.Format(
+                "{0}\ntrackingState: {1}\nReference size: {2} cm\nDetected size: {3} cm",
+                remoteInstance.name,
+                remoteInstance.trackingState,//get name of state not number
+                foundImage.realSize.x * 100f,
+                remoteInstance.size.x * 100f);
+        }
+
+        private void SetTexture(Transform localInstance, SerializableARTrackedImage remoteInstance)
+        {
+            GameObject go = localInstance.gameObject;
+            SerializableXRReferenceImage foundImage = serializedLibrary.FirstOrDefault(image => image.texName == remoteInstance.name);
+
+            var material = go.GetComponentInChildren<MeshRenderer>().material;
+            var tex = new Texture2D((int)foundImage.texSize.x, (int)foundImage.texSize.y, (TextureFormat)Enum.Parse(typeof(TextureFormat), foundImage.texFormat), false);
+            tex.LoadRawTextureData(foundImage.texData);
+            Debug.Log($"Texture data is null: {foundImage.texData == null}");
+            material.mainTexture = tex;
+        }
     }
 }

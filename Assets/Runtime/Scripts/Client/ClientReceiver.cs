@@ -130,7 +130,7 @@ namespace XRRemote
         {
             if (remotePacket.trackedImages != null) 
             {
-                receivedTrackedImagesCount.text = $"Received Tracked Images: {remotePacket.trackedImages.Count}";
+                receivedTrackedImagesCount.text = $"Received {remotePacket.trackedImages[0].name}";
                 OnTrackedImagesReceived?.Invoke(this, EventArgs.Empty);
             }
 
