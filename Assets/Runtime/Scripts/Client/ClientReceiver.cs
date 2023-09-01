@@ -30,8 +30,6 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 using System.Collections.Generic;
-using UnityEngine.UI;
-using XRRemote.Serializables;
 
 namespace XRRemote
 {

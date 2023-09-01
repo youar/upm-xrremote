@@ -29,7 +29,6 @@ using System.IO;
 
 namespace XRRemote
 {
-
     using System.Runtime.Serialization.Formatters.Binary;
 
     //Extension class to provide serialize / deserialize methods to object.
