@@ -29,14 +29,15 @@ using System;
 using UnityEngine.UI;
 using XRRemote.Serializables;
 using Unity.Jobs;
+using System.Linq;
 
 namespace XRRemote
 {
     public class XRRemoteTrackedImageSender : MonoBehaviour
     {
         [SerializeField] private ARTrackedImageManager arTrackedImageManager;
-        [SerializeField] private Text imageNameText;
         [SerializeField] private Text libraryCountText;
+        private Dictionary<Texture2D, XRInfo> reconstructedImages;
         private bool supportsMutableLibraries => arTrackedImageManager.descriptor.supportsMutableLibrary;
 
         private void OnEnable()
@@ -95,7 +96,7 @@ namespace XRRemote
 
         private Dictionary<Texture2D, XRInfo> ReconstructLibrary(List<SerializableXRReferenceImage> serializedTextures)
         {
-            Dictionary<Texture2D, XRInfo> reconstructedImages = new Dictionary<Texture2D, XRInfo>();
+            reconstructedImages = new Dictionary<Texture2D, XRInfo>();
 
             foreach (SerializableXRReferenceImage texture in serializedTextures)
             {
@@ -151,21 +152,6 @@ namespace XRRemote
             arTrackedImageManager.enabled = true;
         }
 
-        private void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
-        {
-            
-            foreach (ARTrackedImage trackedImage in eventArgs.added)
-            {
-                string imageName = trackedImage.referenceImage.name;
-                imageNameText.text = $"{imageName} Detected";
-            }
-            foreach (ARTrackedImage trackedImage in eventArgs.updated)
-            {
-                string imageName = trackedImage.referenceImage.name;
-                imageNameText.text = $"{imageName} Detected";
-            }
-        }
-
         public bool TryGetTrackables(out List<SerializableARTrackedImage> trackables)
         {
             TrackableCollection<ARTrackedImage> currentlyTracking = arTrackedImageManager.trackables;
@@ -183,7 +169,60 @@ namespace XRRemote
             
             return true;
         }
-        
 
+        void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
+        {
+            foreach (var trackedImage in eventArgs.added)
+            {
+                // Give the initial image a reasonable default scale
+                trackedImage.transform.localScale = new Vector3(0.01f, 1f, 0.01f);
+                SetTexture(trackedImage);
+                UpdateInfo(trackedImage);
+            }
+
+            foreach (var trackedImage in eventArgs.updated)
+                UpdateInfo(trackedImage);
+        }
+
+        private void SetTexture(ARTrackedImage trackedImage)
+        {
+            GameObject go = trackedImage.gameObject;
+            var material = go.GetComponentInChildren<MeshRenderer>().material;
+            Texture2D tex = reconstructedImages.FirstOrDefault(item => item.Value.name == trackedImage.referenceImage.name).Key;
+            material.mainTexture = tex;
+        }
+
+        void UpdateInfo(ARTrackedImage trackedImage)
+        {
+            UpdateText(trackedImage);
+
+            var planeParentGo = trackedImage.transform.GetChild(0).gameObject;
+            var planeGo = planeParentGo.transform.GetChild(0).gameObject;
+
+
+            // Disable the visual plane if it is not being tracked
+            if (trackedImage.trackingState != TrackingState.None )
+            {
+                planeGo.SetActive(true);
+                trackedImage.transform.localScale = new Vector3(trackedImage.size.x, 1f, trackedImage.size.y);
+            }
+            else
+            {
+                planeGo.SetActive(false);
+            }
+        }
+
+        private void UpdateText(ARTrackedImage trackedImage)
+        {
+            GameObject go = trackedImage.gameObject;
+            var text = go.GetComponentInChildren<Text>();
+
+            text.text = string.Format(
+                "{0}\nTracking State: {1}\nReference size: {2} cm\nDetected size: {3} cm",
+                trackedImage.referenceImage.name,
+                trackedImage.trackingState,
+                trackedImage.referenceImage.size * 100f,
+                trackedImage.size * 100f);
+        }
     }
 }

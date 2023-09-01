@@ -63,8 +63,6 @@ namespace XRRemote
         public List<SerializableXRReferenceImage> serializedLibrary {get; private set;}
         private Dictionary<SerializableTrackableId, GameObject> currentlyTracking = new Dictionary<SerializableTrackableId, GameObject>();
 
-        public event EventHandler OnTrackedImagesChanged;
-
         public void OnEnable()
         {
             if (CheckDependencies())

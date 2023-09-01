@@ -605,7 +605,7 @@ GameObject:
   - component: {fileID: 881942178}
   - component: {fileID: 881942177}
   m_Layer: 7
-  m_Name: Detected Image Text
+  m_Name: Metadata Null Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -718,7 +718,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arTrackedImageManager: {fileID: 2068114036}
-  imageNameText: {fileID: 881942177}
   libraryCountText: {fileID: 730533640}
 --- !u!1 &1059935044
 GameObject:
@@ -1155,7 +1154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SerializedLibrary: {fileID: 0}
   m_MaxNumberOfMovingImages: 0
-  m_TrackedImagePrefab: {fileID: 0}
+  m_TrackedImagePrefab: {fileID: 3312728602301253215, guid: 0da3475b7e3d949e8a8a87a03495c5ed, type: 3}
 --- !u!1001 &5351868928895122609
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1235,6 +1234,10 @@ PrefabInstance:
       propertyPath: debugCanvas
       value: 
       objectReference: {fileID: 710770100}
+    - target: {fileID: 5351868928369061179, guid: dd49e472e4649443f8e0f690f7067227, type: 3}
+      propertyPath: metadataText
+      value: 
+      objectReference: {fileID: 881942177}
     - target: {fileID: 5351868928369061179, guid: dd49e472e4649443f8e0f690f7067227, type: 3}
       propertyPath: receivingCamera
       value: 
