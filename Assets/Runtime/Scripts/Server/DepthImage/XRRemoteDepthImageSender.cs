@@ -1,4 +1,28 @@
-            
+//-------------------------------------------------------------------------------------------------------
+// <copyright file="XRRemoteDepthImageSender.cs" createdby="razieleron">
+// 
+// XR Remote
+// Copyright(C) 2020  YOUAR, INC.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// https://www.gnu.org/licenses/agpl-3.0.html
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+// GNU Affero General Public License for more details.
+// You should have received a copy of the GNU Affero General Public License
+// along with this program. If not, see
+// <http://www.gnu.org/licenses/>.
+//
+// </copyright>
+//-------------------------------------------------------------------------------------------------------            
+using System.Diagnostics;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
@@ -10,6 +34,7 @@ namespace XRRemote
   public class XRRemoteDepthImageSender : MonoBehaviour
   {
     private AROcclusionManager occlusionManager;
+
     Texture2D texture = null;
 
     private void Awake()
@@ -33,20 +58,10 @@ namespace XRRemote
             rawImage.texture = texture;
 
             xrCpuImage.Dispose();
-
             return true;
         }
         depthImage = null;
         return false;
-    }
-
-    public void RenderDepthImage(RawImage rawImage, AROcclusionManager occlusionManager)
-    {
-        if (occlusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage xrCpuImage))
-        {
-            rawImage.texture = UpdateToXRCpuImage(xrCpuImage);
-            // Destroy(texture);
-        }
     }
 
     public Texture2D UpdateToXRCpuImage(XRCpuImage xRCpuImage){
