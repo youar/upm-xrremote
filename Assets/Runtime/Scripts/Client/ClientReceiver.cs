@@ -44,7 +44,6 @@ namespace XRRemote
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
-        private CommandBuffer depthImageCommandBuffer;
         
         // [SerializeField] 
         private Material commandBufferMaterial;

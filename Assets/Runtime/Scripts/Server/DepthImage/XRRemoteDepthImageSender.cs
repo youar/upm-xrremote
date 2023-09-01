@@ -21,8 +21,6 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------            
-using System.Diagnostics;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
