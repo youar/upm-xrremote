@@ -44,11 +44,10 @@ namespace XRRemote
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
-        
-        // [SerializeField] 
         private Material commandBufferMaterial;
-        public GameObject sphere;
-        public GameObject cube;
+        public Texture2D depthTexture;
+        public float maxValue;
+        public Material occlusionMaterial;
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
@@ -109,8 +108,10 @@ namespace XRRemote
                 return null;
             }
 
-            Texture2D depthTexture = new Texture2D(height, width, TextureFormat.RFloat, false);
-
+            if (depthTexture == null)
+            {
+            depthTexture = new Texture2D(height, width, TextureFormat.RFloat, false);
+            }
             maxValue = 0.0f;
 
             Color[] pixels = new Color[width * height];
@@ -131,11 +132,14 @@ namespace XRRemote
                     pixels[newY * height + newX] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
-
+            this.maxValue = maxValue;
             depthTexture.SetPixels(pixels);
             depthTexture.Apply();
 
+
+
             Debug.Log($"[FromByteRFloatToTextureRFloat]: maxDist {maxValue}");
+            Debug.Log($"[FromByteRFloatToTextureRFloat]: maxValue {this.maxValue}");
 
             return depthTexture;
         }
@@ -163,11 +167,20 @@ namespace XRRemote
                     byteArray,
                     out float maxValue);
                 
-                sphere.GetComponent<Renderer>().material.SetTexture("_MainTex", this.rawImage.texture);
-                sphere.GetComponent<Renderer>().material.SetFloat("_MaxDistance", maxValue);
-
-                cube.GetComponent<Renderer>().material.SetTexture("_MainTex", this.rawImage.texture);
-                cube.GetComponent<Renderer>().material.SetFloat("_MaxDistance", maxValue);
+                foreach (GameObject go in GameObject.FindObjectsOfType<GameObject>())
+                {
+                    if (go.layer == LayerMask.NameToLayer("XRRemote-Occlusion"))
+                    {
+                        Renderer renderer = go.GetComponent<Renderer>();
+                        renderer.material = occlusionMaterial;
+                        
+                        if (renderer != null)
+                        {
+                            renderer.material.SetTexture("_MainTex", depthTexture);
+                            renderer.material.SetFloat("_MaxDistance", maxValue);
+                        }
+                    }
+                }
             }
          
             PlanesInfoCheck(remotePacket);
@@ -191,7 +204,6 @@ namespace XRRemote
             videoCommandBuffer = new CommandBuffer();
 
             commandBufferMaterial = Resources.Load("XRVideoMaterial") as Material;
-            // commandBufferMaterial = new Material(Shader.Find("Unlit/XRRemoteVideo"));
             videoCommandBuffer.Blit(null, BuiltinRenderTextureType.CurrentActive, commandBufferMaterial);
             receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             videoCommandBufferInitialized = true;
