@@ -191,16 +191,6 @@ namespace XRRemote
             }
         }
 
-        private GameObject AddGameObjectToOcclusionLayer(GameObject gameObject)
-        {
-            
-            if (gameObject.layer != LayerMask.NameToLayer("XRRemote-Occlusion"))
-            {
-                gameObject.layer = LayerMask.NameToLayer("XRRemote-Occlusion");
-            }
-            return gameObject;
-        }
-
         private void PlanesInfoCheck(ServerRemotePacket remotePacket)
         {
             if (remotePacket.planesInfo != null) 
@@ -219,23 +209,6 @@ namespace XRRemote
             videoCommandBuffer.Blit(null, BuiltinRenderTextureType.CurrentActive, commandBufferMaterial);
             receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             videoCommandBufferInitialized = true;
-        }
-
-        private void InitializeDepthImageCommandBuffer()
-        {
-            depthImageCommandBuffer = new CommandBuffer();
-            depthImageCommandBuffer.name = "Depth Image Command Buffer";
-
-            // Assuming you have a Material that can handle the depth information
-            Material depthMaterial = Resources.Load("DepthMaterial") as Material;
-
-            depthImageCommandBuffer.SetGlobalTexture("_DepthTex", depthTexture);
-
-            // Insert additional logic here for processing the depth image
-
-            // Add the Command Buffer to the camera
-            receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, depthImageCommandBuffer);
-            depthImageCommandBufferInitialized = true;
         }
 
         private IEnumerator SetReceivingCamera()
@@ -260,14 +233,12 @@ namespace XRRemote
                             {
                                 receivingCamera = camera;
                                 InitializeCommandBuffer();
-                                InitializeDepthImageCommandBuffer();
                             }
                             else if (receivingCamera!=camera)
                             {
                                 receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
                                 receivingCamera = camera;
                                 InitializeCommandBuffer();
-                                InitializeDepthImageCommandBuffer();
                             }
                         }
                     });

@@ -1,20 +1,38 @@
 using UnityEngine;
 
-public class DepthTextureScript : MonoBehaviour
+public class XRRemoteOcclusionManager : MonoBehaviour
 {
-    public Material material;  // Assign the material using this shader in the Inspector.
-    public Texture2D depthTexture;  // Assume this is your depth texture.
-
+    public Material occlusionMaterial; 
+    public string targetLayerName = "XRRemote-Occlusion"; 
+    
+    
     void Start()
     {
-        // Make sure to assign the material and depthTexture either in the Inspector or via script.
-        if (material == null || depthTexture == null)
+        int targetLayer = LayerMask.NameToLayer(targetLayerName);
+        if (targetLayer == -1)
         {
-            Debug.LogError("Material or DepthTexture is not set.");
+            Debug.LogWarning("Layer name not found!");
             return;
         }
+        AssignMaterialToLayer(targetLayer);
+    }
 
-        // Set the shader's texture variable.
-        material.SetTexture("_MainTex", depthTexture);
+    void AssignMaterialToLayer(int targetLayer)
+    {
+        GameObject[] allGameObjects = GameObject.FindObjectsOfType<GameObject>();
+
+        foreach (GameObject go in allGameObjects)
+        {
+            if (go.layer == targetLayer)
+            {
+                Renderer renderer = go.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.material = occlusionMaterial;
+                }
+            }
+        }
     }
 }
+
+

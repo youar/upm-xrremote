@@ -83,9 +83,10 @@ namespace XRRemote
             ServerRemotePacket packet = new ServerRemotePacket();
 
             packet.cameraPose = arPoseDriver;
+            
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
-            if (depthImageSender.TryGetDepthImage(out SerializableDepthImage xrDepthImage)) {
+            if (depthImageSender.TryGetDepthImage(out SerializableDepthImage xrDepthImage, rawImage)) {
                 packet.depthImage = xrDepthImage;
             } else {
                 packet.depthImage = null;
@@ -97,7 +98,7 @@ namespace XRRemote
                 packet.planesInfo = null;
             }
             
-            depthImageSender.RenderDepthImage(rawImage, occlusionManager);
+            // depthImageSender.RenderDepthImage(rawImage, occlusionManager);
             return packet;
         }
 
