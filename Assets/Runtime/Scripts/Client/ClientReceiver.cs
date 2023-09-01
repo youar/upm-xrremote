@@ -114,23 +114,23 @@ namespace XRRemote
             commandBufferMaterial.SetTexture("_MainTex", texture);
         }
 
-        Texture2D RandomAlpha8(int width, int height)
-        {
-            Texture2D texture = new Texture2D(width, height, TextureFormat.Alpha8, false);
+        // Texture2D RandomAlpha8(int width, int height)
+        // {
+        //     Texture2D texture = new Texture2D(width, height, TextureFormat.Alpha8, false);
 
-            for (int y = 0; y < texture.height; y++)
-            {
-                for (int x = 0; x < texture.width; x++)
-                {
-                    float gray = UnityEngine.Random.Range(0, 9) / 8f;
-                    Color color = new Color(gray, gray, gray, gray);
-                    texture.SetPixel(x, y, color);
-                }
-            }
+        //     for (int y = 0; y < texture.height; y++)
+        //     {
+        //         for (int x = 0; x < texture.width; x++)
+        //         {
+        //             float gray = UnityEngine.Random.Range(0, 9) / 8f;
+        //             Color color = new Color(gray, gray, gray, gray);
+        //             texture.SetPixel(x, y, color);
+        //         }
+        //     }
 
-            texture.Apply();
-            return texture;
-        }
+        //     texture.Apply();
+        //     return texture;
+        // }
 
         Texture2D FromByteRFloatToTextureRFloat(int width, int height, byte[] array, out float maxValue)
         {
@@ -207,16 +207,6 @@ namespace XRRemote
             }
         }
 
-        private GameObject AddGameObjectToOcclusionLayer(GameObject gameObject)
-        {
-            
-            if (gameObject.layer != LayerMask.NameToLayer("XRRemote-Occlusion"))
-            {
-                gameObject.layer = LayerMask.NameToLayer("XRRemote-Occlusion");
-            }
-            return gameObject;
-        }
-
         private void PlanesInfoCheck(ServerRemotePacket remotePacket)
         {
             if (remotePacket.planesInfo != null) 
@@ -237,22 +227,22 @@ namespace XRRemote
             videoCommandBufferInitialized = true;
         }
 
-        private void InitializeDepthImageCommandBuffer()
-        {
-            depthImageCommandBuffer = new CommandBuffer();
-            depthImageCommandBuffer.name = "Depth Image Command Buffer";
+        // private void InitializeDepthImageCommandBuffer()
+        // {
+        //     depthImageCommandBuffer = new CommandBuffer();
+        //     depthImageCommandBuffer.name = "Depth Image Command Buffer";
 
-            // Assuming you have a Material that can handle the depth information
-            Material depthMaterial = Resources.Load("DepthMaterial") as Material;
+        //     // Assuming you have a Material that can handle the depth information
+        //     Material depthMaterial = Resources.Load("DepthMaterial") as Material;
 
-            depthImageCommandBuffer.SetGlobalTexture("_DepthTex", depthTexture);
+        //     depthImageCommandBuffer.SetGlobalTexture("_DepthTex", depthTexture);
 
-            // Insert additional logic here for processing the depth image
+        //     // Insert additional logic here for processing the depth image
 
-            // Add the Command Buffer to the camera
-            receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, depthImageCommandBuffer);
-            depthImageCommandBufferInitialized = true;
-        }
+        //     // Add the Command Buffer to the camera
+        //     receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, depthImageCommandBuffer);
+        //     depthImageCommandBufferInitialized = true;
+        // }
 
         private IEnumerator SetReceivingCamera()
         {
@@ -276,14 +266,12 @@ namespace XRRemote
                             {
                                 receivingCamera = camera;
                                 InitializeCommandBuffer();
-                                InitializeDepthImageCommandBuffer();
                             }
                             else if (receivingCamera!=camera)
                             {
                                 receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque,videoCommandBuffer);
                                 receivingCamera = camera;
                                 InitializeCommandBuffer();
-                                InitializeDepthImageCommandBuffer();
                             }
                         }
                     });

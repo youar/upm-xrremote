@@ -53,7 +53,7 @@ To get started using this Unity package, either include the following dependenci
 }
 ```
 
-or setup the same [Scoped Regisry](https://docs.unity3d.com/Manual/upm-scoped.html) and dependency via the Unity Package Manager. 
+or setup the same [Scoped Registry](https://docs.unity3d.com/Manual/upm-scoped.html) and dependency via the Unity Package Manager. 
 
 ##### Server application install
 
@@ -62,6 +62,8 @@ Either build the include sample scene, [`Server`](/Assets/Samples/Scenes/Server)
 ##### Client setup
 
 An example scene setup that uses upm-xrremote can be found in the (Client)[/Assets/Samples/Scenes/Client] scene. The prefabs and references in this scene show the general setup.
+
+If you desire to test object occlusion, XRRemote supports this through the XRRemote-Occlusion layer.  Simply click XRRemote -> Layer Utilities -> Create Layers and Setup Camera Culling Mask.  This will add the XRRemote-Occlusion layer to your project.  Assigning game objects to this layer will give them occlusion capabilities.
 
 #### Building the `Server` scene
 

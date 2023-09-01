@@ -12,12 +12,8 @@ namespace XRRemote
 {
   public class XRRemoteDepthImageSender : MonoBehaviour
   {
-    private SerializableDepthImage xrDepthImage = null;
     private AROcclusionManager occlusionManager;
-
-    // [SerializeField]
-    // private RawImage rawImage = null;
-
+    private RawImage rawImage;
     Texture2D texture = null;
 
     private void Awake()
@@ -31,12 +27,18 @@ namespace XRRemote
       return;
     }
 
-    public bool TryGetDepthImage(out SerializableDepthImage depthImage)
+    public bool TryGetDepthImage(out SerializableDepthImage depthImage, RawImage rawImage)
     {
         if (occlusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage xrCpuImage))
         {
-            var byteArray = UpdateToXRCpuImage(xrCpuImage).GetRawTextureData();
+            texture = UpdateToXRCpuImage(xrCpuImage);
+            var byteArray = texture.GetRawTextureData();
             depthImage = new SerializableDepthImage(xrCpuImage, byteArray);
+            rawImage.texture = texture;
+
+            
+            xrCpuImage.Dispose();
+
             return true;
         }
         depthImage = null;
@@ -48,6 +50,7 @@ namespace XRRemote
         if (occlusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage xrCpuImage))
         {
             rawImage.texture = UpdateToXRCpuImage(xrCpuImage);
+            // Destroy(texture);
         }
     }
 
@@ -72,6 +75,7 @@ namespace XRRemote
 
         xRCpuImage.Convert(conversionParams, textureData);
         texture.Apply();
+        xRCpuImage.Dispose();
         return texture; 
         }
     }
