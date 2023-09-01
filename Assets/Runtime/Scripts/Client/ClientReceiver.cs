@@ -47,16 +47,11 @@ namespace XRRemote
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
         private CommandBuffer depthImageCommandBuffer;
-        private bool depthImageCommandBufferInitialized = false;
-        private Material depthMaterial;
-        private Texture2D depthTexture;
         
         // [SerializeField] 
         private Material commandBufferMaterial;
-
         public GameObject sphere;
         public GameObject cube;
-
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
@@ -99,12 +94,6 @@ namespace XRRemote
                 receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             }
 
-            if (depthImageCommandBuffer != null && receivingCamera != null)
-            {
-                receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque, depthImageCommandBuffer);
-            }
-
-            depthImageCommandBufferInitialized = false;
             videoCommandBufferInitialized = false;
             StopCoroutine(SetReceivingCamera());
         }

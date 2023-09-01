@@ -41,7 +41,6 @@ namespace XRRemote
             }
 
             Instance = this;
-
             targetNdiSenderName = "ClientSender";
         }
 

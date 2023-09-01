@@ -44,7 +44,6 @@ Shader "Unlit/DepthGradient"
             #define DECLARE_SAMPLER_FLOAT(sampler)
             #define SAMPLE_TEXTURE2D(texture,sampler,texcoord) UNITY_SAMPLE_TEX2D(texture,texcoord)
 
-
             struct appdata
             {
                 float3 position : POSITION;
@@ -66,11 +65,9 @@ Shader "Unlit/DepthGradient"
                 real4 color : SV_Target;
             };
 
-
             CBUFFER_START(DisplayRotationPerFrame)
             float4x4 _DisplayRotationPerFrame;
             CBUFFER_END
-
 
             v2f vert (appdata v)
             {
@@ -85,14 +82,12 @@ Shader "Unlit/DepthGradient"
                 return o;
             }
 
-
             real3 HSVtoRGB(real3 arg1)
             {
                 real4 K = real4(1.0h, 2.0h / 3.0h, 1.0h / 3.0h, 3.0h);
                 real3 P = abs(frac(arg1.xxx + K.xyz) * 6.0h - K.www);
                 return arg1.z * lerp(K.xxx, saturate(P - K.xxx), arg1.y);
             }
-
 
             DECLARE_TEXTURE2D_FLOAT(_MainTex);
             DECLARE_SAMPLER_FLOAT(sampler_MainTex);

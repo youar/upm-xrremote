@@ -73,14 +73,12 @@ namespace XRRemote.Serializables
                 && propertyNameId.Equals(other.propertyNameId);
         }
 
-
         [StructLayout(LayoutKind.Explicit)]
         public struct TextureDescriptorUnion
         {
             [FieldOffset(0)] public SerializableTextureDescriptor a;
             [FieldOffset(0)] public XRTextureDescriptor b;
         }
-
 
         public static implicit operator XRTextureDescriptor(SerializableTextureDescriptor d)
         {

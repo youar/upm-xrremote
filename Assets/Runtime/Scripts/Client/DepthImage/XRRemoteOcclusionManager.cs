@@ -5,7 +5,6 @@ public class XRRemoteOcclusionManager : MonoBehaviour
     public Material occlusionMaterial; 
     public string targetLayerName = "XRRemote-Occlusion"; 
     
-    
     void Start()
     {
         int targetLayer = LayerMask.NameToLayer(targetLayerName);

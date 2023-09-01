@@ -79,7 +79,6 @@ Shader "Custom/DepthOcclusion"
                 UNITY_INITIALIZE_OUTPUT(v2f, o);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-
                 o.worldPose = mul(UNITY_MATRIX_M, float4(v.position, 1.0)).xyz; 
 
                 o.position = TransformObjectToHClip(v.position);

@@ -22,8 +22,6 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
-using UnityEngine;
-using Unity.Collections;
 using UnityEngine.XR.ARSubsystems;
 using static UnityEngine.XR.ARSubsystems.XRCpuImage;
 
@@ -36,7 +34,6 @@ namespace XRRemote.Serializables
         public int width;
         public int height;
         public int planeCount;
-        
         public Format format; 
 
         public SerializableDepthImage(XRCpuImage depthImage)

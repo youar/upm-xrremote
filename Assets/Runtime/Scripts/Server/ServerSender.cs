@@ -28,7 +28,6 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-
 namespace XRRemote
 {   
     [DisallowMultipleComponent]

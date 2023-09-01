@@ -1,19 +1,15 @@
             
-using System.Diagnostics;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using XRRemote.Serializables;
-using System;
 
 namespace XRRemote
 {
   public class XRRemoteDepthImageSender : MonoBehaviour
   {
     private AROcclusionManager occlusionManager;
-    private RawImage rawImage;
     Texture2D texture = null;
 
     private void Awake()
@@ -36,7 +32,6 @@ namespace XRRemote
             depthImage = new SerializableDepthImage(xrCpuImage, byteArray);
             rawImage.texture = texture;
 
-            
             xrCpuImage.Dispose();
 
             return true;
@@ -53,7 +48,6 @@ namespace XRRemote
             // Destroy(texture);
         }
     }
-
 
     public Texture2D UpdateToXRCpuImage(XRCpuImage xRCpuImage){
         if(texture == null || texture.width != xRCpuImage.width || texture.height != xRCpuImage.height){

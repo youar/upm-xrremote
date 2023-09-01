@@ -21,7 +21,6 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-
 using System;
 using UnityEngine;
 using System.Collections;
@@ -96,7 +95,6 @@ namespace XRRemote
             return packet;
         }
 
-
         //[review] slow update on server side.... something to do with this??
         private IEnumerator SendData()
         {
@@ -106,7 +104,5 @@ namespace XRRemote
                 yield return new WaitForSeconds(0.1f);        
             }
         }
-        
-
     }
 }
