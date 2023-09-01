@@ -114,24 +114,6 @@ namespace XRRemote
             commandBufferMaterial.SetTexture("_MainTex", texture);
         }
 
-        Texture2D RandomAlpha8(int width, int height)
-        {
-            Texture2D texture = new Texture2D(width, height, TextureFormat.Alpha8, false);
-
-            for (int y = 0; y < texture.height; y++)
-            {
-                for (int x = 0; x < texture.width; x++)
-                {
-                    float gray = UnityEngine.Random.Range(0, 9) / 8f;
-                    Color color = new Color(gray, gray, gray, gray);
-                    texture.SetPixel(x, y, color);
-                }
-            }
-
-            texture.Apply();
-            return texture;
-        }
-
         Texture2D FromByteRFloatToTextureRFloat(int width, int height, byte[] array, out float maxValue)
         {
             if (array.Length != 4 * width * height)
@@ -141,13 +123,11 @@ namespace XRRemote
                 return null;
             }
 
-            if (depthTexture == null)
-            {
-                // Note: The dimensions are switched because the image is being rotated
-                depthTexture = new Texture2D(height, width, TextureFormat.RFloat, false);
-            }
+            Texture2D depthTexture = new Texture2D(height, width, TextureFormat.RFloat, false);
 
             maxValue = 0.0f;
+
+            Color[] pixels = new Color[width * height];
 
             for (int y = 0; y < height; y++)
             {
@@ -156,17 +136,21 @@ namespace XRRemote
                     int index = (y * width + x) * 4;
                     float depthValue = BitConverter.ToSingle(array, index);
 
-                    if(depthValue >= maxValue) maxValue = depthValue; 
+                    if (depthValue >= maxValue) maxValue = depthValue;
 
                     // Rotate 90 degrees clockwise
                     int newY = width - x - 1;
                     int newX = y;
 
-                    depthTexture.SetPixel(newX, newY, new Color(depthValue, depthValue, depthValue, 1.0f));
+                    pixels[newY * height + newX] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
+
+            depthTexture.SetPixels(pixels);
             depthTexture.Apply();
+
             Debug.Log($"[FromByteRFloatToTextureRFloat]: maxDist {maxValue}");
+
             return depthTexture;
         }
 
