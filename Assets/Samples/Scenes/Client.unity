@@ -551,7 +551,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dea56a9eaadd1c439095de4f9a371cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SerializedLibrary: {fileID: 11400000, guid: 7c3475a1c169341ed86271d249422216, type: 2}
+  m_SerializedLibrary: {fileID: 11400000, guid: ceeb9fc5d83c34a82a1d351026e6016d, type: 2}
   m_MaxNumberOfMovingImages: 0
   m_TrackedImagePrefab: {fileID: 0}
 --- !u!1 &1887121327 stripped
@@ -797,11 +797,11 @@ PrefabInstance:
     - target: {fileID: 3745883731167663156, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
       propertyPath: renderMaterial
       value: 
-      objectReference: {fileID: 2100000, guid: ad69ea426bc934c55bb682a30a8fa97d, type: 2}
+      objectReference: {fileID: 2100000, guid: 339dac43495bce24eae90c3298ada403, type: 2}
     - target: {fileID: 3745883731167663156, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
       propertyPath: uiRenderTexture
       value: 
-      objectReference: {fileID: 8400000, guid: 9e33616511ac04637af9ebbf92d67edf, type: 2}
+      objectReference: {fileID: 8400000, guid: dceaada6319e81649a2eadb1afc53f6d, type: 2}
     - target: {fileID: 3745883731167663156, guid: fb3f3a2e6a0dd4c339cbf875d7f30bc7, type: 3}
       propertyPath: ndiSenderVisualizer
       value: 
