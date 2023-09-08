@@ -212,7 +212,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 354579861}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.46, y: 0, z: -1.93}
+  m_LocalPosition: {x: 0.54, y: 0, z: -1.45}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -329,7 +329,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 665324159}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 108b02927faec0c4581d6343e4963220, type: 3}
   m_Name: 
@@ -698,7 +698,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1744660420}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.723793, y: 0.3837628, z: 0.02414538}
+  m_LocalPosition: {x: -1.43, y: 0.3837628, z: -3.39}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -832,6 +832,10 @@ PrefabInstance:
       propertyPath: depthImageDisplay
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5359961724493276720, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: occlusionMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 596dc90e601b446488a682e9fc5c0f66, type: 2}
     - target: {fileID: 5359961724493276720, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: depthGradientMaterial
       value: 

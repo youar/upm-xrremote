@@ -41,12 +41,13 @@ namespace XRRemote
         public XRCameraIntrinsics cameraIntrinsics {get; private set;}
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
+
+        public event EventHandler OnDepthImageInfoReceived;
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
         private Material commandBufferMaterial;
         public Texture2D depthTexture;
-        public float maxValue;
         public Material occlusionMaterial;
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
@@ -99,51 +100,6 @@ namespace XRRemote
             commandBufferMaterial.SetTexture("_MainTex", texture);
         }
 
-        Texture2D FromByteRFloatToTextureRFloat(int width, int height, byte[] array, out float maxValue)
-        {
-            if (array.Length != 4 * width * height)
-            {
-                Debug.LogError($"array is most-likely not RFloat: array.Length != 4*{width}*{height}");
-                maxValue = 0.0f;
-                return null;
-            }
-
-            if (depthTexture == null)
-            {
-            depthTexture = new Texture2D(height, width, TextureFormat.RFloat, false);
-            }
-            maxValue = 0.0f;
-
-            Color[] pixels = new Color[width * height];
-
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    int index = (y * width + x) * 4;
-                    float depthValue = BitConverter.ToSingle(array, index);
-
-                    if (depthValue >= maxValue) maxValue = depthValue;
-
-                    // Rotate 90 degrees clockwise
-                    int newY = width - x - 1;
-                    int newX = y;
-
-                    pixels[newY * height + newX] = new Color(depthValue, depthValue, depthValue, 1.0f);
-                }
-            }
-            this.maxValue = maxValue;
-            depthTexture.SetPixels(pixels);
-            depthTexture.Apply();
-
-
-
-            Debug.Log($"[FromByteRFloatToTextureRFloat]: maxDist {maxValue}");
-            Debug.Log($"[FromByteRFloatToTextureRFloat]: maxValue {this.maxValue}");
-
-            return depthTexture;
-        }
-
         protected override void ProcessPacketData(byte[] bytes)
         {
             ServerRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(bytes);
@@ -151,37 +107,25 @@ namespace XRRemote
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
 
-            if (remotePacket.depthImage.texData == null)
-            {
-                Debug.Log("texData is null");
-            }
-            else
-            {
-                Debug.Log("texData is not null");
+            //XRRemoteOcclusionManager.Update(remotePacket?.depthImage);
+            // OnDepthImageInfoReceived?.Invoke(this, /*somethingelse*/ EventArgs.Empty); 
 
-                byte[] byteArray = remotePacket.depthImage.texData;
 
-                this.rawImage.texture = FromByteRFloatToTextureRFloat(
-                    remotePacket.depthImage.width, 
-                    remotePacket.depthImage.height, 
-                    byteArray,
-                    out float maxValue);
+
+            // if (remotePacket.depthImage.texData == null) 
+            // {
+            //     Debug.Log("texData is null");
+            // }
+            // else
+            // {    
                 
-                foreach (GameObject go in GameObject.FindObjectsOfType<GameObject>())
-                {
-                    if (go.layer == LayerMask.NameToLayer("XRRemote-Occlusion"))
-                    {
-                        Renderer renderer = go.GetComponent<Renderer>();
-                        renderer.material = occlusionMaterial;
-                        
-                        if (renderer != null)
-                        {
-                            renderer.material.SetTexture("_MainTex", depthTexture);
-                            renderer.material.SetFloat("_MaxDistance", maxValue);
-                        }
-                    }
-                }
-            }
+            //     // if (depthTexture == null)
+            //     // {
+            //     //     depthTexture = new Texture2D(remotePacket.depthImage.width, remotePacket.depthImage.height, TextureFormat.RFloat, false);
+            //     // }
+            //     // TextureHelper.PopulateTexture2DFromRBytes(depthTexture, remotePacket.depthImage.texData, out float maxDepthValue);
+            //     // OcclusionHelper.UpdateOcclusionMaterialOnGameObjects(maxDepthValue, occlusionMaterial, depthTexture);
+            // }
          
             PlanesInfoCheck(remotePacket);
 
@@ -190,6 +134,7 @@ namespace XRRemote
             }
         }
 
+
         private void PlanesInfoCheck(ServerRemotePacket remotePacket)
         {
             if (remotePacket.planesInfo != null) 
@@ -197,7 +142,6 @@ namespace XRRemote
                 OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
             } 
         }
-
         private void InitializeCommandBuffer()
         {   
             if (videoCommandBufferInitialized) return;
@@ -208,7 +152,6 @@ namespace XRRemote
             receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             videoCommandBufferInitialized = true;
         }
-
         private IEnumerator SetReceivingCamera()
         {
             while(true)
@@ -249,7 +192,6 @@ namespace XRRemote
                 yield return new WaitForSeconds(5f);
             }
         }
-
         private bool TrySetupTrackedPoseDriver()
         {
             TrackedPoseDriver trackedPoseDriver = FindObjectOfType<TrackedPoseDriver>();
@@ -271,7 +213,6 @@ namespace XRRemote
             }
             return false;
         }
-
         //required for editor script
         public void AddCameraManager()
         {
@@ -279,3 +220,5 @@ namespace XRRemote
         }
     }
 }
+
+

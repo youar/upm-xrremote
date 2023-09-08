@@ -40,7 +40,6 @@ namespace XRRemote
         [SerializeField] private ARCameraManager cameraManager = null;
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
-        [SerializeField] private AROcclusionManager occlusionManager = null;
         [SerializeField] private RawImage rawImage = null;
 
         private void Awake()
@@ -97,7 +96,7 @@ namespace XRRemote
                 packet.planesInfo = null;
             }
             
-            // depthImageSender.RenderDepthImage(rawImage, occlusionManager);
+
             return packet;
         }
 

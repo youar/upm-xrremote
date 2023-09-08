@@ -159,6 +159,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.YOUAR.upmxrremote
+    iPhone: com.YOUAR.upm-xrremote
   buildNumber:
     Standalone: 0
     iPhone: 0
@@ -492,9 +493,9 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: 
-  locationUsageDescription: 
-  microphoneUsageDescription: 
+  cameraUsageDescription: Do you allow this app to access this device's Camera?
+  locationUsageDescription: Do you allow this app to access this device's Location?
+  microphoneUsageDescription: Do you allow this app to access this device's Microphone?
   bluetoothUsageDescription: 
   switchNMETAOverride: 
   switchNetLibKey: 
@@ -735,7 +736,9 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: 
+    iPhone: UNITY_XR_ARKIT_LOADER_ENABLED
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
@@ -747,7 +750,7 @@ PlayerSettings:
   allowUnsafeCode: 0
   useDeterministicCompilation: 1
   enableRoslynAnalyzers: 1
-  selectedPlatform: 2
+  selectedPlatform: 3
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   gcIncremental: 1

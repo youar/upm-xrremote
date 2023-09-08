@@ -68,7 +68,7 @@ namespace XRRemote
             texture = new Texture2D(xRCpuImage.width, xRCpuImage.height, xRCpuImage.format.AsTextureFormat(), false);
         }
 
-        UnityEngine.Debug.Log($"[UpdateToXRCpuImage] xRCpuImage.format.AsTextureFormat(): {xRCpuImage.format.AsTextureFormat()}");
+        // UnityEngine.Debug.Log($"[UpdateToXRCpuImage] xRCpuImage.format.AsTextureFormat(): {xRCpuImage.format.AsTextureFormat()}");
         
         var conversionParams = new XRCpuImage.ConversionParams(xRCpuImage, xRCpuImage.format.AsTextureFormat(),XRCpuImage.Transformation.MirrorX);
         
@@ -82,7 +82,6 @@ namespace XRRemote
 
         xRCpuImage.Convert(conversionParams, textureData);
         texture.Apply();
-        xRCpuImage.Dispose();
         return texture; 
         }
     }
