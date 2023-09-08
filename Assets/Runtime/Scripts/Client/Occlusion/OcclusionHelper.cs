@@ -24,8 +24,6 @@
 using System;
 using UnityEngine;
 
-
-
 namespace XRRemote
 {
     public static class OcclusionHelper

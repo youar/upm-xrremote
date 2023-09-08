@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="XRRemoteOcclusionManager.cs" createdby="gblikas">
+// <copyright file="XRRemoteOcclusionManager.cs" createdby="Razieleron">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -22,7 +22,6 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using XRRemote.Serializables;
 
@@ -30,14 +29,13 @@ using XRRemote.Serializables;
 namespace XRRemote
 {
     /// <summary>
-    /// Manages a pool XR Occlusion Data
+    /// Manages the interpretation and application of XR Occlusion Data
     /// </summary>
     public class XRRemoteOcclusionManager : MonoBehaviour
     {
-        // [SerializeField] private Transform XRRemotePlaneVisualPrefab;
 
-        // [SerializeField] private List<XRRemotePlaneVisual> xrPlaneVisualList = new List<XRRemotePlaneVisual>();
-
+        public Texture2D depthTexture;
+        public Material occlusionMaterial;
 
         private void OnEnable()
         {
@@ -51,100 +49,26 @@ namespace XRRemote
             ClientReceiver.Instance.OnDepthImageInfoReceived -= CustomNdiReceiver_OnDepthImageInfoReceived;
         }
 
-
-        private void ProcessDepthImage(SerializableDepthImage img)
-        {
-            
-        }
-
-        private void CustomNdiReceiver_OnDepthImageInfoReceived(object sender, EventArgs e)
-        {
-            ProcessDepthImage(ClientReceiver.Instance.remotePacket.depthImage);
-        }
-
         /// <summary>
-        /// Create a new visual and add to list
+        /// Takes raw DepthTexture info from the received packet and applies it to the depthTexture and occlusionMaterial
         /// </summary>
-        private void AddVisuals(SerializableARPlane[] planes)
+        /// <param name="img"></param>
+        private void PopulateAndApplyDepthTextureInfo(SerializableDepthImage img)
         {
-            // Debug.Log("Planes = " + planes.Length);
-            foreach (SerializableARPlane plane in planes) {
-                Transform newVisualTransform = Instantiate(XRRemotePlaneVisualPrefab);
-                XRRemotePlaneVisual xrRemotePlaneVisual = newVisualTransform.GetComponent<XRRemotePlaneVisual>();
+            depthTexture = new Texture2D(img.width, img.height, TextureFormat.RFloat, false);
 
-                xrRemotePlaneVisual.Setup(plane);
-
-                xrPlaneVisualList.Add(xrRemotePlaneVisual);
+            if (img.texData == null) {
+                Debug.Log("texData is null");
+            }
+            else{
+                TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
+                OcclusionHelper.UpdateOcclusionMaterialOnGameObjects(maxDepthValue, occlusionMaterial, depthTexture);
             }
         }
 
-        /// <summary>
-        /// Find corresponding visual and tell it to update its data
-        /// </summary>
-        private void UpdateVisuals(SerializableARPlane[] planes)
+        public void CustomNdiReceiver_OnDepthImageInfoReceived(object sender, EventArgs e)
         {
-            foreach (SerializableARPlane plane in planes) {
-                Predicate<XRRemotePlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
-
-                List<XRRemotePlaneVisual> planeVisualsToUpdate = xrPlaneVisualList.FindAll(hasTrackableId);
-
-                if (planeVisualsToUpdate.Count == 0) {
-                    if (DebugFlags.displayXRRemotePlaneStats) {
-                        Debug.LogError($"XRRemotePlaneManager - UpdateVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
-                    }
-                } else if (planeVisualsToUpdate.Count > 1) {
-                    if (DebugFlags.displayXRRemotePlaneStats) {
-                        Debug.LogWarning($"XRRemotePlaneManager - UpdateVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
-                    }
-                }
-
-                foreach (XRRemotePlaneVisual planeVisual in planeVisualsToUpdate) {
-                    planeVisual.Setup(plane);
-
-                }
-            }
-        }
-
-        /// <summary>
-        /// Find corresponding visual and destroy the visual and remove it from the list
-        /// </summary>
-        private void RemoveVisuals(SerializableARPlane[] planes)
-        {
-            foreach (SerializableARPlane plane in planes) {
-                Predicate<XRRemotePlaneVisual> hasTrackableId = p => p.trackableId.Equals(plane.trackableId);
-
-                List<XRRemotePlaneVisual> planeVisualsToRemove = xrPlaneVisualList.FindAll(hasTrackableId);
-
-                if (planeVisualsToRemove.Count == 0) {
-                    if (DebugFlags.displayXRRemotePlaneStats) {
-                        Debug.LogError($"XRRemotePlaneManager - RemoveVisuals: No plane could be found with TrackableId " + plane.trackableId.ToString());
-                    }
-                } else if (planeVisualsToRemove.Count > 1) {
-                    if (DebugFlags.displayXRRemotePlaneStats) {
-                        Debug.LogWarning($"XRRemotePlaneManager - RemoveVisuals: Multiple planes found with TrackableId " + plane.trackableId.ToString());
-                    }
-                }
-
-                foreach (XRRemotePlaneVisual planeVisual in planeVisualsToRemove) {
-                    xrPlaneVisualList.Remove(planeVisual);
-                    Destroy(planeVisual.gameObject);
-                }
-            }
-        }
-
-        private void CustomNdiReceiver_OnDepthImageInfoReceived(object sender, EventArgs e)
-        {            
-            if (ClientReceiver.Instance.remotePacket.planesInfo.added != null) {
-                AddVisuals(ClientReceiver.Instance.remotePacket.planesInfo.added);
-            }
-
-            if (ClientReceiver.Instance.remotePacket.planesInfo.updated != null) {
-                UpdateVisuals(ClientReceiver.Instance.remotePacket.planesInfo.updated);
-            }
-
-            if (ClientReceiver.Instance.remotePacket.planesInfo.removed != null) {
-                RemoveVisuals(ClientReceiver.Instance.remotePacket.planesInfo.removed);
-            }
+            PopulateAndApplyDepthTextureInfo(ClientReceiver.Instance.remotePacket.depthImage);
         }
     }
 }

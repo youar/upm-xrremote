@@ -47,8 +47,8 @@ namespace XRRemote
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
         private Material commandBufferMaterial;
-        public Texture2D depthTexture;
-        public Material occlusionMaterial;
+        // public Texture2D depthTexture;
+        // public Material occlusionMaterial;
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
@@ -106,34 +106,22 @@ namespace XRRemote
             
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
-
-            //XRRemoteOcclusionManager.Update(remotePacket?.depthImage);
-            // OnDepthImageInfoReceived?.Invoke(this, /*somethingelse*/ EventArgs.Empty); 
-
-
-
-            // if (remotePacket.depthImage.texData == null) 
-            // {
-            //     Debug.Log("texData is null");
-            // }
-            // else
-            // {    
-                
-            //     // if (depthTexture == null)
-            //     // {
-            //     //     depthTexture = new Texture2D(remotePacket.depthImage.width, remotePacket.depthImage.height, TextureFormat.RFloat, false);
-            //     // }
-            //     // TextureHelper.PopulateTexture2DFromRBytes(depthTexture, remotePacket.depthImage.texData, out float maxDepthValue);
-            //     // OcclusionHelper.UpdateOcclusionMaterialOnGameObjects(maxDepthValue, occlusionMaterial, depthTexture);
-            // }
          
             PlanesInfoCheck(remotePacket);
+            ProcessAndApplyDepthImage(remotePacket);
 
             if (remotePacket.touchPositionNormalized != null) {
                 OnInputDataReceived?.Invoke(this, EventArgs.Empty);
             }
         }
 
+        private void ProcessAndApplyDepthImage(ServerRemotePacket remotePacket)
+        {
+            if (remotePacket.depthImage != null) 
+            {
+                OnDepthImageInfoReceived?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         private void PlanesInfoCheck(ServerRemotePacket remotePacket)
         {

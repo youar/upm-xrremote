@@ -47,16 +47,33 @@ namespace XRRemote
 
             Color[] pixels = new Color[dstWidth * dstHeight];
 
+            // for (int y = 0; y < dstHeight; y++)
+            // {
+            //     for (int x = 0; x < dstWidth; x++)
+            //     {
+            //         int index = (y * dstWidth + x) * 4;
+            //         float depthValue = BitConverter.ToSingle(rFloat, index);
+            //         if (depthValue >= maxValue) maxValue = depthValue;
+
+            //         // To rotate the image 90 degrees clockwise,
+            //         // x becomes y and y becomes (dstWidth - x - 1)
+            //         int newY = x;
+            //         int newX = dstWidth - y - 1;
+
+            //         pixels[newY * dstWidth + newX] = new Color(depthValue, depthValue, depthValue, 1.0f);
+            //     }
+            // }
+
             for (int y = 0; y < dstHeight; y++)
             {
-                int newY = dstHeight - y - 1; // flips
+                // int newY = dstHeight - y - 1; // flips
 
                 for (int x = 0; x < dstWidth; x++)
                 {
                     int index = (y * dstWidth + x) * 4;
                     float depthValue = BitConverter.ToSingle(rFloat, index);
                     if (depthValue >= maxValue) maxValue = depthValue;
-                    pixels[newY * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
+                    pixels[y * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
 
@@ -78,9 +95,9 @@ namespace XRRemote
 
         }
 
-        public static void PopulateTexture2DFromRBytes(Texture2D inTex, byte[] inRawData, out float fdsa)
+        public static void PopulateTexture2DFromRBytes(Texture2D inTex, byte[] inRawData, out float maxDepthValue)
         {
-            fdsa = 0.0f;
+            maxDepthValue = 0.0f;
             if (inRawData.Length != 4 * inTex.width * inTex.height)
             {
                 Debug.LogError($"array is most-likely not RFloat: array.Length != 4*{inTex.width}*{inTex.height}");
@@ -88,7 +105,7 @@ namespace XRRemote
                 return;
             }
             
-            Color[] pixels = FromRFloatBytesToColorArray(inRawData, inTex.width, inTex.height, out fdsa);
+            Color[] pixels = FromRFloatBytesToColorArray(inRawData, inTex.width, inTex.height, out maxDepthValue);
 
             inTex.SetPixels(pixels); 
             inTex.Apply();
