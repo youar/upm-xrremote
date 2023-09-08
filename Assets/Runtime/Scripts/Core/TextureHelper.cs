@@ -29,7 +29,6 @@ namespace XRRemote
 {
     public static class TextureHelper
     {
-
         private static Color[] FromRFloatBytesToColorArray(byte[] rFloat, int dstWidth, int dstHeight, out float maxValue)
         {
             maxValue = 0.0f;
@@ -39,60 +38,55 @@ namespace XRRemote
                 return null;
             }
 
-                // if (depthTexture == null)
-                // {
-                // depthTexture = new Texture2D(height, width, TextureFormat.RFloat, false);
-                // }
-                // maxValue = 0.0f;
-
             Color[] pixels = new Color[dstWidth * dstHeight];
-
-            // for (int y = 0; y < dstHeight; y++)
-            // {
-            //     for (int x = 0; x < dstWidth; x++)
-            //     {
-            //         int index = (y * dstWidth + x) * 4;
-            //         float depthValue = BitConverter.ToSingle(rFloat, index);
-            //         if (depthValue >= maxValue) maxValue = depthValue;
-
-            //         // To rotate the image 90 degrees clockwise,
-            //         // x becomes y and y becomes (dstWidth - x - 1)
-            //         int newY = x;
-            //         int newX = dstWidth - y - 1;
-
-            //         pixels[newY * dstWidth + newX] = new Color(depthValue, depthValue, depthValue, 1.0f);
-            //     }
-            // }
 
             for (int y = 0; y < dstHeight; y++)
             {
-                // int newY = dstHeight - y - 1; // flips
+                int newY = dstHeight - y - 1; // flips
 
                 for (int x = 0; x < dstWidth; x++)
                 {
                     int index = (y * dstWidth + x) * 4;
                     float depthValue = BitConverter.ToSingle(rFloat, index);
                     if (depthValue >= maxValue) maxValue = depthValue;
-                    pixels[y * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
+                    pixels[newY * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
 
             return pixels;
         }
 
-        private static void RotateTextureClockwise90Degrees()
+        private static Color[] FromRFloatBytesToColorArrayRotated90Clockwise(byte[] rFloat, int dstWidth, int dstHeight, out float maxValue)
         {
+            maxValue = 0.0f;
+            if (rFloat.Length != 4 * dstWidth * dstHeight)
+            {
+                Debug.LogError($"rFloat is most-likely not RFloat: rFloat.Length != 4*{dstWidth}*{dstHeight}");
+                return null;
+            }
 
-        }
+            Color[] rotatedPixels = new Color[dstWidth * dstHeight];
 
-        private static void RotateTextureClockwise180Degrees()
-        {
+            for (int y = 0; y < dstHeight; y++)
+            {
+                for (int x = 0; x < dstWidth; x++)
+                {
+                    int index = (y * dstWidth + x) * 4;
+                    float depthValue = BitConverter.ToSingle(rFloat, index);
 
-        }
+                    // Coordinates in rotated array
+                    int newY = x;
+                    int newX = dstHeight - y - 1;
 
-        private static void RotateTextureClockwise270Degrees()
-        {
+                    // New index calculation, taking the rotated dimensions into account
+                    int newIndex = newX * dstWidth + newY;
 
+                    if (depthValue >= maxValue) maxValue = depthValue;
+                    rotatedPixels[newIndex] = new Color(depthValue, depthValue, depthValue, 1.0f);
+                }
+            }
+
+            return rotatedPixels;
         }
 
         public static void PopulateTexture2DFromRBytes(Texture2D inTex, byte[] inRawData, out float maxDepthValue)
@@ -105,22 +99,10 @@ namespace XRRemote
                 return;
             }
             
-            Color[] pixels = FromRFloatBytesToColorArray(inRawData, inTex.width, inTex.height, out maxDepthValue);
+            Color[] pixels = FromRFloatBytesToColorArrayRotated90Clockwise(inRawData, inTex.width, inTex.height, out maxDepthValue);
 
             inTex.SetPixels(pixels); 
             inTex.Apply();
         }
-
-
-        // public static void PopulateTexture2DFromBytes(Texture2D inTex, byte[] inRawData, out float fdsa){
-            
-        //     fdsa = 0.0f;
-        //     // ⚠️ we have no idea how large "inTex" is, nor how large "inRawData" is. 
-        //     if (inTex.format != TextureFormat.RFloat) {
-        //         return;
-        //     }
-            
-        //     // fill the rest of this out. And also refactor the code so that the naming conventions for variables is more in line with
-        //     // what we talked about yesterday.   why did 
     }
 }
