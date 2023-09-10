@@ -72,6 +72,7 @@ namespace XRRemote
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
             DebugStatusCheck(remotePacket);
+            PlaneManagerStatusUpdate(remotePacket);
         }
 
         protected override void ReceiveTexture(RenderTexture texture)
@@ -86,6 +87,13 @@ namespace XRRemote
             {
                 UIRenderer.Instance.debugMode = remotePacket.debugMode;
             }
+        }
+
+        private void PlaneManagerStatusUpdate(ClientRemotePacket remotePacket)
+        {
+            if (sender == null) return;
+
+            sender.SetPlaneManagerState(remotePacket.planeManagerState);
         }
 
     }

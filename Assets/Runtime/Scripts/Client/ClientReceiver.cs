@@ -110,15 +110,10 @@ namespace XRRemote
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
 
-
             PlanesInfoCheck(remotePacket);
 
             if (remotePacket.touchPositionNormalized != null) {
                 OnInputDataReceived?.Invoke(this, EventArgs.Empty);
-            }
-
-            if (remotePacket.isHandshake) {
-                Debug.Log($"Handshake recieved! {remotePacket.planesInfo}");
             }
         }
 
