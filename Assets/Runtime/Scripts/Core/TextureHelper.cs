@@ -52,7 +52,6 @@ namespace XRRemote
                     pixels[newY * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
-            Debug.Log("We are in FromRFloatBytesToColorArray");
             return pixels;
         }
         public static void PopulateTexture2DFromRBytes(Texture2D inTex, byte[] inRawData, out float maxDepthValue)
