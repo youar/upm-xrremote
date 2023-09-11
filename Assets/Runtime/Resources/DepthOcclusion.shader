@@ -107,11 +107,6 @@ Shader "Custom/DepthOcclusion"
 
                 o.position = TransformObjectToHClip(v.position);
                 o.texcoord = mul(float3(v.texcoord, 1.0f), _DisplayRotationPerFrame).xy;
-                // float2  rotatedTexcoord = v.texcoord;
-                //         rotatedTexcoord.x = v.texcoord.y;
-                //         rotatedTexcoord.y = 1.0 - v.texcoord.x;
-                //         o.texcoord = rotatedTexcoord;
-
 
                 o.clipPosition = UnityObjectToClipPos(v.position);
                 o.depth = length(o.worldPose - _WorldSpaceCameraPos.xyz);  //(o.clipPosition.z / o.clipPosition.w) * 0.5 + 0.5; 

@@ -55,40 +55,6 @@ namespace XRRemote
             Debug.Log("We are in FromRFloatBytesToColorArray");
             return pixels;
         }
-
-        private static Color[] FromRFloatBytesToColorArrayRotated90Clockwise(byte[] rFloat, int dstWidth, int dstHeight, out float maxValue)
-        {
-            maxValue = 0.0f;
-            if (rFloat.Length != 4 * dstWidth * dstHeight)
-            {
-                Debug.LogError($"rFloat is most-likely not RFloat: rFloat.Length != 4*{dstWidth}*{dstHeight}");
-                return null;
-            }
-
-            Color[] pixels = new Color[dstWidth * dstHeight];
-
-            for (int y = 0; y < dstHeight; y++)
-            {
-                for (int x = 0; x < dstWidth; x++)
-                {
-                    int index = (y * dstWidth + x) * 4;
-                    float depthValue = BitConverter.ToSingle(rFloat, index);
-
-                    // Coordinates in rotated array
-                    int newY = dstWidth - x - 1;
-                    int newX = y;
-
-                    // New index calculation, taking the rotated dimensions into account
-                    int newIndex = newY * dstHeight + newX;
-
-                    if (depthValue >= maxValue) maxValue = depthValue;
-                    pixels[newIndex] = new Color(depthValue, depthValue, depthValue, 1.0f);
-                }
-            }
-            Debug.Log("We are in FromRFloatBytesToColorArrayRotated90Clockwise");
-            return pixels;
-        }
-
         public static void PopulateTexture2DFromRBytes(Texture2D inTex, byte[] inRawData, out float maxDepthValue)
         {
             maxDepthValue = 0.0f;
