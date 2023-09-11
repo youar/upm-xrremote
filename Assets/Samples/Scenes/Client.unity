@@ -334,8 +334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 108b02927faec0c4581d6343e4963220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  occlusionMaterial: {fileID: 2100000, guid: 596dc90e601b446488a682e9fc5c0f66, type: 2}
-  targetLayerName: XRRemote-Occlusion
 --- !u!1 &903469548
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,7 +623,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &1744660421
 CapsuleCollider:
   m_ObjectHideFlags: 0

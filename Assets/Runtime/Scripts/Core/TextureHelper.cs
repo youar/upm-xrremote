@@ -52,7 +52,7 @@ namespace XRRemote
                     pixels[newY * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
-
+            Debug.Log("We are in FromRFloatBytesToColorArray");
             return pixels;
         }
 
@@ -65,7 +65,7 @@ namespace XRRemote
                 return null;
             }
 
-            Color[] rotatedPixels = new Color[dstWidth * dstHeight];
+            Color[] pixels = new Color[dstWidth * dstHeight];
 
             for (int y = 0; y < dstHeight; y++)
             {
@@ -82,11 +82,11 @@ namespace XRRemote
                     int newIndex = newX * dstWidth + newY;
 
                     if (depthValue >= maxValue) maxValue = depthValue;
-                    rotatedPixels[newIndex] = new Color(depthValue, depthValue, depthValue, 1.0f);
+                    pixels[newIndex] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
-
-            return rotatedPixels;
+            Debug.Log("We are in FromRFloatBytesToColorArrayRotated90Clockwise");
+            return pixels;
         }
 
         public static void PopulateTexture2DFromRBytes(Texture2D inTex, byte[] inRawData, out float maxDepthValue)
@@ -99,7 +99,7 @@ namespace XRRemote
                 return;
             }
             
-            Color[] pixels = FromRFloatBytesToColorArrayRotated90Clockwise(inRawData, inTex.width, inTex.height, out maxDepthValue);
+            Color[] pixels = FromRFloatBytesToColorArray(inRawData, inTex.width, inTex.height, out maxDepthValue);
 
             inTex.SetPixels(pixels); 
             inTex.Apply();
