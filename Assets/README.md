@@ -1,3 +1,4 @@
+Readme
 # upm-xrremote
 
 ## About
@@ -14,10 +15,10 @@ AR Foundation did not ship with a "remote system", i.e. a way to pass AR session
 
 * [x] Plane Detection
   * You will need to add a user layer named **Planes** in order to view the planes. (Project Settings -> Tags and Layers)
+* [x] Image Recognition
 
-We're currently working on support for the following APIs: 
+We're currently working on support for the following APIs:
 
-* [ ] [Image Tracking](https://github.com/youar/upm-xrremote/issues/24)
 * [ ] Hand Tracking
 * [ ] Face Tracking
 * [ ] Human Pose Tracking
@@ -87,6 +88,25 @@ An example scene setup that uses upm-xrremote can be found in the (Client)[/Asse
 It is critical that your server scene and client scene come from the same commit tree; if not, there can be issues with serializing and deserializing data. 
 </details>
 
+## Supported XR API Instructions
+
+<details><summary>Image Recognition</summary>
+
+This system will utilize the reference library that is slotted on your `ARTrackedImageManager` component. For accurate identification of recognized images, use a unique 'Name' identifier for each entry in your `ReferenceImageLibrary`.
+
+Please note, due to Unity imposed constriction on the `MutableRuntimeReferenceImageLibrary` class, only certain Texture Formats are currently supported.
+
+Known supported formats include:
+
+* RGB24
+* RGBA32
+* ARGB32
+* BGRA32
+
+NO compressed formats are supported. As Unity defaults to compressed formats when importing textures, you will need to manually change your texture format to a supported option. You can determine if your end use case supports additional formats using the [GetSupportedTextureFormatAt](https://docs.unity3d.com/Packages/com.unity.xr.arsubsystems@4.2/api/UnityEngine.XR.ARSubsystems.MutableRuntimeReferenceImageLibrary.html#UnityEngine_XR_ARSubsystems_MutableRuntimeReferenceImageLibrary_GetSupportedTextureFormatAt_System_Int32_) method.  
+</details>
+
+
 ## Contributing 
 
 > For a list of issues and features to work on, please check out our [issues page](https://github.com/youar/upm-xrremote/issues). If you'd like to maintain, please reach out to [@gblikas](https://github.com/gblikas). Keep reading for more information on lifecycle, and dependencies.
@@ -129,3 +149,4 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http://www.gnu.org/licenses/>.
+
