@@ -107,6 +107,11 @@ Shader "Custom/DepthOcclusion"
 
                 o.position = TransformObjectToHClip(v.position);
                 o.texcoord = mul(float3(v.texcoord, 1.0f), _DisplayRotationPerFrame).xy;
+                // float2  rotatedTexcoord = v.texcoord;
+                //         rotatedTexcoord.x = v.texcoord.y;
+                //         rotatedTexcoord.y = 1.0 - v.texcoord.x;
+                //         o.texcoord = rotatedTexcoord;
+
 
                 o.clipPosition = UnityObjectToClipPos(v.position);
                 o.depth = length(o.worldPose - _WorldSpaceCameraPos.xyz);  //(o.clipPosition.z / o.clipPosition.w) * 0.5 + 0.5; 
@@ -138,6 +143,11 @@ Shader "Custom/DepthOcclusion"
                 // Convert to texture space
                 float2 texCoord = (ndc.xy + 1.0) / 2.0;
                 texCoord.y = 1.0 - texCoord.y;
+
+                // Rotate the texture 90 degrees clockwise    
+                float originalX = texCoord.x;
+                texCoord.x = 1.0 - texCoord.y;
+                texCoord.y = originalX;
 
                 // Sample the depth texture
                 float envDistance = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, texCoord).r;

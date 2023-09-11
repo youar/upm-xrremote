@@ -42,8 +42,8 @@ namespace XRRemote
 
             for (int y = 0; y < dstHeight; y++)
             {
-                int newY = dstHeight - y - 1; // flips
 
+                int newY = dstHeight - y - 1; // flips
                 for (int x = 0; x < dstWidth; x++)
                 {
                     int index = (y * dstWidth + x) * 4;
@@ -75,11 +75,11 @@ namespace XRRemote
                     float depthValue = BitConverter.ToSingle(rFloat, index);
 
                     // Coordinates in rotated array
-                    int newY = x;
-                    int newX = dstHeight - y - 1;
+                    int newY = dstWidth - x - 1;
+                    int newX = y;
 
                     // New index calculation, taking the rotated dimensions into account
-                    int newIndex = newX * dstWidth + newY;
+                    int newIndex = newY * dstHeight + newX;
 
                     if (depthValue >= maxValue) maxValue = depthValue;
                     pixels[newIndex] = new Color(depthValue, depthValue, depthValue, 1.0f);
