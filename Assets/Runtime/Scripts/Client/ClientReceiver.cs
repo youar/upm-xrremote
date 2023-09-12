@@ -41,7 +41,7 @@ namespace XRRemote
         public XRCameraIntrinsics cameraIntrinsics {get; private set;}
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
-
+        public event EventHandler OnCameraIntrinsicsReceived;
         public event EventHandler OnDepthImageInfoReceived;
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
@@ -103,32 +103,59 @@ namespace XRRemote
         protected override void ProcessPacketData(byte[] bytes)
         {
             ServerRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(bytes);
-            
             this.remotePacket = remotePacket;
-            this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
-         
-            PlanesInfoCheck(remotePacket);
-            ProcessAndApplyDepthImage(remotePacket);
 
-            if (remotePacket.touchPositionNormalized != null) {
-                OnInputDataReceived?.Invoke(this, EventArgs.Empty);
+            InvokeCameraIntrinsicsCallbacks(this.remotePacket);
+            InvokePlaneCallbacks(this.remotePacket);
+            InvokeDepthImageCallbacks(this.remotePacket);
+            InvokeTouchPositionCallbacks(this.remotePacket);
+        }
+
+        private void InvokeCameraIntrinsicsCallbacks(ServerRemotePacket remotePacket)
+        {
+            if (remotePacket.cameraIntrinsics != null)
+            {
+                OnCameraIntrinsicsReceived?.Invoke(this, EventArgs.Empty);
+            }
+            else 
+            {
+                Debug.Log("remotePacket.cameraIntrinsics is null");
             }
         }
 
-        private void ProcessAndApplyDepthImage(ServerRemotePacket remotePacket)
+        private void InvokeTouchPositionCallbacks(ServerRemotePacket remotePacket)
+        {
+            if (remotePacket.touchPositionNormalized != null) {
+                OnInputDataReceived?.Invoke(this, EventArgs.Empty);
+            }
+            else 
+            {
+                Debug.Log("remotePacket.touchPositionNormalized is null");
+            }
+        }
+
+        private void InvokeDepthImageCallbacks(ServerRemotePacket remotePacket)
         {
             if (remotePacket.depthImage != null) 
             {
                 OnDepthImageInfoReceived?.Invoke(this, EventArgs.Empty);
             }
+            else 
+            {
+                Debug.Log("remotePacket.depthImage is null");
+            }
         }
 
-        private void PlanesInfoCheck(ServerRemotePacket remotePacket)
+        private void InvokePlaneCallbacks(ServerRemotePacket remotePacket)
         {
             if (remotePacket.planesInfo != null) 
             {
                 OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
             } 
+            else 
+            {
+                Debug.Log("remotePacket.planesInfo is null");
+            }
         }
         private void InitializeCommandBuffer()
         {   

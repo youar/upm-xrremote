@@ -127,6 +127,7 @@ Shader "Custom/DepthOcclusion"
             real _MinDistance;
             real _MaxDistance;
 
+            //see how we can define this function to not return any color - 
             fragment_output frag (v2f i)
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);

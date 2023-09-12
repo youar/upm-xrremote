@@ -34,7 +34,7 @@ namespace XRRemote
     public class XRRemoteOcclusionManager : MonoBehaviour
     {
 
-        public Texture2D depthTexture;
+        public Texture2D depthTexture = null;
         public Material occlusionMaterial;
 
         private void OnEnable()
@@ -55,15 +55,14 @@ namespace XRRemote
         /// <param name="img"></param>
         private void PopulateAndApplyDepthTextureInfo(SerializableDepthImage img)
         {
-            depthTexture = new Texture2D(img.width, img.height, TextureFormat.RFloat, false);
+            if (img.texData == null) return;
+            if (depthTexture == null && img.width > 0 && img.height > 0)
+            {
+                depthTexture = new Texture2D(img.width, img.height, TextureFormat.RFloat, false);
+            }
 
-            if (img.texData == null) {
-                Debug.Log("texData is null");
-            }
-            else{
-                TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
-                OcclusionHelper.UpdateOcclusionMaterialOnGameObjects(maxDepthValue, occlusionMaterial, depthTexture);
-            }
+            TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
+            OcclusionHelper.UpdateOcclusionMaterialOnGameObjects(maxDepthValue, occlusionMaterial, depthTexture); 
         }
 
         public void CustomNdiReceiver_OnDepthImageInfoReceived(object sender, EventArgs e)
