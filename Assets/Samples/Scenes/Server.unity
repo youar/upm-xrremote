@@ -315,6 +315,7 @@ GameObject:
   - component: {fileID: 2068114034}
   - component: {fileID: 2068114033}
   - component: {fileID: 2068114035}
+  - component: {fileID: 2068114036}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -434,3 +435,4 @@ PrefabInstance:
       objectReference: {fileID: 586251445}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 517f6704c053ae949aea733f67930bed, type: 3}
+

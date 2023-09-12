@@ -22,14 +22,23 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using UnityEngine;
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
+using System;
+using UnityEngine.UI;
+using XRRemote.Serializables;
+using System.Collections.Generic;
+
 
 namespace XRRemote
 {
     public class ServerReceiver : CustomNdiReceiver
     {
         public static ServerReceiver Instance {get; private set;} = null;
-
         [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
+        public List<SerializableXRReferenceImage> serializedTextures {get; private set;}
+        public event EventHandler OnImageLibraryReceived;
+        public Text debugText;
      
         private void Awake()
         {
@@ -55,10 +64,25 @@ namespace XRRemote
             Instance = null;
         }
 
+        private void ImageLibraryCheck(ClientRemotePacket remotePacket)
+        {
+            if (remotePacket.referenceImageLibraryTextures != null)
+            {
+                if (serializedTextures == null) 
+                {
+                    serializedTextures = remotePacket.referenceImageLibraryTextures;
+                    OnImageLibraryReceived?.Invoke(this, EventArgs.Empty);  
+                }
+            }
+        } 
+
         protected override void ProcessPacketData(byte[] bytes) 
         {
+            Debug.Log("ServerReceiver: Processing packet data.");
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
+            debugText.text = $"Library received count: {remotePacket.referenceImageLibraryTextures?.Count}."; //[delete]
+            ImageLibraryCheck(remotePacket);
         }
 
         protected override void ReceiveTexture(RenderTexture texture)

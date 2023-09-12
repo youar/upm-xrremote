@@ -33,11 +33,12 @@ namespace XRRemote
 
     public class ClientSender : CustomNdiSender
     {    
-        [SerializeField] 
-        public Camera uiCamera = null;
+        // [SerializeField] public Camera uiCamera = null;
         public static ClientSender Instance { get; private set; }
+
         //exists just for testing UI image
-        public Material renderMaterial;
+        [SerializeField] private Material renderMaterial;
+        [SerializeField] private RenderTexture uiRenderTexture;
 
         private void Awake()
         {
@@ -57,6 +58,7 @@ namespace XRRemote
 
             ClientSender.Instance = this;
             ndiSenderName = "ClientSender";
+    
         }
 
         private void OnEnable()
@@ -69,44 +71,31 @@ namespace XRRemote
             StopCoroutine(SendData());
         }
 
-        private void OnValidate()
-        {
-            if (uiCamera == null)
-            {
-                //may pull wrong camera if multiple in scene?? refine later
-                uiCamera = FindAnyObjectByType<Camera>();
-            }
-        } 
-
-        // private void ClientSender_OnNdiInitialized(object sender, EventArgs e)
-        // {
-        //     //set ui camera to render to NDI Init texture
-        //     uiCamera.targetTexture = renderTexture;
-        // }
-
         protected override Material GetCameraFrameMaterial()
         {
-            renderMaterial.mainTexture = new RenderTexture(200, 200, 0, RenderTextureFormat.ARGB32);
+            renderMaterial.mainTexture = uiRenderTexture;
             return renderMaterial;
         }
 
         protected override RemotePacket GetPacketData()
         {
             ClientRemotePacket packet = new ClientRemotePacket();
+            if (XRRemoteImageManager.Instance.serializedLibrary != null)
+            {
+                packet.referenceImageLibraryTextures = XRRemoteImageManager.Instance.serializedLibrary;
+            } 
+            if (UIRenderer.Instance != null) packet.debugMode = UIRenderer.Instance.debugMode;
             return packet;
         }
 
-
-        //[review] slow update on server side.... something to do with this??
         private IEnumerator SendData()
         {
             while (true)
-            {
+            {           
+                yield return new WaitForSeconds(0.1f);     
                 OnCameraFrameReceived();
-                yield return new WaitForSeconds(0.1f);        
             }
         }
         
-
     }
 }

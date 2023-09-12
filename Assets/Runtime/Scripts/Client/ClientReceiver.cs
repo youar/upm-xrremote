@@ -30,6 +30,7 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace XRRemote
 {
@@ -42,6 +43,7 @@ namespace XRRemote
         public XRCameraIntrinsics cameraIntrinsics {get; private set;}
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
+        public event EventHandler OnTrackedImagesReceived;
 
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
@@ -106,6 +108,7 @@ namespace XRRemote
             this.remotePacket = remotePacket;
             this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
 
+            TrackedImagesCheck(remotePacket);
             PlanesInfoCheck(remotePacket);
 
             if (remotePacket.touchPositionNormalized != null) {
@@ -119,6 +122,14 @@ namespace XRRemote
             {
                 OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
             } 
+        }
+
+        private void TrackedImagesCheck(ServerRemotePacket remotePacket)
+        {
+            if (remotePacket.trackedImages != null) 
+            {
+                OnTrackedImagesReceived?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void InitializeCommandBuffer()
