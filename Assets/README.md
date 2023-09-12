@@ -92,7 +92,7 @@ It is critical that your server scene and client scene come from the same commit
 
 <details><summary>Image Recognition</summary>
 
-This system will utilize the reference library that is slotted on your `ARTrackedImageManager` component. For accurate identification of recognized images, use a unique 'Name' identifier for each entry in your `ReferenceImageLibrary`.
+This system will utilize the reference library that is slotted on your `ARTrackedImageManager` component. For accurate identification of recognized images, use a unique 'Name' identifier for each entry in your `ReferenceImageLibrary`. In some instances, for appropriate detection of image, the 'Non Power of 2' setting on the texture must be set to 'None'.
 
 Please note, due to Unity imposed constriction on the `MutableRuntimeReferenceImageLibrary` class, only certain Texture Formats are currently supported.
 
@@ -149,4 +149,3 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http://www.gnu.org/licenses/>.
-

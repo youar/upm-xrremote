@@ -49,8 +49,15 @@ namespace XRRemote
         private void OnDisable()
         {
             ServerReceiver.Instance.OnImageLibraryReceived -= XRRemoteTrackedImageSender_OnImageLibraryReceived;
-            arTrackedImageManager.trackedImagesChanged -= OnTrackedImagesChanged;
-            
+            arTrackedImageManager.trackedImagesChanged -= OnTrackedImagesChanged; 
+        }
+
+        private void OnDestroy() 
+        {
+            foreach (Texture2D tex in reconstructedImages.Keys)
+            {
+                Destroy(tex);
+            }
         }
 
         private void Update()

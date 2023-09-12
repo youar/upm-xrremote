@@ -52,8 +52,6 @@ namespace XRRemote
         // [SerializeField] 
         private Material commandBufferMaterial;
 
-        [SerializeField] private Text receivedTrackedImagesCount;
-
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
 
@@ -130,7 +128,6 @@ namespace XRRemote
         {
             if (remotePacket.trackedImages != null) 
             {
-                receivedTrackedImagesCount.text = $"Received {remotePacket.trackedImages[0].name}";
                 OnTrackedImagesReceived?.Invoke(this, EventArgs.Empty);
             }
         }

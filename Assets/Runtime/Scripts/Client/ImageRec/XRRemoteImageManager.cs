@@ -62,6 +62,7 @@ namespace XRRemote
 
         public List<SerializableXRReferenceImage> serializedLibrary {get; private set;}
         private Dictionary<SerializableTrackableId, GameObject> currentlyTracking = new Dictionary<SerializableTrackableId, GameObject>();
+        private List<Texture2D> texPool = new List<Texture2D>();
 
         public void OnEnable()
         {
@@ -76,6 +77,14 @@ namespace XRRemote
         {
             StopAllCoroutines();
             ClientReceiver.Instance.OnTrackedImagesReceived -= ClientReceiver_OnTrackedImagesReceived;
+        }
+
+        public void OnDestroy()
+        {
+            foreach (var tex in texPool)
+            {
+                if (tex != null) Destroy(tex);
+            }
         }
 
         private bool CheckDependencies()
@@ -225,6 +234,7 @@ namespace XRRemote
             tex.LoadRawTextureData(foundImage.texData);
             tex.Apply();
             material.mainTexture = tex;
+            texPool.Add(tex);
         }
     }
 }
