@@ -82,15 +82,6 @@ namespace XRRemote
             if (supportsMutableLibraries)
             {
                 var mutableLibrary = arTrackedImageManager.CreateRuntimeLibrary() as MutableRuntimeReferenceImageLibrary;
-                // [delete]
-                // int supportedFormatCount = mutableLibrary.supportedTextureFormatCount;
-                // Debug.Log($"XRRemoteImageManager: Mutable library supports {supportedFormatCount} texture formats.");
-                // for (int i = 0; i < supportedFormatCount; i++)
-                // {
-                //     TextureFormat supportedFormat = mutableLibrary.GetSupportedTextureFormatAt(i);
-                //     Debug.Log($"Supported Texture Format {i}: {supportedFormat}");
-                // }
-
                 AddImagesToLibrary(mutableLibrary, ReconstructLibrary(serializedTextures));
                 InitializeNativeImageManager(mutableLibrary);
             }
