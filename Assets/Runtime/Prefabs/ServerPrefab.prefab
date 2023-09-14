@@ -1,5 +1,51 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4654269541389988935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5094176366943091428}
+  - component: {fileID: 547486748552101365}
+  m_Layer: 0
+  m_Name: XRRemote Tracked Image Sender
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5094176366943091428
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4654269541389988935}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4846495722108673732}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &547486748552101365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4654269541389988935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b8221abfdf8d4541bea21e66ce0155f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arTrackedImageManager: {fileID: 0}
+  libraryCountText: {fileID: 3374602345314310940}
 --- !u!1 &4846495720464363048
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,6 +159,7 @@ MonoBehaviour:
   rawImage: {fileID: 2169601889529695677}
   receiverNameText: {fileID: 2169601887987378727}
   aspectRatio: 0
+  debugText: {fileID: 3374602345314310940}
 --- !u!1 &4846495721684604861
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,6 +235,7 @@ Transform:
   m_Children:
   - {fileID: 4846495721684604860}
   - {fileID: 4846495721133313058}
+  - {fileID: 5094176366943091428}
   m_Father: {fileID: 4846495720464363051}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -205,6 +253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
   ndiSenderVisualizer: {fileID: 2169601888815401443}
+  trackedImageSender: {fileID: 547486748552101365}
   planeSender: {fileID: 4846495721684604863}
   cameraManager: {fileID: 0}
   arPoseDriver: {fileID: 0}
@@ -302,5 +351,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e098e42005610b42a68777a449ec110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3374602345314310940 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7896719836274821990, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
+  m_PrefabInstance: {fileID: 4846495720625787002}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

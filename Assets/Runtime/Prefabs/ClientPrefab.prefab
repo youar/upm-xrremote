@@ -1,5 +1,51 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4633020453374594960
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7158328611274569172}
+  - component: {fileID: 4733307066541104890}
+  m_Layer: 0
+  m_Name: XRRemote Tracked Image Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7158328611274569172
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4633020453374594960}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5359961724493276718}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4733307066541104890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4633020453374594960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76b7f5961edf24031ae5a6ad00608247, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 0}
+  trackedImagePrefab: {fileID: 3312728602301253200, guid: 0da3475b7e3d949e8a8a87a03495c5ed, type: 3}
 --- !u!1 &5359961723421276231
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,6 +318,7 @@ Transform:
   m_Children:
   - {fileID: 5359961723421276232}
   - {fileID: 5359961723666342182}
+  - {fileID: 7158328611274569172}
   m_Father: {fileID: 5359961725213951428}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -474,8 +521,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
   ndiSenderVisualizer: {fileID: 1674115889351523814}
-  uiCamera: {fileID: 5359961724079359972}
-  renderMaterial: {fileID: 0}
+  renderMaterial: {fileID: 2100000, guid: 339dac43495bce24eae90c3298ada403, type: 2}
+  uiRenderTexture: {fileID: 8400000, guid: dceaada6319e81649a2eadb1afc53f6d, type: 2}
 --- !u!1001 &5359961724225086591
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -483,6 +530,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5359961725213951428}
     m_Modifications:
+    - target: {fileID: 5050498488435957359, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
+      propertyPath: debugCanvas
+      value: 
+      objectReference: {fileID: 1674115889102704042}
     - target: {fileID: 6726635402123743944, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -533,6 +584,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
+--- !u!223 &1674115889102704042 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 6726635401717328341, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
+  m_PrefabInstance: {fileID: 5359961724225086591}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1674115889351523814 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6726635401492175257, guid: 35758d0233d19416eaf54cfc079161da, type: 3}

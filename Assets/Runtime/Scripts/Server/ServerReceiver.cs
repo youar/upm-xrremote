@@ -38,7 +38,6 @@ namespace XRRemote
         [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
         public List<SerializableXRReferenceImage> serializedTextures {get; private set;}
         public event EventHandler OnImageLibraryReceived;
-        public Text debugText;
      
         private void Awake()
         {
@@ -81,7 +80,6 @@ namespace XRRemote
             Debug.Log("ServerReceiver: Processing packet data.");
             ClientRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ClientRemotePacket>(bytes);
             this.remotePacket = remotePacket;
-            debugText.text = $"Library received count: {remotePacket.referenceImageLibraryTextures?.Count}."; //[delete]
             ImageLibraryCheck(remotePacket);
         }
 
