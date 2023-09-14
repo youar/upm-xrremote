@@ -159,7 +159,6 @@ MonoBehaviour:
   rawImage: {fileID: 2169601889529695677}
   receiverNameText: {fileID: 2169601887987378727}
   aspectRatio: 0
-  debugText: {fileID: 3374602345314310940}
 --- !u!1 &4846495721684604861
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,6 +264,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4846495720464363051}
     m_Modifications:
+    - target: {fileID: 5050498488435957359, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
+      propertyPath: debugCanvas
+      value: 
+      objectReference: {fileID: 2169601888527612335}
     - target: {fileID: 6726635402123743944, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -326,6 +329,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &2169601888527612335 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 6726635401717328341, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
+  m_PrefabInstance: {fileID: 4846495720625787002}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2169601888815401443 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6726635401492175257, guid: 35758d0233d19416eaf54cfc079161da, type: 3}
