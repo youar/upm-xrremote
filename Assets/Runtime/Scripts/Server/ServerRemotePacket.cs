@@ -34,5 +34,32 @@ namespace XRRemote
         public SerializablePlanesInfo planesInfo;
         public SerializableFloat2 touchPositionNormalized = null;
         public SerializableXRCameraIntrinsics cameraIntrinsics = null;
+
+        public override string ToString()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("ServerRemotePacket");
+            if (cameraPose != null) {
+                sb.AppendLine($"cameraPose: {cameraPose}");
+            } else {
+                sb.AppendLine($"cameraPose: No cameraPose added");
+            }
+            if (planesInfo != null) {
+                sb.AppendLine($"planesInfo: {planesInfo}");
+            } else {
+                sb.AppendLine($"planesInfo: No planesInfo added");
+            }
+            if (touchPositionNormalized != null) {
+                sb.AppendLine($"touchPositionNormalized: {planesInfo}");
+            } else {
+                sb.AppendLine($"touchPositionNormalized: No touchPositionNormalized added");
+            }
+            if (cameraIntrinsics != null) {
+                sb.AppendLine($"cameraIntrinsics: {planesInfo}");
+            } else {
+                sb.AppendLine($"cameraIntrinsics: No cameraIntrinsics added");
+            }
+            return sb.ToString();
+        }
     }
 }

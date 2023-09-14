@@ -38,6 +38,7 @@ namespace XRRemote.Serializables
         {
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("PlanesInfo");
+            sb.AppendLine($"isHandshake: {isHandshake}");
             if (added != null) {
                 foreach (var f in added)
                 {
