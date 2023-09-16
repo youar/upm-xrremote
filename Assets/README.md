@@ -63,7 +63,7 @@ Either build the include sample scene, [`Server`](/Assets/Samples/Scenes/Server)
 
 An example scene setup that uses upm-xrremote can be found in the (Client)[/Assets/Samples/Scenes/Client] scene. The prefabs and references in this scene show the general setup.
 
-If you desire to test object occlusion, XRRemote supports this through the XRRemote-Occlusion layer.  Simply click XRRemote -> Layer Utilities -> Create Layers and Setup Camera Culling Mask.  This will add the XRRemote-Occlusion layer to your project.  Assigning game objects to this layer will give them occlusion capabilities.
+If you desire to test object occlusion, XRRemote supports this through the XRRemote-Occlusion layer.  Simply click XRRemote -> Layer Utilities -> Create Layers and Setup Camera Culling Mask.  This will add the XRRemote-Occlusion layer to your project.  Assigning game objects to this layer will give them occlusion capabilities.  **NOTE** If there are any other materials on the object, the occlusion may not work due to how the shaders interact.  If you would like to edit the Material/Shader behavior, you can find them in the project under Assets/Runtime/Materials/DepthOcclusionMaterial and Assets/Runtime/Resources/DepthOcclusion.shader respectively.
 
 #### Building the `Server` scene
 
