@@ -27,6 +27,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using System.Collections.Generic;
 
 namespace XRRemote
 {   
@@ -34,7 +35,8 @@ namespace XRRemote
     [Serializable]
 
     public class ServerSender : CustomNdiSender
-    {    
+    {           
+        [SerializeField] private XRRemoteTrackedImageSender trackedImageSender = null;
         [SerializeField] private XRRemotePlaneSender planeSender = null;
         [SerializeField] private XRRemoteDepthImageSender depthImageSender = null;
         [SerializeField] private ARCameraManager cameraManager = null;
@@ -81,7 +83,6 @@ namespace XRRemote
             ServerRemotePacket packet = new ServerRemotePacket();
 
             packet.cameraPose = arPoseDriver;
-            
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
             if (depthImageSender.TryGetDepthImage(out SerializableDepthImage xrDepthImage, rawImage)) {
@@ -95,7 +96,8 @@ namespace XRRemote
             } else {
                 packet.planesInfo = null;
             }
-            
+
+            packet.trackedImages = trackedImageSender.TryGetTrackables(out List<SerializableARTrackedImage> trackables) ? trackables : null;
 
             return packet;
         }
