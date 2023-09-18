@@ -60,7 +60,6 @@ namespace XRRemote
             if (inRawData.Length != 4 * inTex.width * inTex.height)
             {
                 Debug.LogError($"array is most-likely not RFloat: array.Length != 4*{inTex.width}*{inTex.height}");
-                // maxPixelValue = 0.0f;
                 return;
             }
             

@@ -47,8 +47,7 @@ namespace XRRemote
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
         private Material commandBufferMaterial;
-        // public Texture2D depthTexture;
-        // public Material occlusionMaterial;
+
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
