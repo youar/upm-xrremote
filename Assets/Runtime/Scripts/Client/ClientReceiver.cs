@@ -30,6 +30,7 @@ using UnityEngine.Rendering;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace XRRemote
 {
@@ -39,10 +40,13 @@ namespace XRRemote
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
         public XRCameraIntrinsics cameraIntrinsics {get; private set;}
+        
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
         public event EventHandler OnCameraIntrinsicsReceived;
         public event EventHandler OnDepthImageInfoReceived;
+        public event EventHandler OnTrackedImagesReceived;
+
         private Camera receivingCamera;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
@@ -108,6 +112,7 @@ namespace XRRemote
             InvokePlaneCallbacks(this.remotePacket);
             InvokeDepthImageCallbacks(this.remotePacket);
             InvokeTouchPositionCallbacks(this.remotePacket);
+            TrackedImagesCheck(this.remotePacket);
         }
 
         private void InvokeCameraIntrinsicsCallbacks(ServerRemotePacket remotePacket)
@@ -121,6 +126,7 @@ namespace XRRemote
                 Debug.Log("remotePacket.cameraIntrinsics is null");
             }
         }
+
 
         private void InvokeTouchPositionCallbacks(ServerRemotePacket remotePacket)
         {
@@ -156,6 +162,17 @@ namespace XRRemote
                 Debug.Log("remotePacket.planesInfo is null");
             }
         }
+
+
+        private void TrackedImagesCheck(ServerRemotePacket remotePacket)
+        {
+            if (remotePacket.trackedImages != null) 
+            {
+                OnTrackedImagesReceived?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+
         private void InitializeCommandBuffer()
         {   
             if (videoCommandBufferInitialized) return;

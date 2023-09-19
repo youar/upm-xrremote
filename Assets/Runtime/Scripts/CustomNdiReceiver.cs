@@ -49,6 +49,9 @@ namespace XRRemote
 
         private void Update()
         {
+
+#if UNITY_EDITOR
+
             RenderTexture rt = ndiReceiver.texture;
             if (rt == null)
             {
@@ -63,6 +66,22 @@ namespace XRRemote
                     NullMetadata();
                 }
             }
+#else
+            if (ndiReceiver.ndiName == null)
+            {
+                ConnectToNdi();
+            }
+            else
+            {
+                // ReceiveTexture(rt);
+                if (!MetadataNullCheck())
+                {
+                    ProcessPacketData(DeserializePacket());
+                    NullMetadata();
+                }
+            }
+#endif
+
         }
 
         protected abstract void ReceiveTexture(RenderTexture texture);

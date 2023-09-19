@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="ClientReceiverEditor" createdby="gblikas">
+// <copyright file="ClientReceiverEditor" createdby="cSustrich
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
