@@ -84,7 +84,7 @@ namespace XRRemote
             
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
 
-            if (depthImageSender.TryGetDepthImage(out SerializableDepthImage xrDepthImage, rawImage)) {
+            if (depthImageSender.TryGetDepthImage(out SerializableDepthImage xrDepthImage)) {
                 packet.depthImage = xrDepthImage;
             } else {
                 packet.depthImage = null;
@@ -96,7 +96,8 @@ namespace XRRemote
                 packet.planesInfo = null;
             }
             
-
+            rawImage.texture = depthImageSender.texture;
+            
             return packet;
         }
 

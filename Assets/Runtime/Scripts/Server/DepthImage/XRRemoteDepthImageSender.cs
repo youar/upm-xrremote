@@ -33,7 +33,7 @@ namespace XRRemote
   {
     private AROcclusionManager occlusionManager;
 
-    Texture2D texture = null;
+    public Texture2D texture = null;
 
     private void Awake()
     {
@@ -46,15 +46,13 @@ namespace XRRemote
       return;
     }
 
-    public bool TryGetDepthImage(out SerializableDepthImage depthImage, RawImage rawImage)
+    public bool TryGetDepthImage(out SerializableDepthImage depthImage)
     {
         if (occlusionManager.TryAcquireEnvironmentDepthCpuImage(out XRCpuImage xrCpuImage))
         {
             texture = UpdateToXRCpuImage(xrCpuImage);
             var byteArray = texture.GetRawTextureData();
             depthImage = new SerializableDepthImage(xrCpuImage, byteArray);
-            rawImage.texture = texture;
-
             xrCpuImage.Dispose();
             return true;
         }
