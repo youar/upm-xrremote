@@ -42,7 +42,6 @@ namespace XRRemote
         [SerializeField] private ARCameraManager cameraManager = null;
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
-        [Tooltip("This is your phone's Depth Image")]
         [SerializeField] private RawImage rawDepthImage = null;
 
         private void Awake()
