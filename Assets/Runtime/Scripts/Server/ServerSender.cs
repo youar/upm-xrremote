@@ -42,7 +42,8 @@ namespace XRRemote
         [SerializeField] private ARCameraManager cameraManager = null;
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
-        [SerializeField] private RawImage rawImage = null;
+        [Tooltip("This is your phone's Depth Image")]
+        [SerializeField] private RawImage rawDepthImage = null;
 
         private void Awake()
         {   
@@ -97,7 +98,7 @@ namespace XRRemote
                 packet.planesInfo = null;
             }
             
-            rawImage.texture = depthImageSender.texture;
+            rawDepthImage.texture = depthImageSender.texture;
             
 
             packet.trackedImages = trackedImageSender.TryGetTrackables(out List<SerializableARTrackedImage> trackables) ? trackables : null;

@@ -35,6 +35,7 @@ namespace XRRemote
     {
 
         public Texture2D depthTexture = null;
+        [Tooltip("The Occlusion capable Material that will be applied to objects in the XRRemote-Occlusion layer")]
         public Material occlusionMaterial;
 
         private void OnEnable()
