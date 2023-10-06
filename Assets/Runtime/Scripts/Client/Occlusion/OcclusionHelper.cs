@@ -22,26 +22,62 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace XRRemote
 {
     public static class OcclusionHelper
     {
+        public static List<GameObject> occlusionGameObjects = null;
+        public static Dictionary<GameObject, Renderer> occlusionRenderers = null;
 
-        public static void UpdateOcclusionMaterialOnGameObjects(float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
+        public static void PopulateOcclusionGameObjectList()
         {
-            foreach (GameObject go in GameObject.FindObjectsOfType<GameObject>())
+            //review 
+            // if (occlusionGameObjects )
+            
+            if (occlusionGameObjects == null || occlusionGameObjects.Count == 0)
             {
-                if (go.layer == LayerMask.NameToLayer("XRRemote-Occlusion"))
+                occlusionGameObjects = new List<GameObject>();
+                foreach (GameObject go in GameObject.FindObjectsOfType<GameObject>())
                 {
-                    SetMaterialProperties(go, maxDepthValue, occlusionMaterial, depthTexture);
+                    if (go.layer == LayerMask.NameToLayer("XRRemote-Occlusion"))
+                    {
+                        occlusionGameObjects.Add(go);
+                    }
                 }
             }
         }
-        private static void SetMaterialProperties(GameObject go, float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
+
+        public static void PopulateOcclusionRenderersDict()
         {
-            Renderer renderer = go.GetComponent<Renderer>();
+            if (occlusionRenderers == null || occlusionRenderers.Count == 0)
+            {
+                occlusionRenderers = new Dictionary<GameObject, Renderer>();
+                foreach (GameObject go in occlusionGameObjects)
+                {
+                    Renderer renderer = go.GetComponent<Renderer>();
+                    if (renderer != null)
+                    {
+                        occlusionRenderers.Add(go, renderer);
+                    }
+                }
+            }
+        }
+
+        public static void UpdateOcclusionMaterialOnRenderers(float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
+        {
+
+            foreach (KeyValuePair<GameObject, Renderer> kvp in occlusionRenderers)
+            {
+                SetMaterialProperties(kvp, maxDepthValue, occlusionMaterial, depthTexture);
+            }
+        }
+
+        private static void SetMaterialProperties(KeyValuePair<GameObject, Renderer> kvp, float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
+        {
+            Renderer renderer = kvp.Value;
             if (renderer != null)
             {
                 renderer.material = occlusionMaterial;
@@ -49,5 +85,24 @@ namespace XRRemote
                 renderer.material.SetFloat("_MaxDistance", maxDepthValue); 
             }
         }
+
+
+        // public static void UpdateOcclusionMaterialOnGameObjects(float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
+        // {
+        //     foreach (GameObject go in occlusionGameObjects)
+        //     {
+        //         SetMaterialProperties(go, maxDepthValue, occlusionMaterial, depthTexture);
+        //     }
+        // }
+        // private static void SetMaterialProprties(GameObject go, float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
+        // {
+        //     Renderer renderer = go.GetComponent<Renderer>();
+        //     if (renderer != null)
+        //     {
+        //         renderer.material = occlusionMaterial;
+        //         renderer.material.SetTexture("_MainTex", depthTexture);
+        //         renderer.material.SetFloat("_MaxDistance", maxDepthValue); 
+        //     }
+        // }
     }
 }

@@ -29,6 +29,8 @@ namespace XRRemote
 {
     public static class TextureHelper
     {
+        public static Color[] pixels = null;
+
         private static Color[] FromRFloatBytesToColorArray(byte[] rFloat, int dstWidth, int dstHeight, out float maxValue)
         {
             maxValue = 0.0f;
@@ -38,7 +40,12 @@ namespace XRRemote
                 return null;
             }
 
-            Color[] pixels = new Color[dstWidth * dstHeight];
+            //review
+            if (pixels == null || pixels.Length != dstWidth * dstHeight){
+                pixels = new Color[dstWidth * dstHeight];
+            }
+
+            // Color[] pixels = new Color[dstWidth * dstHeight];
 
             for (int y = 0; y < dstHeight; y++)
             {
@@ -63,7 +70,7 @@ namespace XRRemote
                 return;
             }
             
-            Color[] pixels = FromRFloatBytesToColorArray(inRawData, inTex.width, inTex.height, out maxDepthValue);
+            FromRFloatBytesToColorArray(inRawData, inTex.width, inTex.height, out maxDepthValue);
 
             inTex.SetPixels(pixels); 
             inTex.Apply();
