@@ -41,6 +41,8 @@ namespace XRRemote
         public Camera uiCamera = null;
         public static ClientSender Instance { get; private set; }
 
+        private int packetsSent = 0;
+
         //exists just for testing UI image
         public Material renderMaterial;
 
@@ -107,6 +109,10 @@ namespace XRRemote
         protected override RemotePacket GetPacketData()
         {
             ClientRemotePacket packet = new ClientRemotePacket();
+
+            packet.packetId = packetsSent++;
+            // Debug.Log($"Packets sent: {packetsSent}");
+
             packet.debugMode = UIRenderer.Instance.debugMode;
 
             if (planeManager != null) {

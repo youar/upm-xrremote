@@ -29,6 +29,8 @@ namespace XRRemote
     [Serializable]
     public partial class ClientRemotePacket : RemotePacket
     {
+        public int packetId = 0;
+        
         public bool debugMode;
         public PlaneManagerState planeManagerState = PlaneManagerState.InActive;
     }

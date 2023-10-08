@@ -41,6 +41,8 @@ namespace XRRemote
         [SerializeField] private ARCameraBackground cameraBackground = null;
         [SerializeField] private XRRemoteInputReader inputReader = null;
 
+        private int packetsSent = 0;
+
         private PlaneManagerState clientPlaneManagerState = PlaneManagerState.InActive;
      
         private void Awake()
@@ -83,6 +85,9 @@ namespace XRRemote
         {
             ServerRemotePacket packet = new ServerRemotePacket();
 
+            packet.packetId = packetsSent++;
+            packet.frameInfo = Time.frameCount;
+            
             packet.cameraPose = arPoseDriver;
             
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
