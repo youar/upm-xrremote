@@ -40,23 +40,18 @@ namespace XRRemote
                 return null;
             }
 
-            //review
             if (pixels == null || pixels.Length != dstWidth * dstHeight){
                 pixels = new Color[dstWidth * dstHeight];
             }
 
-            // Color[] pixels = new Color[dstWidth * dstHeight];
-
             for (int y = 0; y < dstHeight; y++)
             {
-
-                int newY = dstHeight - y - 1; // flips
                 for (int x = 0; x < dstWidth; x++)
                 {
                     int index = (y * dstWidth + x) * 4;
                     float depthValue = BitConverter.ToSingle(rFloat, index);
                     if (depthValue >= maxValue) maxValue = depthValue;
-                    pixels[newY * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
+                    pixels[y * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
             return pixels;

@@ -42,11 +42,8 @@ namespace XRRemote
         {
             if (ClientReceiver.Instance == null) return;
 
-            //review
             OcclusionHelper.PopulateOcclusionGameObjectList();
-            OcclusionHelper.PopulateOcclusionRenderersDict();
-
-            
+            OcclusionHelper.PopulateOcclusionRenderersDict();            
             ClientReceiver.Instance.OnDepthImageInfoReceived += CustomNdiReceiver_OnDepthImageInfoReceived;
         }
 
@@ -70,9 +67,6 @@ namespace XRRemote
 
             TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
             OcclusionHelper.UpdateOcclusionMaterialOnRenderers(maxDepthValue, occlusionMaterial, depthTexture);
-
-            //review
-            // OcclusionHelper.UpdateOcclusionMaterialOnGameObjects(maxDepthValue, occlusionMaterial, depthTexture); 
         }
 
         public void CustomNdiReceiver_OnDepthImageInfoReceived(object sender, EventArgs e)

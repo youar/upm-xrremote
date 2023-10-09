@@ -73,7 +73,7 @@ namespace XRRemote
             }
             else
             {
-                ReceiveTexture(rt);
+                // ReceiveTexture(rt);
                 if (!MetadataNullCheck())
                 {
                     ProcessPacketData(DeserializePacket());

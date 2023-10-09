@@ -33,10 +33,7 @@ namespace XRRemote
         public static Dictionary<GameObject, Renderer> occlusionRenderers = null;
 
         public static void PopulateOcclusionGameObjectList()
-        {
-            //review 
-            // if (occlusionGameObjects )
-            
+        {           
             if (occlusionGameObjects == null || occlusionGameObjects.Count == 0)
             {
                 occlusionGameObjects = new List<GameObject>();
@@ -80,7 +77,10 @@ namespace XRRemote
             Renderer renderer = kvp.Value;
             if (renderer != null)
             {
-                renderer.material = occlusionMaterial;
+                if (renderer.material == null)
+                {
+                    renderer.material = occlusionMaterial;
+                }
                 renderer.material.SetTexture("_MainTex", depthTexture);
                 renderer.material.SetFloat("_MaxDistance", maxDepthValue); 
             }
