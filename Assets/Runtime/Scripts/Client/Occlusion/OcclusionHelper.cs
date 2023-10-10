@@ -32,9 +32,11 @@ namespace XRRemote
     {
         public static List<GameObject> occlusionGameObjects = null;
         public static Dictionary<GameObject, Renderer> occlusionRenderers = null;
-        public static Camera mainCamera = null;
-        public static Plane[] planes = null;
+
         
+        /// <summary>
+        /// Populate the list of GameObjects in the XRRemote-Occlusion layer
+        /// </summary>
         public static void PopulateOcclusionGameObjectList()
         {           
             if (occlusionGameObjects == null || occlusionGameObjects.Count == 0)
@@ -50,6 +52,9 @@ namespace XRRemote
             }
         }
 
+    /// <summary>
+    /// Populate the dictionary of GameObjects and their Renderers in the XRRemote-Occlusion layer
+    /// </summary>
         public static void PopulateOcclusionRenderersDict()
         {
             if (occlusionRenderers == null || occlusionRenderers.Count == 0)
@@ -66,20 +71,32 @@ namespace XRRemote
             }
         }
 
+        /// <summary>
+        /// Update the Occlusion Material on Visible GameObjects in the XRRemote-Occlusion layer
+        /// </summary>
+        /// <param name="maxDepthValue"></param>
+        /// <param name="occlusionMaterial"></param>
+        /// <param name="depthTexture"></param>
+        /// <param name="planes"></param>
         public static void UpdateOcclusionMaterialOnRenderers(float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture, Plane[] planes)
         {
 
             foreach (KeyValuePair<GameObject, Renderer> kvp in occlusionRenderers)
             {
-                //review 
                 if (GeometryUtility.TestPlanesAABB(planes, kvp.Value.bounds))
                 {
                     SetMaterialProperties(kvp, maxDepthValue, occlusionMaterial, depthTexture);
                 }
-                // SetMaterialProperties(kvp, maxDepthValue, occlusionMaterial, depthTexture);
             }
         }
 
+        /// <summary>
+        /// Updates the Occlusion Material on GameObjects
+        /// </summary>
+        /// <param name="kvp"></param>
+        /// <param name="maxDepthValue"></param>
+        /// <param name="occlusionMaterial"></param>
+        /// <param name="depthTexture"></param>
         private static void SetMaterialProperties(KeyValuePair<GameObject, Renderer> kvp, float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
         {
             Renderer renderer = kvp.Value;
@@ -93,24 +110,5 @@ namespace XRRemote
                 renderer.material.SetFloat("_MaxDistance", maxDepthValue); 
             }
         }
-
-
-        // public static void UpdateOcclusionMaterialOnGameObjects(float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
-        // {
-        //     foreach (GameObject go in occlusionGameObjects)
-        //     {
-        //         SetMaterialProperties(go, maxDepthValue, occlusionMaterial, depthTexture);
-        //     }
-        // }
-        // private static void SetMaterialProprties(GameObject go, float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
-        // {
-        //     Renderer renderer = go.GetComponent<Renderer>();
-        //     if (renderer != null)
-        //     {
-        //         renderer.material = occlusionMaterial;
-        //         renderer.material.SetTexture("_MainTex", depthTexture);
-        //         renderer.material.SetFloat("_MaxDistance", maxDepthValue); 
-        //     }
-        // }
     }
 }

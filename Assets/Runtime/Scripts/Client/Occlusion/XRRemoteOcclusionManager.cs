@@ -22,6 +22,7 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using XRRemote.Serializables;
@@ -46,20 +47,12 @@ namespace XRRemote
         {
             if (ClientReceiver.Instance == null) return;
 
-
             GameObject arCameraGO = GameObject.Find("AR Camera");
-            
-            if (arCameraGO != null) 
-            {
-                mainCamera = arCameraGO.GetComponent<Camera>();
-            }
-            else
-            {
-                mainCamera = Camera.main;
-            }
+            mainCamera = arCameraGO != null ? arCameraGO.GetComponent<Camera>() : Camera.main;
 
             OcclusionHelper.PopulateOcclusionGameObjectList();
-            OcclusionHelper.PopulateOcclusionRenderersDict();            
+            OcclusionHelper.PopulateOcclusionRenderersDict();     
+            
             ClientReceiver.Instance.OnDepthImageInfoReceived += CustomNdiReceiver_OnDepthImageInfoReceived;
         }
 
@@ -69,45 +62,30 @@ namespace XRRemote
             ClientReceiver.Instance.OnDepthImageInfoReceived -= CustomNdiReceiver_OnDepthImageInfoReceived;
         }
 
-
-        private bool IsAnyGameObjectVisible()
-        {
-            foreach (KeyValuePair<GameObject, Renderer> kvp in OcclusionHelper.occlusionRenderers)
+        /// <summary>
+        /// Checks if any of the GameObjects in the Occlusion Layer are visible
+        /// </summary>
+        /// <returns></returns>
+        private bool GameObjectVisible()
             {
-                if (GeometryUtility.TestPlanesAABB(OcclusionHelper.planes, kvp.Value.bounds))
-                {
-                    return true; // A visible GameObject is found
-                }
+            return OcclusionHelper.occlusionRenderers.Any(kvp => GeometryUtility.TestPlanesAABB(planes, kvp.Value.bounds));
             }
-            return false; // No visible GameObjects were found
-        }
 
+        /// <summary>
+        /// Sets the visibility of GameObjects in the Occlusion Layer
+        /// </summary>
         private void SetGameObjectVisibility()
             {
                 foreach (KeyValuePair<GameObject, Renderer> kvp in OcclusionHelper.occlusionRenderers)
                 {
-                    if (GeometryUtility.TestPlanesAABB(OcclusionHelper.planes, kvp.Value.bounds))
-                    {
-                        kvp.Value.enabled = true;
-                    }
-                    else
-                    {
-                        kvp.Value.enabled = false;
-                    }
-                }
-                foreach (KeyValuePair<GameObject, Renderer> kvp in OcclusionHelper.occlusionRenderers)
-                {
-                    if (GeometryUtility.TestPlanesAABB(OcclusionHelper.planes, kvp.Value.bounds))
-                    {
-                        kvp.Value.enabled = true;
-                    }
-                    else
-                    {
-                        kvp.Value.enabled = false;
-                    }
+                    kvp.Value.enabled = GeometryUtility.TestPlanesAABB(planes, kvp.Value.bounds);
                 }
             }
 
+        private void SetTextureParams(SerializableDepthImage img)
+        {
+            
+        }
 
         /// <summary>
         /// Takes raw DepthTexture info from the received packet, Checks for the visibility of GameObjects and if they are visible,
@@ -122,12 +100,13 @@ namespace XRRemote
                 depthTexture = new Texture2D(img.width, img.height, TextureFormat.RFloat, false);
             }
 
+            //defines camera frustum planes
+            planes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
+            
             SetGameObjectVisibility();
 
-            if (IsAnyGameObjectVisible()) 
+            if (GameObjectVisible()) 
             {
-                planes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
-
                 TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
                 OcclusionHelper.UpdateOcclusionMaterialOnRenderers(maxDepthValue, occlusionMaterial, depthTexture, planes);
             }
