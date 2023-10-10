@@ -82,11 +82,6 @@ namespace XRRemote
                 }
             }
 
-        private void SetTextureParams(SerializableDepthImage img)
-        {
-            
-        }
-
         /// <summary>
         /// Takes raw DepthTexture info from the received packet, Checks for the visibility of GameObjects and if they are visible,
         /// generates the depthTexture and applies it to the occlusionMaterial
