@@ -31,13 +31,13 @@ namespace XRRemote
     {
         public static Color[] pixels = null;
 
-        private static Color[] FromRFloatBytesToColorArray(byte[] rFloat, int dstWidth, int dstHeight, out float maxValue)
+        private static void FromRFloatBytesToColorArray(byte[] rFloat, int dstWidth, int dstHeight, out float maxValue)
         {
             maxValue = 0.0f;
             if (rFloat.Length != 4 * dstWidth * dstHeight)
             {
                 Debug.LogError($"rFloat is most-likely not RFloat: rFloat.Length != 4*{dstWidth}*{dstHeight}");
-                return null;
+                // return null;
             }
 
             if (pixels == null || pixels.Length != dstWidth * dstHeight){
@@ -54,7 +54,7 @@ namespace XRRemote
                     pixels[y * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
-            return pixels;
+            // return pixels;
         }
         public static void PopulateTexture2DFromRBytes(Texture2D inTex, byte[] inRawData, out float maxDepthValue)
         {

@@ -1,3 +1,4 @@
+using System.Globalization;
 //-------------------------------------------------------------------------------------------------------
 // <copyright file="OcclusionHelper.cs" createdby="Razieleron">
 // 
@@ -31,7 +32,9 @@ namespace XRRemote
     {
         public static List<GameObject> occlusionGameObjects = null;
         public static Dictionary<GameObject, Renderer> occlusionRenderers = null;
-
+        public static Camera mainCamera = null;
+        public static Plane[] planes = null;
+        
         public static void PopulateOcclusionGameObjectList()
         {           
             if (occlusionGameObjects == null || occlusionGameObjects.Count == 0)
@@ -63,12 +66,17 @@ namespace XRRemote
             }
         }
 
-        public static void UpdateOcclusionMaterialOnRenderers(float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture)
+        public static void UpdateOcclusionMaterialOnRenderers(float maxDepthValue, Material occlusionMaterial, Texture2D depthTexture, Plane[] planes)
         {
 
             foreach (KeyValuePair<GameObject, Renderer> kvp in occlusionRenderers)
             {
-                SetMaterialProperties(kvp, maxDepthValue, occlusionMaterial, depthTexture);
+                //review 
+                if (GeometryUtility.TestPlanesAABB(planes, kvp.Value.bounds))
+                {
+                    SetMaterialProperties(kvp, maxDepthValue, occlusionMaterial, depthTexture);
+                }
+                // SetMaterialProperties(kvp, maxDepthValue, occlusionMaterial, depthTexture);
             }
         }
 

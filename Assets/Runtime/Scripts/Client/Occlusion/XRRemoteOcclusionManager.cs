@@ -22,6 +22,7 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using XRRemote.Serializables;
 
@@ -37,10 +38,25 @@ namespace XRRemote
         public Texture2D depthTexture = null;
         [Tooltip("The Occlusion capable Material that will be applied to objects in the XRRemote-Occlusion layer")]
         public Material occlusionMaterial;
+        public Camera mainCamera = null;
+        public Plane[] planes = null;   
+        
 
         private void OnEnable()
         {
             if (ClientReceiver.Instance == null) return;
+
+
+            GameObject arCameraGO = GameObject.Find("AR Camera");
+            
+            if (arCameraGO != null) 
+            {
+                mainCamera = arCameraGO.GetComponent<Camera>();
+            }
+            else
+            {
+                mainCamera = Camera.main;
+            }
 
             OcclusionHelper.PopulateOcclusionGameObjectList();
             OcclusionHelper.PopulateOcclusionRenderersDict();            
@@ -53,8 +69,49 @@ namespace XRRemote
             ClientReceiver.Instance.OnDepthImageInfoReceived -= CustomNdiReceiver_OnDepthImageInfoReceived;
         }
 
+
+        private bool IsAnyGameObjectVisible()
+        {
+            foreach (KeyValuePair<GameObject, Renderer> kvp in OcclusionHelper.occlusionRenderers)
+            {
+                if (GeometryUtility.TestPlanesAABB(OcclusionHelper.planes, kvp.Value.bounds))
+                {
+                    return true; // A visible GameObject is found
+                }
+            }
+            return false; // No visible GameObjects were found
+        }
+
+        private void SetGameObjectVisibility()
+            {
+                foreach (KeyValuePair<GameObject, Renderer> kvp in OcclusionHelper.occlusionRenderers)
+                {
+                    if (GeometryUtility.TestPlanesAABB(OcclusionHelper.planes, kvp.Value.bounds))
+                    {
+                        kvp.Value.enabled = true;
+                    }
+                    else
+                    {
+                        kvp.Value.enabled = false;
+                    }
+                }
+                foreach (KeyValuePair<GameObject, Renderer> kvp in OcclusionHelper.occlusionRenderers)
+                {
+                    if (GeometryUtility.TestPlanesAABB(OcclusionHelper.planes, kvp.Value.bounds))
+                    {
+                        kvp.Value.enabled = true;
+                    }
+                    else
+                    {
+                        kvp.Value.enabled = false;
+                    }
+                }
+            }
+
+
         /// <summary>
-        /// Takes raw DepthTexture info from the received packet and applies it to the depthTexture and occlusionMaterial
+        /// Takes raw DepthTexture info from the received packet, Checks for the visibility of GameObjects and if they are visible,
+        /// generates the depthTexture and applies it to the occlusionMaterial
         /// </summary>
         /// <param name="img"></param>
         private void PopulateAndApplyDepthTextureInfo(SerializableDepthImage img)
@@ -65,8 +122,15 @@ namespace XRRemote
                 depthTexture = new Texture2D(img.width, img.height, TextureFormat.RFloat, false);
             }
 
-            TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
-            OcclusionHelper.UpdateOcclusionMaterialOnRenderers(maxDepthValue, occlusionMaterial, depthTexture);
+            SetGameObjectVisibility();
+
+            if (IsAnyGameObjectVisible()) 
+            {
+                planes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
+
+                TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
+                OcclusionHelper.UpdateOcclusionMaterialOnRenderers(maxDepthValue, occlusionMaterial, depthTexture, planes);
+            }
         }
 
         public void CustomNdiReceiver_OnDepthImageInfoReceived(object sender, EventArgs e)
