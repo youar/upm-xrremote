@@ -91,10 +91,21 @@ namespace XRRemote
             {
                 int width = args.textures.Max(t => t.width);
                 int height = args.textures.Max(t => t.height);
-
                 InitNdi(width, height);
             }
 
+            ProcessCameraFrame();
+        }
+
+        protected void OnCameraFrameReceived()
+        {
+            Debug.Log("OnCameraFrameReceived called without ARCameraFrameEventArgs.");
+
+            ProcessCameraFrame();
+        }
+
+        private void ProcessCameraFrame()
+        {
             Material material = GetCameraFrameMaterial();
             if (material != null && material.mainTexture != null)
             {
@@ -104,10 +115,29 @@ namespace XRRemote
             }
         }
 
-        protected void OnCameraFrameReceived()
-        {
-             Debug.Log("OnCameraFrameReceived called without ARCameraFrameEventArgs.");
-        }
+        // protected void OnCameraFrameReceived(ARCameraFrameEventArgs args)
+        // {
+        //     if (renderTexture == null)
+        //     {
+        //         int width = args.textures.Max(t => t.width);
+        //         int height = args.textures.Max(t => t.height);
+
+        //         InitNdi(width, height);
+        //     }
+
+        //     Material material = GetCameraFrameMaterial();
+        //     if (material != null && material.mainTexture != null)
+        //     {
+        //         ndiSender.metadata = SerializeMetadata(GetPacketData());
+        //         CommandBufferActions(material);
+        //         frameCount++;
+        //     }
+        // }
+
+        // protected void OnCameraFrameReceived()
+        // {
+        //      Debug.Log("OnCameraFrameReceived called without ARCameraFrameEventArgs.");
+        // }
 
         // protected void OnCameraFrameReceived()
         // {
