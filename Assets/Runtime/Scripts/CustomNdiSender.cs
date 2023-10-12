@@ -22,6 +22,7 @@
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.ARFoundation;
@@ -58,14 +59,14 @@ namespace XRRemote
             commandBuffer?.Dispose();
         }
 
-        private void SetTexture(int width, int height)
-        {
-            if (renderTexture == null)
-            {
-                //set texture
-                InitNdi(width, height);
-            }
-        }
+        // private void SetTexture(int width, int height)
+        // {
+        //     if (renderTexture == null)
+        //     {
+        //         //set texture
+        //         InitNdi(width, height);
+        //     }
+        // }
 
         private string SerializeMetadata(RemotePacket packet)
         {
@@ -84,19 +85,43 @@ namespace XRRemote
 
         protected abstract Material GetCameraFrameMaterial();
 
-        protected void OnCameraFrameReceived()
-        {
-            Material material = GetCameraFrameMaterial();
-            SetTexture(material.mainTexture.width, material.mainTexture.height);
-            ndiSender.metadata = SerializeMetadata(GetPacketData());
-            CommandBufferActions(material);
-            frameCount++;
-        } 
-
         protected void OnCameraFrameReceived(ARCameraFrameEventArgs args)
         {
-            OnCameraFrameReceived();
-        } 
+            if (renderTexture == null)
+            {
+                int width = args.textures.Max(t => t.width);
+                int height = args.textures.Max(t => t.height);
+
+                InitNdi(width, height);
+            }
+
+            Material material = GetCameraFrameMaterial();
+            if (material != null && material.mainTexture != null)
+            {
+                ndiSender.metadata = SerializeMetadata(GetPacketData());
+                CommandBufferActions(material);
+                frameCount++;
+            }
+        }
+
+        protected void OnCameraFrameReceived()
+        {
+             Debug.Log("OnCameraFrameReceived called without ARCameraFrameEventArgs.");
+        }
+
+        // protected void OnCameraFrameReceived()
+        // {
+        //     Material material = GetCameraFrameMaterial();
+        //     SetTexture(material.mainTexture.width, material.mainTexture.height);
+        //     ndiSender.metadata = SerializeMetadata(GetPacketData());
+        //     CommandBufferActions(material);
+        //     frameCount++;
+        // } 
+
+        // protected void OnCameraFrameReceived(ARCameraFrameEventArgs args)
+        // {
+        //     OnCameraFrameReceived();
+        // } 
 
         private void InitNdi(int width, int height)
         {
