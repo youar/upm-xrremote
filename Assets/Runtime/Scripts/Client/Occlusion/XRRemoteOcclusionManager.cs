@@ -36,8 +36,6 @@ namespace XRRemote
     /// </summary>
     public class XRRemoteOcclusionManager : MonoBehaviour
     {
-
-        // public RenderTexture renderTexture;
         public Texture2D depthTexture = null;
         public Camera mainCamera = null;
 
