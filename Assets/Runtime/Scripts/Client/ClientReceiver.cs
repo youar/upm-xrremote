@@ -40,17 +40,19 @@ namespace XRRemote
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
         public XRCameraIntrinsics cameraIntrinsics {get; private set;}
-        
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
         public event EventHandler OnCameraIntrinsicsReceived;
         public event EventHandler OnDepthImageInfoReceived;
         public event EventHandler OnTrackedImagesReceived;
 
+        public XRRemoteOcclusionManager XRRemoteOcclusionManager;
         private Camera receivingCamera;
+
+        public ARCameraBackground aRCameraBackground;
         private CommandBuffer videoCommandBuffer;
         private bool videoCommandBufferInitialized = false;       
-        private Material commandBufferMaterial;
+        public Material commandBufferMaterial;
 
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
@@ -144,6 +146,7 @@ namespace XRRemote
             if (remotePacket.depthImage != null) 
             {
                 OnDepthImageInfoReceived?.Invoke(this, EventArgs.Empty);
+
             }
             else 
             {

@@ -31,9 +31,9 @@ namespace XRRemote
     {
         public static Color[] pixels = null;
 
-        private static void FromRFloatBytesToColorArray(byte[] rFloat, int dstWidth, int dstHeight, out float maxValue)
+        private static void FromRFloatBytesToColorArray(byte[] rFloat, int dstWidth, int dstHeight)
         {
-            maxValue = 0.0f;
+            // maxValue = 0.0f;
             if (rFloat.Length != 4 * dstWidth * dstHeight)
             {
                 Debug.LogError($"rFloat is most-likely not RFloat: rFloat.Length != 4*{dstWidth}*{dstHeight}");
@@ -50,11 +50,11 @@ namespace XRRemote
                 {
                     int index = (y * dstWidth + x) * 4;
                     float depthValue = BitConverter.ToSingle(rFloat, index);
-                    if (depthValue >= maxValue) maxValue = depthValue;
+                    // if (depthValue >= maxValue) maxValue = depthValue;
                     pixels[y * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
-            // return pixels;
+
         }
         public static void PopulateTexture2DFromRBytes(Texture2D inTex, byte[] inRawData, out float maxDepthValue)
         {
@@ -65,7 +65,7 @@ namespace XRRemote
                 return;
             }
             
-            FromRFloatBytesToColorArray(inRawData, inTex.width, inTex.height, out maxDepthValue);
+            FromRFloatBytesToColorArray(inRawData, inTex.width, inTex.height);
 
             inTex.SetPixels(pixels); 
             inTex.Apply();

@@ -26,12 +26,15 @@ Shader "Unlit/XRVideoShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _EnvironmentDepth("Texture", 2D) = "white" {}
+
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
-        ZWrite Off
+        Ztest Always
+        ZWrite On
 
         Pass
         {
@@ -56,7 +59,10 @@ Shader "Unlit/XRVideoShader"
                 float4 vertex : SV_POSITION;
             };
 
+
+
             sampler2D _MainTex;
+            sampler2D _EnvironmentDepth;
             float4 _MainTex_ST;
 
             v2f vert (appdata v)
@@ -68,13 +74,27 @@ Shader "Unlit/XRVideoShader"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+
+            fixed4 frag (v2f i, out float depth: SV_Depth) : SV_Target
             {
+                // Rotate the texture 90 degrees clockwise    
+                float originalX = i.uv.x;
+                float originalY = i.uv.y;
+                i.uv.x = 1.0 - i.uv.y;
+                i.uv.y = originalX;
+
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-                return col;
+                depth = 1 - tex2D(_EnvironmentDepth, i.uv).r;
+                
+                
+                return tex2D(_MainTex, float2(originalX, originalY));
+
             }
+
+
             ENDCG
         }
     }
 }
+
+

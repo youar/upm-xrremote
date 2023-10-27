@@ -26,6 +26,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using XRRemote.Serializables;
+using UnityEngine.XR.ARFoundation;
 
 #if UNITY_EDITOR
 namespace XRRemote
@@ -36,23 +37,14 @@ namespace XRRemote
     public class XRRemoteOcclusionManager : MonoBehaviour
     {
 
+        // public RenderTexture renderTexture;
         public Texture2D depthTexture = null;
-        [Tooltip("The Occlusion capable Material that will be applied to objects in the XRRemote-Occlusion layer")]
-        public Material occlusionMaterial;
         public Camera mainCamera = null;
-        public Plane[] planes = null;   
-        
 
         private void OnEnable()
         {
             if (ClientReceiver.Instance == null) return;
 
-            GameObject arCameraGO = GameObject.Find("AR Camera");
-            mainCamera = arCameraGO != null ? arCameraGO.GetComponent<Camera>() : Camera.main;
-
-            OcclusionHelper.PopulateOcclusionGameObjectList();
-            OcclusionHelper.PopulateOcclusionRenderersDict();     
-            
             ClientReceiver.Instance.OnDepthImageInfoReceived += CustomNdiReceiver_OnDepthImageInfoReceived;
         }
 
@@ -62,54 +54,29 @@ namespace XRRemote
             ClientReceiver.Instance.OnDepthImageInfoReceived -= CustomNdiReceiver_OnDepthImageInfoReceived;
         }
 
-        /// <summary>
-        /// Checks if any of the GameObjects in the Occlusion Layer are visible
-        /// </summary>
-        /// <returns></returns>
-        private bool GameObjectVisible()
-            {
-            return OcclusionHelper.occlusionRenderers.Any(kvp => GeometryUtility.TestPlanesAABB(planes, kvp.Value.bounds));
-            }
-
-        /// <summary>
-        /// Sets the visibility of GameObjects in the Occlusion Layer
-        /// </summary>
-        private void SetGameObjectVisibility()
-            {
-                foreach (KeyValuePair<GameObject, Renderer> kvp in OcclusionHelper.occlusionRenderers)
-                {
-                    kvp.Value.enabled = GeometryUtility.TestPlanesAABB(planes, kvp.Value.bounds);
-                }
-            }
-
-        /// <summary>
-        /// Takes raw DepthTexture info from the received packet, Checks for the visibility of GameObjects and if they are visible,
-        /// generates the depthTexture and applies it to the occlusionMaterial
-        /// </summary>
-        /// <param name="img"></param>
-        private void PopulateAndApplyDepthTextureInfo(SerializableDepthImage img)
+        private void SetTextureParams(SerializableDepthImage img)
         {
             if (img.texData == null) return;
             if (depthTexture == null && img.width > 0 && img.height > 0)
             {
                 depthTexture = new Texture2D(img.width, img.height, TextureFormat.RFloat, false);
             }
+        }
+        private void AssembleDepthImage(SerializableDepthImage img)
+        {
+            TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
+        }
 
-            //defines camera frustum planes
-            planes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
-            
-            SetGameObjectVisibility();
-
-            if (GameObjectVisible()) 
-            {
-                TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
-                OcclusionHelper.UpdateOcclusionMaterialOnRenderers(maxDepthValue, occlusionMaterial, depthTexture, planes);
-            }
+        private void AddDepthImageToCommandBuffer(Texture2D depthTexture)
+        {
+            ClientReceiver.Instance.commandBufferMaterial.SetTexture("_EnvironmentDepth", depthTexture);
         }
 
         public void CustomNdiReceiver_OnDepthImageInfoReceived(object sender, EventArgs e)
         {
-            PopulateAndApplyDepthTextureInfo(ClientReceiver.Instance.remotePacket.depthImage);
+            SetTextureParams(ClientReceiver.Instance.remotePacket.depthImage);
+            AssembleDepthImage(ClientReceiver.Instance.remotePacket.depthImage);
+            AddDepthImageToCommandBuffer(depthTexture);
         }
     }
 }

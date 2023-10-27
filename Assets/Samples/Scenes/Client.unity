@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3708985, g: 0.3783704, b: 0.35722548, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -175,7 +175,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 596dc90e601b446488a682e9fc5c0f66, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -213,8 +213,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 354579861}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.91, y: 0, z: 0.8}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
+  m_LocalPosition: {x: 0.19, y: 0, z: 2.06}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 532582316}
@@ -345,7 +345,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 656179086}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.723793, y: 0.3837628, z: 0.02414538}
+  m_LocalPosition: {x: 6.62, y: 0.3837628, z: 3.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -538,7 +538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 816b289ef451e094f9ae174fb4cf8db0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UseCustomMaterial: 1
+  m_UseCustomMaterial: 0
   m_CustomMaterial: {fileID: 0}
 --- !u!114 &1632843893
 MonoBehaviour:
@@ -709,8 +709,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1744660420}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.43, y: 0.3837628, z: -3.39}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.13, y: 0, z: 0.38}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 532582316}
@@ -725,12 +725,20 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2960473716950247612, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4733307066541104890, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: manager
       value: 
       objectReference: {fileID: 1049562900}
+    - target: {fileID: 5359961723421276231, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359961723666342181, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5359961723666342186, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: m_Camera
       value: 
@@ -775,6 +783,10 @@ PrefabInstance:
       propertyPath: occlusionMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 596dc90e601b446488a682e9fc5c0f66, type: 2}
+    - target: {fileID: 5359961724493276720, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: aRCameraBackground
+      value: 
+      objectReference: {fileID: 1632843892}
     - target: {fileID: 5359961724493276720, guid: f5b27054fd74ca448a746950646959b9, type: 3}
       propertyPath: depthGradientMaterial
       value: 
@@ -891,6 +903,18 @@ PrefabInstance:
       propertyPath: uiRenderTexture
       value: 
       objectReference: {fileID: 8400000, guid: dceaada6319e81649a2eadb1afc53f6d, type: 2}
+    - target: {fileID: 6692378520742468362, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 1632843896}
+    - target: {fileID: 6692378520742468362, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: aRCameraBackground
+      value: 
+      objectReference: {fileID: 1632843892}
+    - target: {fileID: 6692378520742468362, guid: f5b27054fd74ca448a746950646959b9, type: 3}
+      propertyPath: ARBackgroundMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 463854a6a1296994d80c1b58dda31b0e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5b27054fd74ca448a746950646959b9, type: 3}
 --- !u!114 &5359961723943716833 stripped
