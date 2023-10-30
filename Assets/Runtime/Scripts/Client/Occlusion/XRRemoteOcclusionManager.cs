@@ -32,17 +32,15 @@ using UnityEngine.XR.ARFoundation;
 namespace XRRemote
 {
     /// <summary>
-    /// Manages the interpretation and application of XR Occlusion Data
+    /// Manages the interpretation and application of XR Occlusion Data within the NDI stream.
     /// </summary>
     public class XRRemoteOcclusionManager : MonoBehaviour
     {
-        public Texture2D depthTexture = null;
-        public Camera mainCamera = null;
+        private Texture2D depthTexture = null;
 
         private void OnEnable()
         {
             if (ClientReceiver.Instance == null) return;
-
             ClientReceiver.Instance.OnDepthImageInfoReceived += CustomNdiReceiver_OnDepthImageInfoReceived;
         }
 
@@ -60,9 +58,10 @@ namespace XRRemote
                 depthTexture = new Texture2D(img.width, img.height, TextureFormat.RFloat, false);
             }
         }
+
         private void AssembleDepthImage(SerializableDepthImage img)
         {
-            TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData, out var maxDepthValue);
+            TextureHelper.PopulateTexture2DFromRBytes(depthTexture, img.texData);
         }
 
         private void AddDepthImageToCommandBuffer(Texture2D depthTexture)

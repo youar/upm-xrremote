@@ -82,10 +82,6 @@ namespace XRRemote
             ImageLibraryCheck(remotePacket);
         }
 
-        // protected override void ReceiveDepthTexture(Texture2D depthImage)
-        // {
-        //     return;
-        // }
         protected override void ReceiveTexture(RenderTexture texture)
         {
             //eventually, add received UI Overlay Texture actions here

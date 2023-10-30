@@ -60,7 +60,6 @@ Shader "Unlit/XRVideoShader"
             };
 
 
-
             sampler2D _MainTex;
             sampler2D _EnvironmentDepth;
             float4 _MainTex_ST;
@@ -74,7 +73,6 @@ Shader "Unlit/XRVideoShader"
                 return o;
             }
 
-
             fixed4 frag (v2f i, out float depth: SV_Depth) : SV_Target
             {
                 // Rotate the texture 90 degrees clockwise    
@@ -86,9 +84,7 @@ Shader "Unlit/XRVideoShader"
                 // sample the texture
                 depth = 1 - tex2D(_EnvironmentDepth, i.uv).r;
                 
-                
                 return tex2D(_MainTex, float2(originalX, originalY));
-
             }
 
 
