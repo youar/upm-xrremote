@@ -31,7 +31,7 @@ namespace XRRemote
         protected override void Start()
         {
             AspectRatioFitter aspectFitter = GetComponent<AspectRatioFitter>();
-           
+            
             if (aspectFitter != null)
             {
                 CustomNdiReceiver receiver = FindObjectOfType<CustomNdiReceiver>();

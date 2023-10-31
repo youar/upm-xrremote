@@ -24,6 +24,7 @@
 using System;
 using XRRemote.Serializables;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
@@ -37,10 +38,12 @@ namespace XRRemote
     {           
         [SerializeField] private XRRemoteTrackedImageSender trackedImageSender = null;
         [SerializeField] private XRRemotePlaneSender planeSender = null;
+        [SerializeField] private XRRemoteDepthImageSender depthImageSender = null;
         [SerializeField] private ARCameraManager cameraManager = null;
         [SerializeField] private ARPoseDriver arPoseDriver = null;
         [SerializeField] private ARCameraBackground cameraBackground = null;
-     
+        [SerializeField] private RawImage rawDepthImage = null;
+
         private void Awake()
         {   
             if (Application.isEditor)
@@ -81,7 +84,22 @@ namespace XRRemote
 
             packet.cameraPose = arPoseDriver;
             packet.cameraIntrinsics = cameraManager.TryGetIntrinsics(out XRCameraIntrinsics intrinsics) ? new SerializableXRCameraIntrinsics(intrinsics) : null;
-            packet.planesInfo = planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo) ? planesInfo : null;
+
+            if (depthImageSender.TryGetDepthImage(out SerializableDepthImage xrDepthImage)) {
+                packet.depthImage = xrDepthImage;
+            } else {
+                packet.depthImage = null;
+            }
+            
+            if (planeSender.TryGetPlanesInfo(out SerializablePlanesInfo planesInfo)) {
+                packet.planesInfo = planesInfo;
+            } else {
+                packet.planesInfo = null;
+            }
+            
+            rawDepthImage.texture = depthImageSender.texture;
+            
+
             packet.trackedImages = trackedImageSender.TryGetTrackables(out List<SerializableARTrackedImage> trackables) ? trackables : null;
 
             return packet;

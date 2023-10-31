@@ -21,7 +21,6 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-
 using System;
 using UnityEngine;
 using System.Collections;
@@ -96,6 +95,5 @@ namespace XRRemote
                 OnCameraFrameReceived();
             }
         }
-        
     }
 }

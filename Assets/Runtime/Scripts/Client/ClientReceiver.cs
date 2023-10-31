@@ -1,4 +1,4 @@
-//-------------------------------------------------------------------------------------------------------
+ //-------------------------------------------------------------------------------------------------------
 // <copyright file="ClientReceiver.cs" createdby="gblikas">
 // 
 // XR Remote
@@ -36,21 +36,22 @@ namespace XRRemote
 {
     [SerializeField]
     public class ClientReceiver : CustomNdiReceiver
-    
     {
         public static ClientReceiver Instance { get; private set; } = null;
         public ServerRemotePacket remotePacket { get; private set; } = null;
         public XRCameraIntrinsics cameraIntrinsics {get; private set;}
         public event EventHandler OnPlanesInfoReceived;
         public event EventHandler OnInputDataReceived;
+        public event EventHandler OnCameraIntrinsicsReceived;
+        public event EventHandler OnDepthImageInfoReceived;
         public event EventHandler OnTrackedImagesReceived;
-
         private Camera receivingCamera;
+
+        public ARCameraBackground aRCameraBackground;
         private CommandBuffer videoCommandBuffer;
-        private bool videoCommandBufferInitialized = false;
-        
-        // [SerializeField] 
-        private Material commandBufferMaterial;
+        private bool videoCommandBufferInitialized = false;       
+        public Material commandBufferMaterial;
+
 
         [Tooltip("List of AR Cameras that will render the NDI video")]
         [HideInInspector][SerializeField] private List<ARCameraManager> cameraManagerList = new List<ARCameraManager>();
@@ -92,37 +93,77 @@ namespace XRRemote
             {
                 receivingCamera.RemoveCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             }
+
             videoCommandBufferInitialized = false;
             StopCoroutine(SetReceivingCamera());
         }
 
         protected override void ReceiveTexture(RenderTexture texture)
         {
-            commandBufferMaterial.SetTexture("_MainTex", texture);                
+            commandBufferMaterial.SetTexture("_MainTex", texture);
         }
 
         protected override void ProcessPacketData(byte[] bytes)
         {
             ServerRemotePacket remotePacket = ObjectSerializationExtension.Deserialize<ServerRemotePacket>(bytes);
-            
             this.remotePacket = remotePacket;
-            this.cameraIntrinsics = remotePacket.cameraIntrinsics.ToXRCameraIntrinsics();
 
-            TrackedImagesCheck(remotePacket);
-            PlanesInfoCheck(remotePacket);
+            InvokeCameraIntrinsicsCallbacks(this.remotePacket);
+            InvokePlaneCallbacks(this.remotePacket);
+            InvokeDepthImageCallbacks(this.remotePacket);
+            InvokeTouchPositionCallbacks(this.remotePacket);
+            TrackedImagesCheck(this.remotePacket);
+        }
 
-            if (remotePacket.touchPositionNormalized != null) {
-                OnInputDataReceived?.Invoke(this, EventArgs.Empty);
+        private void InvokeCameraIntrinsicsCallbacks(ServerRemotePacket remotePacket)
+        {
+            if (remotePacket.cameraIntrinsics != null)
+            {
+                OnCameraIntrinsicsReceived?.Invoke(this, EventArgs.Empty);
+            }
+            else 
+            {
+                Debug.Log("remotePacket.cameraIntrinsics is null");
             }
         }
 
-        private void PlanesInfoCheck(ServerRemotePacket remotePacket)
+
+        private void InvokeTouchPositionCallbacks(ServerRemotePacket remotePacket)
+        {
+            if (remotePacket.touchPositionNormalized != null) {
+                OnInputDataReceived?.Invoke(this, EventArgs.Empty);
+            }
+            else 
+            {
+                Debug.Log("remotePacket.touchPositionNormalized is null");
+            }
+        }
+
+        private void InvokeDepthImageCallbacks(ServerRemotePacket remotePacket)
+        {
+            if (remotePacket.depthImage != null) 
+            {
+                OnDepthImageInfoReceived?.Invoke(this, EventArgs.Empty);
+
+            }
+            else 
+            {
+                Debug.Log("remotePacket.depthImage is null");
+            }
+        }
+
+        private void InvokePlaneCallbacks(ServerRemotePacket remotePacket)
         {
             if (remotePacket.planesInfo != null) 
             {
                 OnPlanesInfoReceived?.Invoke(this, EventArgs.Empty);
             } 
+            else 
+            {
+                Debug.Log("remotePacket.planesInfo is null");
+            }
         }
+
 
         private void TrackedImagesCheck(ServerRemotePacket remotePacket)
         {
@@ -132,17 +173,17 @@ namespace XRRemote
             }
         }
 
+
         private void InitializeCommandBuffer()
         {   
             if (videoCommandBufferInitialized) return;
             videoCommandBuffer = new CommandBuffer();
+
             commandBufferMaterial = Resources.Load("XRVideoMaterial") as Material;
-            // commandBufferMaterial = new Material(Shader.Find("Unlit/XRRemoteVideo"));
             videoCommandBuffer.Blit(null, BuiltinRenderTextureType.CurrentActive, commandBufferMaterial);
             receivingCamera.AddCommandBuffer(CameraEvent.BeforeForwardOpaque, videoCommandBuffer);
             videoCommandBufferInitialized = true;
         }
-
         private IEnumerator SetReceivingCamera()
         {
             while(true)
@@ -183,7 +224,6 @@ namespace XRRemote
                 yield return new WaitForSeconds(5f);
             }
         }
-
         private bool TrySetupTrackedPoseDriver()
         {
             TrackedPoseDriver trackedPoseDriver = FindObjectOfType<TrackedPoseDriver>();
@@ -205,7 +245,6 @@ namespace XRRemote
             }
             return false;
         }
-
         //required for editor script
         public void AddCameraManager()
         {
@@ -213,3 +252,5 @@ namespace XRRemote
         }
     }
 }
+
+

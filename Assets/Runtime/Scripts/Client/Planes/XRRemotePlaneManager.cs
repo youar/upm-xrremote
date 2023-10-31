@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="CustomPlaneManager.cs" createdby="gblikas">
+// <copyright file="XRRemotePlaneManager.cs" createdby="gblikas">
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.

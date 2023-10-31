@@ -38,7 +38,7 @@ namespace XRRemote
         [SerializeField] public ClientRemotePacket remotePacket {get; private set;} = null;
         public List<SerializableXRReferenceImage> serializedTextures {get; private set;}
         public event EventHandler OnImageLibraryReceived;
-     
+        
         private void Awake()
         {
             if (Application.isEditor)
@@ -49,7 +49,6 @@ namespace XRRemote
             }
 
             Instance = this;
-
             targetNdiSenderName = "ClientSender";
         }
 

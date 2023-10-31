@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------
-// <copyright file="ServerReceiver.cs" createdby="cSustrich">
+// <copyright file="ClientReceiverEditor" createdby="cSustrich
 // 
 // XR Remote
 // Copyright(C) 2020  YOUAR, INC.
@@ -21,7 +21,6 @@
 //
 // </copyright>
 //-------------------------------------------------------------------------------------------------------
-
 using UnityEditor;
 using UnityEngine;
 
