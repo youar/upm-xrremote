@@ -45,8 +45,6 @@ namespace XRRemote
         public event EventHandler OnCameraIntrinsicsReceived;
         public event EventHandler OnDepthImageInfoReceived;
         public event EventHandler OnTrackedImagesReceived;
-
-        public XRRemoteOcclusionManager XRRemoteOcclusionManager;
         private Camera receivingCamera;
 
         public ARCameraBackground aRCameraBackground;

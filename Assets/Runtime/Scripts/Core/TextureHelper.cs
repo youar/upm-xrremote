@@ -48,7 +48,6 @@ namespace XRRemote
                 {
                     int index = (y * dstWidth + x) * 4;
                     float depthValue = BitConverter.ToSingle(rFloat, index);
-                    // if (depthValue >= maxValue) maxValue = depthValue;
                     pixels[y * dstWidth + x] = new Color(depthValue, depthValue, depthValue, 1.0f);
                 }
             }
